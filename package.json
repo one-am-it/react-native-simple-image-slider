@@ -1,5 +1,5 @@
 {
-  "name": "react-native-simple-image-slider",
+  "name": "@one-am/react-native-simple-image-slider",
   "version": "0.1.0",
   "description": "A simple and performant image slider made with FlashList. Includes a full screen gallery component with gesture support.",
   "main": "lib/commonjs/index",
