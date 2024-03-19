@@ -1,5 +1,5 @@
 {
-  "name": "react-native-simple-image-slider-example",
+  "name": "@one-am/react-native-simple-image-slider-example",
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
@@ -9,15 +9,23 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@babel/runtime": "^7.24.0",
     "expo": "~50.0.13",
+    "expo-haptics": "~12.8.1",
+    "expo-image": "~1.10.6",
     "expo-status-bar": "~1.11.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.73.5",
-    "react-native-web": "~0.19.6"
+    "react-native-gesture-handler": "~2.14.0",
+    "react-native-reanimated": "~3.6.2",
+    "react-native-safe-area-context": "4.8.2",
+    "react-native-web": "~0.19.6",
+    "styled-components": "^6.1.8",
+    "tabler-icons-react-native": "^2.42.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0",
+    "@babel/core": "^7.24.0",
     "@expo/webpack-config": "^19.0.1",
     "babel-loader": "^8.1.0",
     "babel-plugin-module-resolver": "^5.0.0"

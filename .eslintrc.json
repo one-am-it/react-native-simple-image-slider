@@ -4,6 +4,8 @@
         "node": true
     },
     "extends": [
+      "@react-native",
+      "prettier",
         "eslint:recommended",
         "plugin:react/recommended",
         "plugin:react-hooks/recommended",
@@ -56,7 +58,17 @@
                 "format": ["PascalCase"]
             }
         ],
-        "react-hooks/exhaustive-deps": 2
+        "react-hooks/exhaustive-deps": 2,
+        "prettier/prettier": [
+            "error",
+            {
+              "quoteProps": "consistent",
+              "singleQuote": true,
+              "tabWidth": 4,
+              "trailingComma": "es5",
+              "useTabs": false
+            }
+        ]
     },
     "settings": {
         "react": {
