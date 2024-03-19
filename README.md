@@ -1,14 +1,37 @@
 # react-native-simple-image-slider
 
-A simple and performant image slider made with [`@shopify/flash-list`](https://github.com/Shopify/flash-list).
+A simple and performant image slider made with [`@shopify/flash-list`](https://github.com/Shopify/flash-list)
+and [expo-image](https://docs.expo.dev/versions/latest/sdk/image/)
 Includes a full screen gallery component with gesture support.
 
 ![Alt Text](docs/slider-demo.gif)
 
 ## Installation
 
-```sh
-npm install @one-am/react-native-simple-image-slider
+#### Expo
+
+```shell
+npx expo install expo-image expo-haptics expo-status-bar react-native-reanimated \
+ react-native-gesture-handler react-native-safe-area-context styled-components \
+  @one-am/react-native-simple-image-slider
+```
+
+#### Non-Expo
+
+##### npm
+
+```shell
+npm install expo-image expo-haptics expo-status-bar react-native-reanimated \
+ react-native-gesture-handler react-native-safe-area-context styled-components \
+  @one-am/react-native-simple-image-slider
+```
+
+##### yarn
+
+```shell
+yarn add expo-image expo-haptics expo-status-bar react-native-reanimated \
+ react-native-gesture-handler react-native-safe-area-context styled-components \
+  @one-am/react-native-simple-image-slider
 ```
 
 ## Usage
