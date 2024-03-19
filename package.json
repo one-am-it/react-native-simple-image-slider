@@ -50,7 +50,8 @@
   },
   "homepage": "https://github.com/one-am-it/react-native-simple-image-slider#readme",
   "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^17.0.2",
@@ -130,9 +131,6 @@
     ]
   },
   "release-it": {
-    "publishConfig": {
-      "access": "public"
-    },
     "git": {
       "commitMessage": "chore: release ${version}",
       "tagName": "v${version}"
