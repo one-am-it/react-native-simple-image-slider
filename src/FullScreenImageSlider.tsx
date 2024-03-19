@@ -7,7 +7,7 @@ import React, {
     useState,
 } from 'react';
 import { Modal, type ScaledSize, StyleSheet, useWindowDimensions } from 'react-native';
-import { IconX } from 'tabler-icons-react-native';
+import IconX from './icons/IconX';
 import Animated, {
     runOnJS,
     useAnimatedStyle,
@@ -21,11 +21,13 @@ import BaseListImageSlider, { type BaseSimpleImageSliderProps } from './BaseSimp
 import { type EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { PinchToZoomStatus } from './@types/pinch-to-zoom';
 import type { SimpleImageSliderItem } from './@types/slider';
+import renderProp, { type RenderProp } from './utils/renderProp';
 
 export type FullScreenImageSliderProps = BaseSimpleImageSliderProps & {
     open?: boolean;
     onRequestClose?: () => void;
     renderDescription?: (item: SimpleImageSliderItem, index: number) => ReactNode;
+    CloseButtonIcon?: RenderProp;
 };
 
 const StyledDescriptionContainer = styled.View`
@@ -51,7 +53,15 @@ const FullScreenImageSlider = forwardRef<
     FlashList<SimpleImageSliderItem>,
     FullScreenImageSliderProps
 >(function FullScreenImageSlider(
-    { open, onRequestClose, renderDescription, onViewableItemChange, data, ...props },
+    {
+        CloseButtonIcon,
+        open,
+        onRequestClose,
+        renderDescription,
+        onViewableItemChange,
+        data,
+        ...props
+    },
     ref
 ) {
     const windowDimensions = useWindowDimensions();
@@ -114,7 +124,11 @@ const FullScreenImageSlider = forwardRef<
         >
             <StyledModalContentContainer style={[styles.modalContent, modalContentStyle]}>
                 <StyledModalCloseButton style={styles.closeButton} onPress={onRequestClose}>
-                    <IconX color={theme.colors.fullScreenCloseButton} />
+                    {CloseButtonIcon ? (
+                        renderProp(CloseButtonIcon)
+                    ) : (
+                        <IconX color={theme.colors.fullScreenCloseButton} />
+                    )}
                 </StyledModalCloseButton>
                 <BaseListImageSlider
                     data={data}

@@ -90,7 +90,6 @@
     "react-native-svg": "^15.1.0",
     "release-it": "^15.0.0",
     "styled-components": "^6.1.8",
-    "tabler-icons-react-native": "^2.42.1",
     "typescript": "^5.2.2",
     "typescript-plugin-styled-components": "^3.0.0"
   },
@@ -110,9 +109,8 @@
     "react-native-gesture-handler": "^2.15.0",
     "react-native-reanimated": "~3.6.2",
     "react-native-safe-area-context": "*",
-    "styled-components": "^6.1.8",
-    "tabler-icons-react-native": "*",
-    "react-native-svg": "*"
+    "react-native-svg": "*",
+    "styled-components": "^6.1.8"
   },
   "workspaces": [
     "example"
