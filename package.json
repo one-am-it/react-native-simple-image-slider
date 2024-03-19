@@ -130,6 +130,9 @@
     ]
   },
   "release-it": {
+    "publishConfig": {
+      "access": "public"
+    },
     "git": {
       "commitMessage": "chore: release ${version}",
       "tagName": "v${version}"
