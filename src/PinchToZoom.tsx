@@ -8,7 +8,6 @@ import {
 import Animated, {
     cancelAnimation,
     runOnJS,
-    type SharedValue,
     useAnimatedReaction,
     useAnimatedStyle,
     useSharedValue,
@@ -17,6 +16,7 @@ import Animated, {
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { clamp } from './utils/clamp';
 import * as Haptics from 'expo-haptics';
+import type { PinchToZoomStatus } from './@types/pinch-to-zoom';
 
 export type PinchToZoomProps = PropsWithChildren<{
     minimumZoomScale?: number;
@@ -28,11 +28,7 @@ export type PinchToZoomProps = PropsWithChildren<{
     onLayout?: (e: LayoutChangeEvent) => void;
     onScaleChange?: () => void;
     onScaleReset?: () => void;
-    onTranslationChange?: (
-        x: SharedValue<number>,
-        y: SharedValue<number>,
-        scale: SharedValue<number>
-    ) => void;
+    onTranslationChange?: (status: PinchToZoomStatus) => void;
     onRequestClose?: () => void;
 }>;
 
@@ -279,14 +275,16 @@ export default function PinchToZoom({
     useAnimatedReaction(
         () => {
             return {
-                scale: scale.value,
-                translationX: translationX.value,
-                translationY: translationY.value,
+                scale: scale,
+                translation: {
+                    x: translationX,
+                    y: translationY,
+                },
             };
         },
-        () => {
+        (prepared) => {
             if (onTranslationChange) {
-                runOnJS(onTranslationChange)(translationX, translationY, scale);
+                runOnJS(onTranslationChange)(prepared);
             }
         },
         [onTranslationChange]

@@ -10,7 +10,6 @@ import { Modal, type ScaledSize, StyleSheet, useWindowDimensions } from 'react-n
 import { IconX } from 'tabler-icons-react-native';
 import Animated, {
     runOnJS,
-    type SharedValue,
     useAnimatedStyle,
     useSharedValue,
     withTiming,
@@ -23,6 +22,7 @@ import BaseListImageSlider, {
     type SimpleImageSliderItem,
 } from './BaseSimpleImageSlider';
 import { type EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
+import type { PinchToZoomStatus } from './@types/pinch-to-zoom';
 
 export type FullScreenImageSliderProps = BaseSimpleImageSliderProps & {
     open?: boolean;
@@ -90,10 +90,10 @@ const FullScreenImageSlider = forwardRef<
         };
     }, []);
 
-    const onPinchToZoomTranslationChange = useCallback(
-        (x: SharedValue<number>, y: SharedValue<number>, scale: SharedValue<number>) => {
+    const onPinchToZoomStatusChange = useCallback(
+        ({ translation, scale }: PinchToZoomStatus) => {
             if (scale.value <= 1) {
-                if (x.value === 0 && y.value === 0) {
+                if (translation.x.value === 0 && translation.y.value === 0) {
                     runOnJS(setStatusBarStyle)('light');
                     backgroundOpacity.value = withTiming(1);
                 } else {
@@ -121,7 +121,7 @@ const FullScreenImageSlider = forwardRef<
                 <BaseListImageSlider
                     data={data}
                     enablePinchToZoom={true}
-                    onPinchToZoomTranslationChange={onPinchToZoomTranslationChange}
+                    onPinchToZoomStatusChange={onPinchToZoomStatusChange}
                     onPinchToZoomRequestClose={onRequestClose}
                     {...props}
                     onViewableItemChange={internalOnViewableItemChange}

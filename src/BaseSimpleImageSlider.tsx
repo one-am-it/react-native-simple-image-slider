@@ -14,8 +14,7 @@ import { Pressable, type StyleProp, type ViewStyle } from 'react-native';
 import type ViewToken from '@shopify/flash-list/src/viewability/ViewToken';
 import styled from 'styled-components/native';
 import PageCounter from './PageCounter';
-import PinchToZoom from './PinchToZoom';
-import { type SharedValue } from 'react-native-reanimated';
+import PinchToZoom, { type PinchToZoomProps } from './PinchToZoom';
 import { GestureHandlerRootView, ScrollView } from 'react-native-gesture-handler';
 import renderProp, { type RenderProp } from './utils/renderProp';
 
@@ -41,12 +40,8 @@ export type BaseSimpleImageSliderProps = {
     indexOverride?: number;
     onViewableItemChange?: (index: number) => void;
     enablePinchToZoom?: boolean;
-    onPinchToZoomTranslationChange?: (
-        x: SharedValue<number>,
-        y: SharedValue<number>,
-        scale: SharedValue<number>
-    ) => void;
-    onPinchToZoomRequestClose?: () => void;
+    onPinchToZoomStatusChange?: PinchToZoomProps['onTranslationChange'];
+    onPinchToZoomRequestClose?: PinchToZoomProps['onRequestClose'];
 };
 
 const StyledAbsoluteComponentContainer = styled.View<{
@@ -138,7 +133,7 @@ const BaseListImageSlider = forwardRef<
         indexOverride,
         onViewableItemChange,
         enablePinchToZoom = false,
-        onPinchToZoomTranslationChange,
+        onPinchToZoomStatusChange,
         onPinchToZoomRequestClose,
     },
     ref
@@ -232,7 +227,7 @@ const BaseListImageSlider = forwardRef<
             {enablePinchToZoom ? (
                 <StyledPinchToZoom
                     onRequestClose={onPinchToZoomRequestClose}
-                    onTranslationChange={onPinchToZoomTranslationChange}
+                    onTranslationChange={onPinchToZoomStatusChange}
                     onScaleChange={onScaleChange}
                     onScaleReset={onScaleReset}
                     maximumZoomScale={5}
