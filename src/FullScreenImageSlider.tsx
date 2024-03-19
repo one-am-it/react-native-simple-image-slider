@@ -27,7 +27,7 @@ import { type EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-conte
 export type FullScreenImageSliderProps = BaseSimpleImageSliderProps & {
     open?: boolean;
     onRequestClose?: () => void;
-    renderDescription?: (index: number) => ReactNode;
+    renderDescription?: (item: SimpleImageSliderItem, index: number) => ReactNode;
 };
 
 const StyledDescriptionContainer = styled.View`
@@ -53,7 +53,7 @@ const FullScreenImageSlider = forwardRef<
     FlashList<SimpleImageSliderItem>,
     FullScreenImageSliderProps
 >(function FullScreenImageSlider(
-    { open, onRequestClose, renderDescription, onViewableItemChange, ...props },
+    { open, onRequestClose, renderDescription, onViewableItemChange, data, ...props },
     ref
 ) {
     const windowDimensions = useWindowDimensions();
@@ -119,6 +119,7 @@ const FullScreenImageSlider = forwardRef<
                     <IconX color={theme.colors.fullScreenCloseButton} />
                 </StyledModalCloseButton>
                 <BaseListImageSlider
+                    data={data}
                     enablePinchToZoom={true}
                     onPinchToZoomTranslationChange={onPinchToZoomTranslationChange}
                     onPinchToZoomRequestClose={onRequestClose}
@@ -129,9 +130,12 @@ const FullScreenImageSlider = forwardRef<
                     ref={ref}
                 />
 
-                {renderDescription ? (
+                {renderDescription && data[internalIndex] ? (
                     <StyledDescriptionContainer style={styles.descriptionContainer}>
-                        {renderDescription(internalIndex)}
+                        {renderDescription(
+                            data[internalIndex] as SimpleImageSliderItem,
+                            internalIndex
+                        )}
                     </StyledDescriptionContainer>
                 ) : null}
             </StyledModalContentContainer>

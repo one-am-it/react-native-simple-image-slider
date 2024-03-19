@@ -24,7 +24,7 @@ export type SimpleImageSliderItem = ImageProps & {
 };
 
 export type BaseSimpleImageSliderProps = {
-    data: SimpleImageSliderItem[] | undefined;
+    data: SimpleImageSliderItem[];
     style?: StyleProp<ViewStyle>;
     imageWidth?: number;
     imageHeight?: number;
