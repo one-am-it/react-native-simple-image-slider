@@ -98,19 +98,19 @@
     "styled-components": "^6"
   },
   "peerDependencies": {
-    "@babel/core": "^7.24.0",
-    "@babel/runtime": "^7.24.0",
+    "@babel/core": "*",
+    "@babel/runtime": "*",
     "expo-haptics": "*",
     "expo-image": "*",
     "expo-status-bar": "*",
     "react": "*",
     "react-dom": "*",
     "react-native": "*",
-    "react-native-gesture-handler": "^2.15.0",
-    "react-native-reanimated": "~3.6.2",
+    "react-native-gesture-handler": "*",
+    "react-native-reanimated": "*",
     "react-native-safe-area-context": "*",
     "react-native-svg": "*",
-    "styled-components": "^6.1.8"
+    "styled-components": "*"
   },
   "workspaces": [
     "example"
