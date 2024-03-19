@@ -143,6 +143,9 @@
     "github": {
       "release": true
     },
+    "gitlab": {
+      "release": true
+    },
     "plugins": {
       "@release-it/conventional-changelog": {
         "preset": "angular"
