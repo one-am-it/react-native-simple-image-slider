@@ -1,39 +1,40 @@
-import React, { useMemo } from 'react';
-import { type StyleProp, StyleSheet, Text, View, type ViewStyle } from 'react-native';
-import { type DefaultTheme, useTheme } from 'styled-components/native';
+import React from 'react';
+import { type StyleProp, Text, type ViewStyle } from 'react-native';
+import styled from 'styled-components/native';
 
 type PageCounterProps = {
+    /**
+     * @description The current page number (**counting from 1**).
+     */
     currentPage: number;
+    /**
+     * @description The total number of pages.
+     */
     totalPages: number;
+    /**
+     * @description Additional styles or styles to override default style of the container View.
+     */
     style?: StyleProp<ViewStyle>;
 };
 
-export default function PageCounter({ currentPage, totalPages, style }: PageCounterProps) {
-    const theme = useTheme();
-    const styles = useMemo(() => makeStyles(theme), [theme]);
+const StyledContainer = styled.View`
+    background-color: ${({ theme }) => theme.colors.pageCounterBackground};
+    border-width: ${({ theme }) => theme.styles.borderWidth.xs}px;
+    border-color: ${({ theme }) => theme.colors.pageCounterBorder};
+    border-radius: ${({ theme }) => theme.styles.borderRadius.m}px;
+    padding: ${({ theme }) => `${theme.styles.spacing.s}px ${theme.styles.spacing.s}px`};
+    width: 75px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+`;
 
+export default function PageCounter({ currentPage, totalPages, style }: PageCounterProps) {
     return (
-        <View style={[styles.container, style]}>
+        <StyledContainer style={style}>
             <Text>
                 {currentPage} / {totalPages}
             </Text>
-        </View>
+        </StyledContainer>
     );
 }
-
-const makeStyles = (theme: DefaultTheme) => {
-    return StyleSheet.create({
-        container: {
-            backgroundColor: theme.colors.pageCounterBackground,
-            borderWidth: 1,
-            borderColor: theme.colors.pageCounterBorder,
-            borderRadius: 8,
-            paddingHorizontal: 5,
-            paddingVertical: 6,
-            width: 75,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-        },
-    });
-};

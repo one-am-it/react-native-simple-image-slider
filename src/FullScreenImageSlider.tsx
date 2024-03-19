@@ -24,15 +24,29 @@ import type { SimpleImageSliderItem } from './@types/slider';
 import renderProp, { type RenderProp } from './utils/renderProp';
 
 export type FullScreenImageSliderProps = BaseSimpleImageSliderProps & {
+    /**
+     * @description Whether the modal is open or not.
+     */
     open?: boolean;
+    /**
+     * @description Callback that is called when the modal is requested to be closed.
+     */
     onRequestClose?: () => void;
+    /**
+     * @description Callback that renders an element to be displayed as the description of the current image.
+     * @param item The current item being displayed.
+     * @param index The index of the current item being displayed.
+     */
     renderDescription?: (item: SimpleImageSliderItem, index: number) => ReactNode;
+    /**
+     * @description Item to be rendered in place of the default close button icon.
+     */
     CloseButtonIcon?: RenderProp;
 };
 
 const StyledDescriptionContainer = styled.View`
     position: absolute;
-    border-top-width: 1px;
+    border-top-width: ${({ theme }) => theme.styles.borderWidth.xs}px;
     border-top-color: ${({ theme }) => theme.colors.descriptionContainerBorder};
     width: 100%;
     padding-top: ${({ theme }) => theme.styles.spacing.l}px;
@@ -49,6 +63,9 @@ const StyledModalContentContainer = styled(Animated.View)`
     gap: ${({ theme }) => theme.styles.spacing.m}px;
 `;
 
+/**
+ * @description A full screen image slider that displays images in a modal.
+ */
 const FullScreenImageSlider = forwardRef<
     FlashList<SimpleImageSliderItem>,
     FullScreenImageSliderProps

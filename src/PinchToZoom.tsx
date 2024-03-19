@@ -19,32 +19,60 @@ import * as Haptics from 'expo-haptics';
 import type { PinchToZoomStatus } from './@types/pinch-to-zoom';
 
 export type PinchToZoomProps = PropsWithChildren<{
+    /**
+     * @description The minimum zoom scale of the image.
+     * @default 1
+     */
     minimumZoomScale?: number;
+    /**
+     * @description The maximum zoom scale of the image.
+     * @default 8
+     */
     maximumZoomScale?: number;
+    /**
+     * @description Additional styles or styles to override default style of the container View.
+     */
     style?: StyleProp<ViewStyle>;
-    onPinchStart?: () => void;
-    onPinchEnd?: () => void;
+    /**
+     * @description Whether all gestures should be disabled or not.
+     * @default false
+     */
     disabled?: boolean;
+    /**
+     * @description Callback that is called when the layout of the container changes.
+     * @param {LayoutChangeEvent} e The layout change event.
+     */
     onLayout?: (e: LayoutChangeEvent) => void;
+    /**
+     * @description Callback that is called when the scale of the image changes to a value different from `minimumZoomScale`.
+     */
     onScaleChange?: () => void;
+    /**
+     * @description Callback that is called when the scale of the image changes to `minimumZoomScale`.
+     */
     onScaleReset?: () => void;
+    /**
+     * @description Callback that is called when either the translation or the scale of the image change.
+     * @param {PinchToZoomStatus} status The current status.
+     */
     onTranslationChange?: (status: PinchToZoomStatus) => void;
-    onRequestClose?: () => void;
+    /**
+     * @description Callback that is called when gestures should lead to the item being dismissed.
+     */
+    onDismiss?: () => void;
 }>;
 
 export default function PinchToZoom({
     minimumZoomScale = 1,
     maximumZoomScale = 8,
     style: propStyle,
-    onPinchStart,
-    onPinchEnd,
     disabled,
     onLayout,
     onTranslationChange,
     onScaleChange,
     onScaleReset,
     children,
-    onRequestClose,
+    onDismiss,
 }: PinchToZoomProps) {
     const { height: windowHeight } = useWindowDimensions();
 
@@ -72,7 +100,6 @@ export default function PinchToZoom({
                     cancelAnimation(scale);
                     prevScale.value = scale.value;
                     offsetScale.value = scale.value;
-                    if (onPinchStart) runOnJS(onPinchStart)();
                     if (onScaleChange) runOnJS(onScaleChange)();
                 })
                 .onUpdate((e) => {
@@ -114,8 +141,8 @@ export default function PinchToZoom({
                     isPinching.value = false;
 
                     if (scale.value < minimumZoomScale / 2 && prevScale.value <= minimumZoomScale) {
-                        if (onRequestClose) {
-                            runOnJS(onRequestClose)();
+                        if (onDismiss) {
+                            runOnJS(onDismiss)();
                         }
                     } else if (scale.value < minimumZoomScale) {
                         runOnJS(Haptics.impactAsync)(Haptics.ImpactFeedbackStyle.Light);
@@ -130,8 +157,6 @@ export default function PinchToZoom({
                     prevScale.value = 0;
                     prevTranslationX.value = translationX.value;
                     prevTranslationY.value = translationY.value;
-
-                    if (onPinchEnd) runOnJS(onPinchEnd)();
                 }),
 
         [
@@ -141,7 +166,6 @@ export default function PinchToZoom({
             scale,
             prevScale,
             offsetScale,
-            onPinchStart,
             onScaleChange,
             maximumZoomScale,
             isPinching,
@@ -152,8 +176,7 @@ export default function PinchToZoom({
             viewWidth.value,
             viewHeight.value,
             minimumZoomScale,
-            onPinchEnd,
-            onRequestClose,
+            onDismiss,
             onScaleReset,
         ]
     );
@@ -192,8 +215,8 @@ export default function PinchToZoom({
                             Math.abs(translationX.value) > viewWidth.value / 2 ||
                             Math.abs(translationY.value) > viewHeight.value / 2
                         ) {
-                            if (onRequestClose) {
-                                runOnJS(onRequestClose)();
+                            if (onDismiss) {
+                                runOnJS(onDismiss)();
                             }
                         } else {
                             runOnJS(Haptics.impactAsync)(Haptics.ImpactFeedbackStyle.Light);
@@ -223,7 +246,7 @@ export default function PinchToZoom({
         [
             disabled,
             minimumZoomScale,
-            onRequestClose,
+            onDismiss,
             prevScale.value,
             prevTranslationX,
             prevTranslationY,

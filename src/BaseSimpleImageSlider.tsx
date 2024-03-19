@@ -38,7 +38,7 @@ export type BaseSimpleImageSliderProps = {
     onViewableItemChange?: (index: number) => void;
     enablePinchToZoom?: boolean;
     onPinchToZoomStatusChange?: PinchToZoomProps['onTranslationChange'];
-    onPinchToZoomRequestClose?: PinchToZoomProps['onRequestClose'];
+    onPinchToZoomRequestClose?: PinchToZoomProps['onDismiss'];
 };
 
 const StyledAbsoluteComponentContainer = styled.View<{
@@ -108,6 +108,11 @@ const StyledPinchToZoom = styled(PinchToZoom)`
     z-index: 1000;
 `;
 
+/**
+ * @description A simple image slider that displays a list of images. This is the component
+ *  that {@link SimpleImageSlider} and {@link FullScreenImageSlider}
+ *  are built upon. You should normally use one of those two components instead of this one.
+ */
 const BaseListImageSlider = forwardRef<
     FlashList<SimpleImageSliderItem>,
     BaseSimpleImageSliderProps
@@ -223,7 +228,7 @@ const BaseListImageSlider = forwardRef<
         <StyledContainer aspectRatio={imageAspectRatio} style={style}>
             {enablePinchToZoom ? (
                 <StyledPinchToZoom
-                    onRequestClose={onPinchToZoomRequestClose}
+                    onDismiss={onPinchToZoomRequestClose}
                     onTranslationChange={onPinchToZoomStatusChange}
                     onScaleChange={onScaleChange}
                     onScaleReset={onScaleReset}

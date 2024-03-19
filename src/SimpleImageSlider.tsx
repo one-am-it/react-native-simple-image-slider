@@ -6,9 +6,16 @@ import BaseListImageSlider, { type BaseSimpleImageSliderProps } from './BaseSimp
 import type { SimpleImageSliderItem } from './@types/slider';
 
 export type SimpleImageSliderProps = BaseSimpleImageSliderProps & {
+    /**
+     * @description Whether the full screen mode is enabled or not. **Caution:** when this is enabled, the `onItemPress` prop will be ignored.
+     * @default false
+     */
     fullScreenEnabled?: boolean;
 };
 
+/**
+ * @description A simple image slider that displays images in a list and can show a {@link FullScreenImageSlider} on press.
+ */
 const SimpleImageSlider = forwardRef<FlashList<SimpleImageSliderItem>, SimpleImageSliderProps>(
     function ListImageSlider(
         { data, fullScreenEnabled = false, onItemPress, onViewableItemChange, ...props },
@@ -47,7 +54,7 @@ const SimpleImageSlider = forwardRef<FlashList<SimpleImageSliderItem>, SimpleIma
                     {...props}
                     data={data}
                     ref={mergeRefs(ref, listRef)}
-                    onItemPress={onItemPress ?? openFullScreen}
+                    onItemPress={openFullScreen ?? onItemPress}
                     onViewableItemChange={internalOnViewableItemChange}
                 />
                 {fullScreenEnabled ? (
