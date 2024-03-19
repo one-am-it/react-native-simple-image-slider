@@ -1,4 +1,5 @@
-import StyledComponentsThemeProvider from './StyledComponentsThemeProvider';
+import SimpleImageSliderThemeProvider from './SimpleImageSliderThemeProvider';
+import type { SimpleImageSliderTheme } from './@types/styled';
 import BaseListImageSlider, { type BaseSimpleImageSliderProps } from './BaseSimpleImageSlider';
 import SimpleImageSlider, { type SimpleImageSliderProps } from './SimpleImageSlider';
 import FullScreenImageSlider, { type FullScreenImageSliderProps } from './FullScreenImageSlider';
@@ -6,7 +7,8 @@ import PinchToZoom, { type PinchToZoomProps } from './PinchToZoom';
 import type { SimpleImageSliderItem } from './@types/slider';
 
 export {
-    StyledComponentsThemeProvider as SimpleImageSliderThemeProvider,
+    SimpleImageSliderThemeProvider,
+    type SimpleImageSliderTheme,
     BaseListImageSlider,
     type BaseSimpleImageSliderProps,
     SimpleImageSlider,

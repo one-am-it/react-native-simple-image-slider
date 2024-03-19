@@ -1,6 +1,6 @@
 import 'styled-components/native';
 
-export type StyledComponentsTheme = {
+export type SimpleImageSliderTheme = {
     colors: {
         pageCounterBackground: string;
         pageCounterBorder: string;
@@ -35,5 +35,5 @@ export type StyledComponentsTheme = {
 
 declare module 'styled-components/native' {
     // eslint-disable-next-line @typescript-eslint/no-empty-interface
-    export interface DefaultTheme extends StyledComponentsTheme {}
+    export interface DefaultTheme extends SimpleImageSliderTheme {}
 }

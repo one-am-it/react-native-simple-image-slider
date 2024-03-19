@@ -2484,6 +2484,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fastify/deepmerge@npm:^1.3.0":
+  version: 1.3.0
+  resolution: "@fastify/deepmerge@npm:1.3.0"
+  checksum: 33ec927905dca320d7ae9535a1521909f7c82339706345324ab6287ad100589a799b8257c15b0e582c7bb74e2aa4883d82ba0228d7b116aa8789ada4f78d6974
+  languageName: node
+  linkType: hard
+
 "@gar/promisify@npm:^1.0.1":
   version: 1.1.3
   resolution: "@gar/promisify@npm:1.1.3"
@@ -3171,6 +3178,7 @@ __metadata:
   dependencies:
     "@commitlint/config-conventional": ^17.0.2
     "@evilmartians/lefthook": ^1.5.0
+    "@fastify/deepmerge": ^1.3.0
     "@react-native/eslint-config": ^0.73.1
     "@release-it/conventional-changelog": ^5.0.0
     "@shopify/flash-list": ^1.6.3
@@ -3209,19 +3217,19 @@ __metadata:
     typescript: ^5.2.2
     typescript-plugin-styled-components: ^3.0.0
   peerDependencies:
-    "@babel/core": ^7.24.0
-    "@babel/runtime": ^7.24.0
+    "@babel/core": "*"
+    "@babel/runtime": "*"
     expo-haptics: "*"
     expo-image: "*"
     expo-status-bar: "*"
     react: "*"
     react-dom: "*"
     react-native: "*"
-    react-native-gesture-handler: ^2.15.0
-    react-native-reanimated: ~3.6.2
+    react-native-gesture-handler: "*"
+    react-native-reanimated: "*"
     react-native-safe-area-context: "*"
     react-native-svg: "*"
-    styled-components: ^6.1.8
+    styled-components: "*"
   languageName: unknown
   linkType: soft
 
