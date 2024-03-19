@@ -17,12 +17,10 @@ import Animated, {
 import { setStatusBarStyle } from 'expo-status-bar';
 import styled, { type DefaultTheme, useTheme } from 'styled-components/native';
 import { FlashList } from '@shopify/flash-list';
-import BaseListImageSlider, {
-    type BaseSimpleImageSliderProps,
-    type SimpleImageSliderItem,
-} from './BaseSimpleImageSlider';
+import BaseListImageSlider, { type BaseSimpleImageSliderProps } from './BaseSimpleImageSlider';
 import { type EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { PinchToZoomStatus } from './@types/pinch-to-zoom';
+import type { SimpleImageSliderItem } from './@types/slider';
 
 export type FullScreenImageSliderProps = BaseSimpleImageSliderProps & {
     open?: boolean;

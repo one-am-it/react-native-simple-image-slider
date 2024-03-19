@@ -17,10 +17,7 @@ import PageCounter from './PageCounter';
 import PinchToZoom, { type PinchToZoomProps } from './PinchToZoom';
 import { GestureHandlerRootView, ScrollView } from 'react-native-gesture-handler';
 import renderProp, { type RenderProp } from './utils/renderProp';
-
-export type SimpleImageSliderItem = ImageProps & {
-    key: string;
-};
+import type { SimpleImageSliderItem } from './@types/slider';
 
 export type BaseSimpleImageSliderProps = {
     data: SimpleImageSliderItem[];

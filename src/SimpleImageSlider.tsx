@@ -2,10 +2,8 @@ import React, { forwardRef, useCallback, useRef, useState } from 'react';
 import { FlashList } from '@shopify/flash-list';
 import mergeRefs from 'merge-refs';
 import FullScreenImageSlider from './FullScreenImageSlider';
-import BaseListImageSlider, {
-    type BaseSimpleImageSliderProps,
-    type SimpleImageSliderItem,
-} from './BaseSimpleImageSlider';
+import BaseListImageSlider, { type BaseSimpleImageSliderProps } from './BaseSimpleImageSlider';
+import type { SimpleImageSliderItem } from './@types/slider';
 
 export type SimpleImageSliderProps = BaseSimpleImageSliderProps & {
     fullScreenEnabled?: boolean;
