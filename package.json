@@ -137,7 +137,8 @@
       "publish": true
     },
     "github": {
-      "release": true
+      "release": true,
+      "host": "https://api.github.com"
     },
     "gitlab": {
       "release": true
