@@ -1,7 +1,7 @@
 import React, { forwardRef, useCallback, useRef, useState } from 'react';
 import { FlashList } from '@shopify/flash-list';
 import mergeRefs from 'merge-refs';
-import FullScreenImageSlider from './FullScreenImageSlider';
+import FullScreenImageSlider, { type FullScreenImageSliderProps } from './FullScreenImageSlider';
 import BaseListImageSlider, { type BaseSimpleImageSliderProps } from './BaseSimpleImageSlider';
 import type { SimpleImageSliderItem } from './@types/slider';
 
@@ -11,6 +11,14 @@ export type SimpleImageSliderProps = BaseSimpleImageSliderProps & {
      * @default false
      */
     fullScreenEnabled?: boolean;
+    /**
+     * @description Passed to the {@link FullScreenImageSlider} component.
+     */
+    renderFullScreenDescription?: FullScreenImageSliderProps['renderDescription'];
+    /**
+     * @description Passed to the {@link FullScreenImageSlider} component.
+     */
+    FullScreenCloseButtonIcon?: FullScreenImageSliderProps['CloseButtonIcon'];
 };
 
 /**
@@ -18,7 +26,15 @@ export type SimpleImageSliderProps = BaseSimpleImageSliderProps & {
  */
 const SimpleImageSlider = forwardRef<FlashList<SimpleImageSliderItem>, SimpleImageSliderProps>(
     function ListImageSlider(
-        { data, fullScreenEnabled = false, onItemPress, onViewableItemChange, ...props },
+        {
+            data,
+            fullScreenEnabled = false,
+            onItemPress,
+            onViewableItemChange,
+            FullScreenCloseButtonIcon,
+            renderFullScreenDescription,
+            ...props
+        },
         ref
     ) {
         const listRef = useRef<FlashList<SimpleImageSliderItem>>(null);
@@ -67,6 +83,8 @@ const SimpleImageSlider = forwardRef<FlashList<SimpleImageSliderItem>, SimpleIma
                         showPageCounter={false}
                         indexOverride={currentIndex}
                         onViewableItemChange={onFullScreenViewableItemChange}
+                        renderDescription={renderFullScreenDescription}
+                        CloseButtonIcon={FullScreenCloseButtonIcon}
                     />
                 ) : null}
             </>

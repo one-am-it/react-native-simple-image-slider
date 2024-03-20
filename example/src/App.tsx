@@ -13,7 +13,7 @@ import pictureFour from '../assets/photos/4.jpg';
 import pictureFive from '../assets/photos/5.jpg';
 
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { useWindowDimensions } from 'react-native';
+import { Text, useWindowDimensions } from 'react-native';
 
 const photos = [pictureOne, pictureTwo, pictureThree, pictureFour, pictureFive];
 
@@ -21,6 +21,10 @@ const StyledContainer = styled(SafeAreaView)`
     flex: 1;
     align-items: center;
     justify-content: center;
+`;
+
+const StyledDescription = styled(Text)`
+    color: #ffffff;
 `;
 
 export default function App() {
@@ -37,6 +41,9 @@ export default function App() {
                         imageWidth={width}
                         imageAspectRatio={16 / 9}
                         fullScreenEnabled={true}
+                        renderFullScreenDescription={(_, index) => (
+                            <StyledDescription>Picture {index}</StyledDescription>
+                        )}
                     />
                 </SimpleImageSliderThemeProvider>
             </StyledContainer>
