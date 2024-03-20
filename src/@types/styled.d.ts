@@ -2,33 +2,11 @@ import 'styled-components/native';
 
 export type SimpleImageSliderTheme = {
     colors: {
-        pageCounterBackground: string;
-        pageCounterBorder: string;
-        fullScreenCloseButton: string;
-        descriptionContainerBorder: string;
-    };
-    styles: {
-        spacing: {
-            xxs: number;
-            xs: number;
-            s: number;
-            m: number;
-            l: number;
-            xl: number;
-        };
-        borderRadius: {
-            xs: number;
-            s: number;
-            m: number;
-            l: number;
-            xl: number;
-        };
-        borderWidth: {
-            xs: number;
-            s: number;
-            m: number;
-            l: number;
-            xl: number;
+        simpleImageSlider: {
+            pageCounterBackground: string;
+            pageCounterBorder: string;
+            fullScreenCloseButton: string;
+            descriptionContainerBorder: string;
         };
     };
 };

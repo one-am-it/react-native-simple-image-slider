@@ -18,11 +18,11 @@ type PageCounterProps = {
 };
 
 const StyledContainer = styled.View`
-    background-color: ${({ theme }) => theme.colors.pageCounterBackground};
-    border-width: ${({ theme }) => theme.styles.borderWidth.xs}px;
-    border-color: ${({ theme }) => theme.colors.pageCounterBorder};
-    border-radius: ${({ theme }) => theme.styles.borderRadius.m}px;
-    padding: ${({ theme }) => `${theme.styles.spacing.s}px ${theme.styles.spacing.s}px`};
+    background-color: ${({ theme }) => theme.colors.simpleImageSlider.pageCounterBackground};
+    border-width: 1px;
+    border-color: ${({ theme }) => theme.colors.simpleImageSlider.pageCounterBorder};
+    border-radius: 8px;
+    padding: 8px;
     width: 75px;
     flex-direction: row;
     align-items: center;

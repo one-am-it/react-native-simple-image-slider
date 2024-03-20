@@ -46,22 +46,14 @@ const StyledAbsoluteComponentContainer = styled.View<{
 }>`
     z-index: 1000;
     position: absolute;
-    bottom: ${({ position, theme }) =>
-        position === 'bottom-left' || position === 'bottom-right'
-            ? `${theme.styles.spacing.m}px`
-            : undefined};
-    top: ${({ position, theme }) =>
-        position === 'top-left' || position === 'top-right'
-            ? `${theme.styles.spacing.m}px`
-            : undefined};
-    left: ${({ position, theme }) =>
-        position === 'top-left' || position === 'bottom-left'
-            ? `${theme.styles.spacing.m}px`
-            : undefined};
-    right: ${({ position, theme }) =>
-        position === 'top-right' || position === 'bottom-right'
-            ? `${theme.styles.spacing.m}px`
-            : undefined};
+    bottom: ${({ position }) =>
+        position === 'bottom-left' || position === 'bottom-right' ? `16px` : undefined};
+    top: ${({ position }) =>
+        position === 'top-left' || position === 'top-right' ? `16px` : undefined};
+    left: ${({ position }) =>
+        position === 'top-left' || position === 'bottom-left' ? `16px` : undefined};
+    right: ${({ position }) =>
+        position === 'top-right' || position === 'bottom-right' ? `16px` : undefined};
 `;
 
 const StyledPageCounter = styled(PageCounter)<{
@@ -69,22 +61,14 @@ const StyledPageCounter = styled(PageCounter)<{
 }>`
     z-index: 1000;
     position: absolute;
-    bottom: ${({ position, theme }) =>
-        position === 'bottom-left' || position === 'bottom-right'
-            ? `${theme.styles.spacing.m}px`
-            : undefined};
-    top: ${({ position, theme }) =>
-        position === 'top-left' || position === 'top-right'
-            ? `${theme.styles.spacing.m}px`
-            : undefined};
-    left: ${({ position, theme }) =>
-        position === 'top-left' || position === 'bottom-left'
-            ? `${theme.styles.spacing.m}px`
-            : undefined};
-    right: ${({ position, theme }) =>
-        position === 'top-right' || position === 'bottom-right'
-            ? `${theme.styles.spacing.m}px`
-            : undefined};
+    bottom: ${({ position }) =>
+        position === 'bottom-left' || position === 'bottom-right' ? `16px` : undefined};
+    top: ${({ position }) =>
+        position === 'top-left' || position === 'top-right' ? `16px` : undefined};
+    left: ${({ position }) =>
+        position === 'top-left' || position === 'bottom-left' ? `16px` : undefined};
+    right: ${({ position }) =>
+        position === 'top-right' || position === 'bottom-right' ? `16px` : undefined};
 `;
 
 const StyledContainer = styled(GestureHandlerRootView)<{ aspectRatio?: number }>`

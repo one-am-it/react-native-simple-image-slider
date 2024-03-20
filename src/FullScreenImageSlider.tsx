@@ -15,7 +15,7 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 import { setStatusBarStyle } from 'expo-status-bar';
-import styled, { type DefaultTheme, useTheme } from 'styled-components/native';
+import styled, { useTheme } from 'styled-components/native';
 import { FlashList } from '@shopify/flash-list';
 import BaseListImageSlider, { type BaseSimpleImageSliderProps } from './BaseSimpleImageSlider';
 import { type EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -46,10 +46,10 @@ export type FullScreenImageSliderProps = BaseSimpleImageSliderProps & {
 
 const StyledDescriptionContainer = styled.View`
     position: absolute;
-    border-top-width: ${({ theme }) => theme.styles.borderWidth.xs}px;
-    border-top-color: ${({ theme }) => theme.colors.descriptionContainerBorder};
+    border-top-width: 1px;
+    border-top-color: ${({ theme }) => theme.colors.simpleImageSlider.descriptionContainerBorder};
     width: 100%;
-    padding-top: ${({ theme }) => theme.styles.spacing.l}px;
+    padding-top: 20px;
 `;
 
 const StyledModalCloseButton = styled.TouchableOpacity`
@@ -60,7 +60,7 @@ const StyledModalCloseButton = styled.TouchableOpacity`
 const StyledModalContentContainer = styled(Animated.View)`
     align-items: center;
     justify-content: center;
-    gap: ${({ theme }) => theme.styles.spacing.m}px;
+    gap: 16px;
 `;
 
 /**
@@ -85,8 +85,8 @@ const FullScreenImageSlider = forwardRef<
     const theme = useTheme();
     const safeAreaInsets = useSafeAreaInsets();
     const styles = useMemo(
-        () => makeStyles(theme, safeAreaInsets, windowDimensions),
-        [theme, safeAreaInsets, windowDimensions]
+        () => makeStyles(safeAreaInsets, windowDimensions),
+        [safeAreaInsets, windowDimensions]
     );
 
     const [internalIndex, setInternalIndex] = useState<number>(0);
@@ -144,7 +144,7 @@ const FullScreenImageSlider = forwardRef<
                     {CloseButtonIcon ? (
                         renderProp(CloseButtonIcon)
                     ) : (
-                        <IconX color={theme.colors.fullScreenCloseButton} />
+                        <IconX color={theme.colors.simpleImageSlider.fullScreenCloseButton} />
                     )}
                 </StyledModalCloseButton>
                 <BaseListImageSlider
@@ -174,15 +174,11 @@ const FullScreenImageSlider = forwardRef<
 
 export default FullScreenImageSlider;
 
-const makeStyles = (
-    theme: DefaultTheme,
-    safeAreaInsets: EdgeInsets,
-    windowDimensions: ScaledSize
-) => {
+const makeStyles = (safeAreaInsets: EdgeInsets, windowDimensions: ScaledSize) => {
     return StyleSheet.create({
         closeButton: {
             top: safeAreaInsets.top,
-            right: safeAreaInsets.right + theme.styles.spacing.l,
+            right: safeAreaInsets.right + 20,
         },
         modalContent: {
             height: windowDimensions.height,
@@ -190,8 +186,8 @@ const makeStyles = (
         },
         descriptionContainer: {
             bottom: safeAreaInsets.bottom + 100,
-            paddingLeft: safeAreaInsets.left + theme.styles.spacing.l,
-            paddingRight: safeAreaInsets.right + theme.styles.spacing.l,
+            paddingLeft: safeAreaInsets.left + 20,
+            paddingRight: safeAreaInsets.right + 20,
         },
     });
 };
