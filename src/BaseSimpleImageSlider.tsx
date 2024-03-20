@@ -10,7 +10,7 @@ import React, {
 import { FlashList, type ListRenderItemInfo } from '@shopify/flash-list';
 import mergeRefs from 'merge-refs';
 import { Image, type ImageProps } from 'expo-image';
-import { Pressable, type StyleProp, type ViewStyle } from 'react-native';
+import { Pressable, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
 import type ViewToken from '@shopify/flash-list/src/viewability/ViewToken';
 import styled from 'styled-components/native';
 import PageCounter from './PageCounter';
@@ -29,6 +29,8 @@ export type BaseSimpleImageSliderProps = {
     maxPreviewItems?: number;
     showPageCounter?: boolean;
     pageCounterPosition?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+    pageCounterStyle?: StyleProp<ViewStyle>;
+    pageCounterTextStyle?: StyleProp<TextStyle>;
     renderPageCounter?: (currentPage: number, totalPages: number) => ReactElement;
     TopRightComponent?: RenderProp;
     TopLeftComponent?: RenderProp;
@@ -111,6 +113,8 @@ const BaseListImageSlider = forwardRef<
         maxPreviewItems,
         showPageCounter = true,
         pageCounterPosition = 'bottom-left',
+        pageCounterStyle,
+        pageCounterTextStyle,
         renderPageCounter,
         TopRightComponent,
         TopLeftComponent,
@@ -232,6 +236,8 @@ const BaseListImageSlider = forwardRef<
                         position={pageCounterPosition}
                         totalPages={slicedData.length}
                         currentPage={currentItem + 1}
+                        style={pageCounterStyle}
+                        textStyle={pageCounterTextStyle}
                     />
                 )
             ) : null}
