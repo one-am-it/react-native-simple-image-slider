@@ -13,7 +13,7 @@ import { Image, type ImageProps } from 'expo-image';
 import { Pressable, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
 import type ViewToken from '@shopify/flash-list/src/viewability/ViewToken';
 import styled from 'styled-components/native';
-import PageCounter from './PageCounter';
+import PageCounter, { type PageCounterProps } from './PageCounter';
 import PinchToZoom, { type PinchToZoomProps } from './PinchToZoom';
 import { GestureHandlerRootView, ScrollView } from 'react-native-gesture-handler';
 import renderProp, { type RenderProp } from './utils/renderProp';
@@ -71,6 +71,10 @@ export type BaseSimpleImageSliderProps = {
      * @description The style of the text of the page counter.
      */
     pageCounterTextStyle?: StyleProp<TextStyle>;
+    /**
+     * @description A component to be displayed in place of the default page counter.
+     */
+    PageCounterComponent?: React.FunctionComponent<PageCounterProps>;
     /**
      * @description Callback that renders the page counter. If provided, this will replace the default page counter.
      * @param currentPage The current page number.
@@ -190,6 +194,7 @@ const BaseSimpleImageSlider = forwardRef<
         pageCounterPosition = 'bottom-left',
         pageCounterStyle,
         pageCounterTextStyle,
+        PageCounterComponent,
         renderPageCounter,
         TopRightComponent,
         TopLeftComponent,
@@ -203,6 +208,14 @@ const BaseSimpleImageSlider = forwardRef<
     },
     ref
 ) {
+    if (renderPageCounter !== undefined && PageCounterComponent !== undefined) {
+        throw new Error(
+            'You should provide either `renderPageCounter` or `PageCounterComponent`, not both.'
+        );
+    }
+
+    const ActualPageCounterComponent = PageCounterComponent ?? StyledPageCounter;
+
     const listRef = useRef<FlashList<SimpleImageSliderItem>>(null);
     const [currentItem, setCurrentItem] = useState(0);
 
@@ -307,7 +320,7 @@ const BaseSimpleImageSlider = forwardRef<
                 renderPageCounter ? (
                     renderPageCounter(currentItem + 1, slicedData.length)
                 ) : (
-                    <StyledPageCounter
+                    <ActualPageCounterComponent
                         position={pageCounterPosition}
                         totalPages={slicedData.length}
                         currentPage={currentItem + 1}
