@@ -4,6 +4,9 @@ import type { SimpleImageSliderTheme } from './@types/styled';
 import type { Subset } from './@types/common';
 
 export type SimpleImageSliderThemeProviderProps = PropsWithChildren<{
+    /**
+     * @description These will be merged with the default theme.
+     */
     overrides?: Subset<SimpleImageSliderTheme>;
 }>;
 
