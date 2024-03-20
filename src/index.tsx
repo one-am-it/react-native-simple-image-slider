@@ -5,6 +5,7 @@ import SimpleImageSlider, { type SimpleImageSliderProps } from './SimpleImageSli
 import FullScreenImageSlider, { type FullScreenImageSliderProps } from './FullScreenImageSlider';
 import PinchToZoom, { type PinchToZoomProps } from './PinchToZoom';
 import type { SimpleImageSliderItem } from './@types/slider';
+import PageCounter, { type PageCounterProps } from './PageCounter';
 
 export {
     SimpleImageSliderThemeProvider,
@@ -18,4 +19,6 @@ export {
     PinchToZoom,
     type PinchToZoomProps,
     type SimpleImageSliderItem,
+    PageCounter,
+    type PageCounterProps,
 };

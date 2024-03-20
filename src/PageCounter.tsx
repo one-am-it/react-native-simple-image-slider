@@ -2,7 +2,7 @@ import React from 'react';
 import { type StyleProp, Text, type ViewStyle } from 'react-native';
 import styled from 'styled-components/native';
 
-type PageCounterProps = {
+export type PageCounterProps = {
     /**
      * @description The current page number (**counting from 1**).
      */
