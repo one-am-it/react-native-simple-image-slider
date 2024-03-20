@@ -136,10 +136,6 @@
     "npm": {
       "publish": true
     },
-    "github": {
-      "release": true,
-      "host": "https://api.github.com"
-    },
     "gitlab": {
       "release": true
     },
