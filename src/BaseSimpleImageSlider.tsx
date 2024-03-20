@@ -174,10 +174,10 @@ const StyledPinchToZoom = styled(PinchToZoom)`
  *  that {@link SimpleImageSlider} and {@link FullScreenImageSlider}
  *  are built upon. You should normally use one of those two components instead of this one.
  */
-const BaseListImageSlider = forwardRef<
+const BaseSimpleImageSlider = forwardRef<
     FlashList<SimpleImageSliderItem>,
     BaseSimpleImageSliderProps
->(function BaseListImageSlider(
+>(function BaseSimpleImageSlider(
     {
         data,
         style,
@@ -340,4 +340,4 @@ const BaseListImageSlider = forwardRef<
     );
 });
 
-export default BaseListImageSlider;
+export default BaseSimpleImageSlider;
