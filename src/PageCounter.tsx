@@ -26,7 +26,7 @@ const StyledContainer = styled.View`
     border-width: 1px;
     border-color: ${({ theme }) => theme.colors.simpleImageSlider.pageCounterBorder};
     border-radius: 8px;
-    padding: 8px;
+    padding: 6px 5px;
     width: 75px;
     flex-direction: row;
     align-items: center;
