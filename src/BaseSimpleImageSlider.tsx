@@ -214,7 +214,9 @@ const BaseSimpleImageSlider = forwardRef<
         );
     }
 
-    const ActualPageCounterComponent = PageCounterComponent ?? StyledPageCounter;
+    const ActualPageCounterComponent = PageCounterComponent
+        ? makeStyledPageCounter(PageCounterComponent)
+        : StyledPageCounter;
 
     const listRef = useRef<FlashList<SimpleImageSliderItem>>(null);
     const [currentItem, setCurrentItem] = useState(0);
@@ -352,5 +354,22 @@ const BaseSimpleImageSlider = forwardRef<
         </StyledContainer>
     );
 });
+
+const makeStyledPageCounter = (
+    PageCounterComponent: React.FunctionComponent<PageCounterProps>
+) => styled(PageCounterComponent)<{
+    position: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+}>`
+    z-index: 1000;
+    position: absolute;
+    bottom: ${({ position }) =>
+        position === 'bottom-left' || position === 'bottom-right' ? `16px` : undefined};
+    top: ${({ position }) =>
+        position === 'top-left' || position === 'top-right' ? `16px` : undefined};
+    left: ${({ position }) =>
+        position === 'top-left' || position === 'bottom-left' ? `16px` : undefined};
+    right: ${({ position }) =>
+        position === 'top-right' || position === 'bottom-right' ? `16px` : undefined};
+`;
 
 export default BaseSimpleImageSlider;
