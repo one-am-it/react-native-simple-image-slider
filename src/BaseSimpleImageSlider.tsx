@@ -20,26 +20,101 @@ import renderProp, { type RenderProp } from './utils/renderProp';
 import type { SimpleImageSliderItem } from './@types/slider';
 
 export type BaseSimpleImageSliderProps = {
+    /**
+     * @description The list of images to be displayed.
+     */
     data: SimpleImageSliderItem[];
+    /**
+     * @description The style of the container.
+     */
     style?: StyleProp<ViewStyle>;
+    /**
+     * @description The width of the images. If not provided, the image will take the full width of the container.
+     *  Will be calculated automatically if `imageHeight` and `imageAspectRatio` are provided.
+     */
     imageWidth?: number;
+    /**
+     * @description The height of the images. If not provided, the image will take the full height of the container.
+     *  Will be calculated automatically if `imageWidth` and `imageAspectRatio` are provided.
+     */
     imageHeight?: number;
+    /**
+     * @description The aspect ratio of the images. Will be ignored if `imageWidth` and `imageHeight` are provided.
+     * @default 4 / 3
+     */
     imageAspectRatio?: number;
+    /**
+     * @description Callback that is called when an item is pressed.
+     * @param item The item that was pressed.
+     * @param index The index of the item that was pressed.
+     */
     onItemPress?: (item: SimpleImageSliderItem, index: number) => void;
-    maxPreviewItems?: number;
+    /**
+     * @description The maximum number of items to be displayed.
+     */
+    maxItems?: number;
+    /**
+     * @description Whether the page counter should be displayed or not.
+     * @default true
+     */
     showPageCounter?: boolean;
+    /**
+     * @description The position of the page counter.
+     * @default 'bottom-left'
+     */
     pageCounterPosition?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+    /**
+     * @description The style of the page counter.
+     */
     pageCounterStyle?: StyleProp<ViewStyle>;
+    /**
+     * @description The style of the text of the page counter.
+     */
     pageCounterTextStyle?: StyleProp<TextStyle>;
+    /**
+     * @description Callback that renders the page counter. If provided, this will replace the default page counter.
+     * @param currentPage The current page number.
+     * @param totalPages The total number of pages.
+     */
     renderPageCounter?: (currentPage: number, totalPages: number) => ReactElement;
+    /**
+     * @description A component to be displayed in the top right corner.
+     */
     TopRightComponent?: RenderProp;
+    /**
+     * @description A component to be displayed in the top left corner.
+     */
     TopLeftComponent?: RenderProp;
+    /**
+     * @description A component to be displayed in the bottom right corner.
+     */
     BottomRightComponent?: RenderProp;
+    /**
+     * @description A component to be displayed in the bottom left corner.
+     */
     BottomLeftComponent?: RenderProp;
+    /**
+     * @description The index of the item to be displayed initially.
+     */
     indexOverride?: number;
+    /**
+     * @description Callback that is called when the viewable item changes.
+     * @param index The index of the new viewable item.
+     */
     onViewableItemChange?: (index: number) => void;
+    /**
+     * @description Whether the pinch to zoom feature is enabled or not.
+     * @default false
+     */
     enablePinchToZoom?: boolean;
+    /**
+     * @description Callback that is called when the pinch to zoom status changes.
+     * @param status The new status of the pinch to zoom.
+     */
     onPinchToZoomStatusChange?: PinchToZoomProps['onTranslationChange'];
+    /**
+     * @description Callback that is called when gestures should lead to a dismissal.
+     */
     onPinchToZoomRequestClose?: PinchToZoomProps['onDismiss'];
 };
 
@@ -87,7 +162,7 @@ const StyledImage = styled(Image)<
 >`
     width: ${({ imageWidth }) => (imageWidth ? `${imageWidth}px` : '100%')};
     height: ${({ imageHeight }) => (imageHeight ? `${imageHeight}px` : '100%')};
-    aspect-ratio: ${({ imageAspectRatio }) => (imageAspectRatio ? imageAspectRatio : 4 / 3)};
+    aspect-ratio: ${({ imageAspectRatio }) => imageAspectRatio};
 `;
 
 const StyledPinchToZoom = styled(PinchToZoom)`
@@ -108,9 +183,9 @@ const BaseListImageSlider = forwardRef<
         style,
         imageWidth,
         imageHeight,
-        imageAspectRatio,
+        imageAspectRatio = 4 / 3,
         onItemPress,
-        maxPreviewItems,
+        maxItems,
         showPageCounter = true,
         pageCounterPosition = 'bottom-left',
         pageCounterStyle,
@@ -132,8 +207,8 @@ const BaseListImageSlider = forwardRef<
     const [currentItem, setCurrentItem] = useState(0);
 
     const slicedData = useMemo(
-        () => (maxPreviewItems !== undefined ? data?.slice(0, maxPreviewItems) ?? [] : data ?? []),
-        [data, maxPreviewItems]
+        () => (maxItems !== undefined ? data?.slice(0, maxItems) ?? [] : data ?? []),
+        [data, maxItems]
     );
 
     useEffect(() => {
