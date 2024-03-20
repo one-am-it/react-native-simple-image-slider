@@ -54,7 +54,7 @@ const SimpleImageSlider = forwardRef<FlashList<SimpleImageSliderItem>, SimpleIma
                     {...props}
                     data={data}
                     ref={mergeRefs(ref, listRef)}
-                    onItemPress={openFullScreen ?? onItemPress}
+                    onItemPress={fullScreenEnabled ? openFullScreen : onItemPress}
                     onViewableItemChange={internalOnViewableItemChange}
                 />
                 {fullScreenEnabled ? (
