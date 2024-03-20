@@ -23,7 +23,7 @@ import type { PinchToZoomStatus } from './@types/pinch-to-zoom';
 import type { SimpleImageSliderItem } from './@types/slider';
 import renderProp, { type RenderProp } from './utils/renderProp';
 
-export type FullScreenImageSliderProps = BaseSimpleImageSliderProps & {
+export type FullScreenImageSliderProps = Omit<BaseSimpleImageSliderProps, 'imageWidth'> & {
     /**
      * @description Whether the modal is open or not.
      */
@@ -152,9 +152,9 @@ const FullScreenImageSlider = forwardRef<
                     enablePinchToZoom={true}
                     onPinchToZoomStatusChange={onPinchToZoomStatusChange}
                     onPinchToZoomRequestClose={onRequestClose}
+                    showPageCounter={false}
                     {...props}
                     onViewableItemChange={internalOnViewableItemChange}
-                    showPageCounter={false}
                     imageWidth={windowDimensions.width}
                     ref={ref}
                 />
