@@ -128,13 +128,13 @@ const StyledAbsoluteComponentContainer = styled.View<{
     z-index: 1000;
     position: absolute;
     bottom: ${({ position }) =>
-        position === 'bottom-left' || position === 'bottom-right' ? `16px` : undefined};
+        position === 'bottom-left' || position === 'bottom-right' ? `16px` : 'auto'};
     top: ${({ position }) =>
-        position === 'top-left' || position === 'top-right' ? `16px` : undefined};
+        position === 'top-left' || position === 'top-right' ? `16px` : 'auto'};
     left: ${({ position }) =>
-        position === 'top-left' || position === 'bottom-left' ? `16px` : undefined};
+        position === 'top-left' || position === 'bottom-left' ? `16px` : 'auto'};
     right: ${({ position }) =>
-        position === 'top-right' || position === 'bottom-right' ? `16px` : undefined};
+        position === 'top-right' || position === 'bottom-right' ? `16px` : 'auto'};
 `;
 
 const StyledPageCounter = styled(PageCounter)<{
@@ -143,13 +143,13 @@ const StyledPageCounter = styled(PageCounter)<{
     z-index: 1000;
     position: absolute;
     bottom: ${({ position }) =>
-        position === 'bottom-left' || position === 'bottom-right' ? `16px` : undefined};
+        position === 'bottom-left' || position === 'bottom-right' ? `16px` : 'auto'};
     top: ${({ position }) =>
-        position === 'top-left' || position === 'top-right' ? `16px` : undefined};
+        position === 'top-left' || position === 'top-right' ? `16px` : 'auto'};
     left: ${({ position }) =>
-        position === 'top-left' || position === 'bottom-left' ? `16px` : undefined};
+        position === 'top-left' || position === 'bottom-left' ? `16px` : 'auto'};
     right: ${({ position }) =>
-        position === 'top-right' || position === 'bottom-right' ? `16px` : undefined};
+        position === 'top-right' || position === 'bottom-right' ? `16px` : 'auto'};
 `;
 
 const StyledContainer = styled(GestureHandlerRootView)<{ aspectRatio?: number }>`
