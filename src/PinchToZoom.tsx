@@ -55,7 +55,7 @@ export type PinchToZoomProps = PropsWithChildren<{
      * @description Callback that is called when either the translation or the scale of the image change.
      * @param {PinchToZoomStatus} status The current status.
      */
-    onTranslationChange?: (status: PinchToZoomStatus) => void;
+    onStatusChange?: (status: PinchToZoomStatus) => void;
     /**
      * @description Callback that is called when gestures should lead to the item being dismissed.
      */
@@ -68,7 +68,7 @@ export default function PinchToZoom({
     style: propStyle,
     disabled,
     onLayout,
-    onTranslationChange,
+    onStatusChange,
     onScaleChange,
     onScaleReset,
     children,
@@ -306,11 +306,11 @@ export default function PinchToZoom({
             };
         },
         (prepared) => {
-            if (onTranslationChange) {
-                runOnJS(onTranslationChange)(prepared);
+            if (onStatusChange) {
+                runOnJS(onStatusChange)(prepared);
             }
         },
-        [onTranslationChange]
+        [onStatusChange]
     );
 
     const style = useAnimatedStyle(() => {

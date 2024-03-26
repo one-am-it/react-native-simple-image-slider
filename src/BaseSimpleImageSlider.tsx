@@ -18,6 +18,7 @@ import PinchToZoom, { type PinchToZoomProps } from './PinchToZoom';
 import { GestureHandlerRootView, ScrollView } from 'react-native-gesture-handler';
 import renderProp, { type RenderProp } from './utils/renderProp';
 import type { SimpleImageSliderItem } from './@types/slider';
+import type { PinchToZoomStatus } from './@types/pinch-to-zoom';
 
 export type BaseSimpleImageSliderProps = {
     /**
@@ -115,7 +116,7 @@ export type BaseSimpleImageSliderProps = {
      * @description Callback that is called when the pinch to zoom status changes.
      * @param status The new status of the pinch to zoom.
      */
-    onPinchToZoomStatusChange?: PinchToZoomProps['onTranslationChange'];
+    onPinchToZoomStatusChange?: PinchToZoomProps['onStatusChange'];
     /**
      * @description Callback that is called when gestures should lead to a dismissal.
      */
@@ -237,7 +238,12 @@ const BaseSimpleImageSlider = forwardRef<
     const renderItem = useCallback(
         ({ item, index }: ListRenderItemInfo<SimpleImageSliderItem>) => {
             return (
-                <Pressable onPress={() => onItemPress?.(item, index)}>
+                <Pressable
+                    onPress={() => {
+                        listRef.current?.recordInteraction();
+                        onItemPress?.(item, index);
+                    }}
+                >
                     <StyledImage
                         transition={200}
                         placeholder={item.placeholder}
@@ -281,6 +287,14 @@ const BaseSimpleImageSlider = forwardRef<
         return imageWidth ?? (imageHeight ? imageHeight * (imageAspectRatio ?? 4 / 3) : 350);
     }, [imageAspectRatio, imageHeight, imageWidth]);
 
+    const internalOnPinchToZoomStatusChange = useCallback(
+        (status: PinchToZoomStatus) => {
+            listRef.current?.recordInteraction();
+            onPinchToZoomStatusChange?.(status);
+        },
+        [onPinchToZoomStatusChange]
+    );
+
     const list = (
         <FlashList
             renderScrollComponent={ScrollView}
@@ -313,7 +327,7 @@ const BaseSimpleImageSlider = forwardRef<
             {enablePinchToZoom ? (
                 <StyledPinchToZoom
                     onDismiss={onPinchToZoomRequestClose}
-                    onTranslationChange={onPinchToZoomStatusChange}
+                    onStatusChange={internalOnPinchToZoomStatusChange}
                     onScaleChange={onScaleChange}
                     onScaleReset={onScaleReset}
                     maximumZoomScale={5}
