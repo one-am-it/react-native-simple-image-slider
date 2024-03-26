@@ -363,13 +363,13 @@ const makeStyledPageCounter = (
     z-index: 1000;
     position: absolute;
     bottom: ${({ position }) =>
-        position === 'bottom-left' || position === 'bottom-right' ? `16px` : undefined};
+        position === 'bottom-left' || position === 'bottom-right' ? `16px` : 'auto'};
     top: ${({ position }) =>
-        position === 'top-left' || position === 'top-right' ? `16px` : undefined};
+        position === 'top-left' || position === 'top-right' ? `16px` : 'auto'};
     left: ${({ position }) =>
-        position === 'top-left' || position === 'bottom-left' ? `16px` : undefined};
+        position === 'top-left' || position === 'bottom-left' ? `16px` : 'auto'};
     right: ${({ position }) =>
-        position === 'top-right' || position === 'bottom-right' ? `16px` : undefined};
+        position === 'top-right' || position === 'bottom-right' ? `16px` : 'auto'};
 `;
 
 export default BaseSimpleImageSlider;
