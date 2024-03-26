@@ -303,7 +303,7 @@ const BaseSimpleImageSlider = forwardRef<
             estimatedItemSize={estimatedItemSize}
             estimatedListSize={{
                 width: estimatedItemSize,
-                height: imageHeight ?? estimatedItemSize * imageAspectRatio,
+                height: imageHeight ?? estimatedItemSize / imageAspectRatio,
             }}
         />
     );
