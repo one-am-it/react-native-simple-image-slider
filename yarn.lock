@@ -3170,13 +3170,13 @@ __metadata:
     "@expo/webpack-config": ^19.0.1
     babel-loader: ^8.1.0
     babel-plugin-module-resolver: ^5.0.0
-    expo: ~50.0.13
+    expo: ~50.0.14
     expo-haptics: ~12.8.1
     expo-image: ~1.10.6
     expo-status-bar: ~1.11.1
     react: 18.2.0
     react-dom: 18.2.0
-    react-native: 0.73.5
+    react-native: 0.73.6
     react-native-gesture-handler: ~2.14.0
     react-native-reanimated: ~3.6.2
     react-native-safe-area-context: 4.8.2
@@ -3222,7 +3222,7 @@ __metadata:
     merge-refs: ^1.2.2
     prettier: ^3.2.5
     react: 18.2.0
-    react-native: 0.73.5
+    react-native: 0.73.6
     react-native-builder-bob: ^0.20.0
     react-native-gesture-handler: ^2.15.0
     react-native-reanimated: ^3.3.0
@@ -8919,9 +8919,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo@npm:~50.0.13":
-  version: 50.0.13
-  resolution: "expo@npm:50.0.13"
+"expo@npm:~50.0.14":
+  version: 50.0.14
+  resolution: "expo@npm:50.0.14"
   dependencies:
     "@babel/runtime": ^7.20.0
     "@expo/cli": 0.17.8
@@ -8940,7 +8940,7 @@ __metadata:
     whatwg-url-without-unicode: 8.0.0-3
   bin:
     expo: bin/cli
-  checksum: f298b8027c25993edfe5b17777589470053d0701630d74dac9c125daf4c617e69201017735c0bb5dcfe0cca8d19b9f4d98062095b2cff13a57dde21b75e070f3
+  checksum: 6295f2a4db54ad86d350920c879144fd8191b33449f4da9aa4abd08fb7e46476eb280ca75228d10f0c0a701c44ccec8d437913619ccf7ca5715b047eb5988dc2
   languageName: node
   linkType: hard
 
@@ -15488,9 +15488,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native@npm:0.73.5":
-  version: 0.73.5
-  resolution: "react-native@npm:0.73.5"
+"react-native@npm:0.73.6":
+  version: 0.73.6
+  resolution: "react-native@npm:0.73.6"
   dependencies:
     "@jest/create-cache-key-function": ^29.6.3
     "@react-native-community/cli": 12.3.6
@@ -15534,7 +15534,7 @@ __metadata:
     react: 18.2.0
   bin:
     react-native: cli.js
-  checksum: 107037a28b37e5d8883e8d7553d48e15d802ecf2b3ecee834f79c5dd653761ac23506a08c3a48f357bf872fb0857078ae31d226623a8742e530b065fed5d9d47
+  checksum: 20e71c902f165c15add9f841bbc555c7b8495235122ccc42f5f1c5c0189c453651a450e59b6541188d8edb829a2aac524a1762501fb6ecebc4c89e9aa6667682
   languageName: node
   linkType: hard
 
