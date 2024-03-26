@@ -166,7 +166,7 @@ const StyledImage = styled(Image)<
 >`
     width: ${({ imageWidth }) => (imageWidth ? `${imageWidth}px` : '100%')};
     height: ${({ imageHeight }) => (imageHeight ? `${imageHeight}px` : '100%')};
-    aspect-ratio: ${({ imageAspectRatio }) => imageAspectRatio};
+    aspect-ratio: ${({ imageAspectRatio }) => imageAspectRatio ?? 'auto'};
 `;
 
 const StyledPinchToZoom = styled(PinchToZoom)`
