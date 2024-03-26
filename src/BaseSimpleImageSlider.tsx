@@ -152,7 +152,7 @@ const StyledPageCounter = styled(PageCounter)<{
         position === 'top-right' || position === 'bottom-right' ? `16px` : 'auto'};
 `;
 
-const StyledContainer = styled(GestureHandlerRootView)<{ aspectRatio?: number }>`
+const StyledContainer = styled(GestureHandlerRootView)<{ aspectRatio: number }>`
     aspect-ratio: ${({ aspectRatio }) => aspectRatio ?? 4 / 3};
     width: 100%;
 `;
@@ -161,12 +161,12 @@ const StyledImage = styled(Image)<
     ImageProps & {
         imageWidth?: number;
         imageHeight?: number;
-        imageAspectRatio?: number;
+        imageAspectRatio: number;
     }
 >`
     width: ${({ imageWidth }) => (imageWidth ? `${imageWidth}px` : '100%')};
     height: ${({ imageHeight }) => (imageHeight ? `${imageHeight}px` : '100%')};
-    aspect-ratio: ${({ imageAspectRatio }) => imageAspectRatio ?? 'auto'};
+    aspect-ratio: ${({ imageAspectRatio }) => imageAspectRatio};
 `;
 
 const StyledPinchToZoom = styled(PinchToZoom)`
