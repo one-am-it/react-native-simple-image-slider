@@ -64,6 +64,10 @@ const SimpleImageSlider = forwardRef<FlashList<SimpleImageSliderItem>, SimpleIma
             setFullScreen(false);
         }, [currentIndex]);
 
+        const onFadeOut = useCallback(() => {
+            listRef.current?.scrollToIndex({ index: currentIndex });
+        }, [currentIndex]);
+
         return (
             <>
                 <BaseListImageSlider
@@ -85,6 +89,7 @@ const SimpleImageSlider = forwardRef<FlashList<SimpleImageSliderItem>, SimpleIma
                         onViewableItemChange={onFullScreenViewableItemChange}
                         renderDescription={renderFullScreenDescription}
                         CloseButtonIcon={FullScreenCloseButtonIcon}
+                        onFadeOut={onFadeOut}
                     />
                 ) : null}
             </>

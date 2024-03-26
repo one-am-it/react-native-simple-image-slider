@@ -42,6 +42,10 @@ export type FullScreenImageSliderProps = Omit<BaseSimpleImageSliderProps, 'image
      * @description Item to be rendered in place of the default close button icon.
      */
     CloseButtonIcon?: RenderProp;
+    /**
+     * @description Callback that is called when the modal begins to fade out.
+     */
+    onFadeOut?: () => void;
 };
 
 const StyledDescriptionContainer = styled.View`
@@ -76,6 +80,7 @@ const FullScreenImageSlider = forwardRef<
         onRequestClose,
         renderDescription,
         onViewableItemChange,
+        onFadeOut,
         data,
         ...props
     },
@@ -122,6 +127,9 @@ const FullScreenImageSlider = forwardRef<
                     runOnJS(setStatusBarStyle)('light');
                     backgroundOpacity.value = withTiming(1);
                 } else {
+                    if (onFadeOut) {
+                        runOnJS(onFadeOut)();
+                    }
                     runOnJS(setStatusBarStyle)('dark');
                     backgroundOpacity.value = withTiming(0);
                 }
@@ -129,7 +137,7 @@ const FullScreenImageSlider = forwardRef<
                 backgroundOpacity.value = 1;
             }
         },
-        [backgroundOpacity]
+        [backgroundOpacity, onFadeOut]
     );
 
     return (
