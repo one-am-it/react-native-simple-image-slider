@@ -277,6 +277,10 @@ const BaseSimpleImageSlider = forwardRef<
         setScrollEnabled(true);
     }, []);
 
+    const estimatedItemSize = useMemo(() => {
+        return imageWidth ?? (imageHeight ? imageHeight * (imageAspectRatio ?? 4 / 3) : 350);
+    }, [imageAspectRatio, imageHeight, imageWidth]);
+
     const list = (
         <FlashList
             renderScrollComponent={ScrollView}
@@ -296,9 +300,11 @@ const BaseSimpleImageSlider = forwardRef<
             keyExtractor={keyExtractor}
             renderItem={renderItem}
             data={slicedData}
-            estimatedItemSize={
-                imageWidth ?? (imageHeight ? imageHeight * (imageAspectRatio ?? 4 / 3) : 350)
-            }
+            estimatedItemSize={estimatedItemSize}
+            estimatedListSize={{
+                width: estimatedItemSize,
+                height: imageHeight ?? estimatedItemSize * imageAspectRatio,
+            }}
         />
     );
 
