@@ -121,6 +121,11 @@ export type BaseSimpleImageSliderProps = {
      * @description Callback that is called when gestures should lead to a dismissal.
      */
     onPinchToZoomRequestClose?: PinchToZoomProps['onDismiss'];
+    /**
+     * @description If greater than 0, items will be loaded in groups of this size.
+     * @default 5
+     */
+    dataWindowSize?: number;
 };
 
 const StyledAbsoluteComponentContainer = styled.View<{
@@ -206,6 +211,7 @@ const BaseSimpleImageSlider = forwardRef<
         enablePinchToZoom = false,
         onPinchToZoomStatusChange,
         onPinchToZoomRequestClose,
+        dataWindowSize = 5,
     },
     ref
 ) {
@@ -226,6 +232,20 @@ const BaseSimpleImageSlider = forwardRef<
         () => (maxItems !== undefined ? data?.slice(0, maxItems) ?? [] : data ?? []),
         [data, maxItems]
     );
+
+    const [currentGroupIndex, setCurrentGroupIndex] = useState(0);
+
+    const nextGroup = useCallback(() => {
+        console.log('nextGroup');
+        setCurrentGroupIndex((prev) => prev + 1);
+    }, []);
+
+    const internalData = useMemo(() => {
+        if (dataWindowSize <= 0) {
+            return slicedData;
+        }
+        return slicedData.slice(0, (currentGroupIndex + 1) * dataWindowSize);
+    }, [currentGroupIndex, dataWindowSize, slicedData]);
 
     useEffect(() => {
         setCurrentItem(indexOverride ?? 0);
@@ -313,7 +333,9 @@ const BaseSimpleImageSlider = forwardRef<
             horizontal={true}
             keyExtractor={keyExtractor}
             renderItem={renderItem}
-            data={slicedData}
+            data={internalData}
+            onEndReached={nextGroup}
+            onEndReachedThreshold={0.5}
             estimatedItemSize={estimatedItemSize}
             estimatedListSize={{
                 width: estimatedItemSize,
