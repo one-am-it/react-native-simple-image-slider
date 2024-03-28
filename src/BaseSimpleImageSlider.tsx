@@ -236,7 +236,6 @@ const BaseSimpleImageSlider = forwardRef<
     const [currentGroupIndex, setCurrentGroupIndex] = useState(0);
 
     const nextGroup = useCallback(() => {
-        console.log('nextGroup');
         setCurrentGroupIndex((prev) => prev + 1);
     }, []);
 
