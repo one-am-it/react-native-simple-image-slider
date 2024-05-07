@@ -19,6 +19,7 @@ import { GestureHandlerRootView, ScrollView } from 'react-native-gesture-handler
 import renderProp, { type RenderProp } from './utils/renderProp';
 import type { SimpleImageSliderItem } from './@types/slider';
 import type { PinchToZoomStatus } from './@types/pinch-to-zoom';
+import Animated from 'react-native-reanimated';
 
 export type BaseSimpleImageSliderProps = {
     /**
@@ -126,6 +127,10 @@ export type BaseSimpleImageSliderProps = {
      * @default 5
      */
     dataWindowSize?: number;
+    /**
+     * @description The tag to be used for shared transitions. This is applied to the first image in the list.
+     */
+    sharedTransitionTag?: string;
 };
 
 const StyledAbsoluteComponentContainer = styled.View<{
@@ -175,6 +180,8 @@ const StyledImage = styled(Image)<
     aspect-ratio: ${({ imageAspectRatio }) => imageAspectRatio};
 `;
 
+const AnimatedStyledImage = Animated.createAnimatedComponent(StyledImage);
+
 const StyledPinchToZoom = styled(PinchToZoom)`
     z-index: 1000;
 `;
@@ -212,6 +219,7 @@ const BaseSimpleImageSlider = forwardRef<
         onPinchToZoomStatusChange,
         onPinchToZoomRequestClose,
         dataWindowSize = 5,
+        sharedTransitionTag,
     },
     ref
 ) {
@@ -256,6 +264,9 @@ const BaseSimpleImageSlider = forwardRef<
 
     const renderItem = useCallback(
         ({ item, index }: ListRenderItemInfo<SimpleImageSliderItem>) => {
+            const ImageComponent =
+                sharedTransitionTag && index === 0 ? AnimatedStyledImage : StyledImage;
+
             return (
                 <Pressable
                     onPress={() => {
@@ -263,7 +274,8 @@ const BaseSimpleImageSlider = forwardRef<
                         onItemPress?.(item, index);
                     }}
                 >
-                    <StyledImage
+                    <ImageComponent
+                        sharedTransitionTag={sharedTransitionTag}
                         transition={200}
                         placeholder={item.placeholder}
                         placeholderContentFit={'cover'}
@@ -278,7 +290,7 @@ const BaseSimpleImageSlider = forwardRef<
                 </Pressable>
             );
         },
-        [imageAspectRatio, imageHeight, imageWidth, onItemPress]
+        [imageAspectRatio, imageHeight, imageWidth, onItemPress, sharedTransitionTag]
     );
 
     const onViewableItemsChanged = useCallback(
