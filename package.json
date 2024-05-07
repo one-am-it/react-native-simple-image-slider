@@ -101,18 +101,18 @@
     "styled-components": "^6"
   },
   "peerDependencies": {
-    "@babel/core": ">= 7.24.1",
-    "@babel/runtime": ">= 7.24.1",
-    "expo-haptics": ">= 12",
-    "expo-image": ">= 1",
-    "expo-status-bar": ">= 1",
-    "react": ">= 18",
-    "react-native": ">= 0.73",
-    "react-native-gesture-handler": ">= 2",
-    "react-native-reanimated": ">= 3",
-    "react-native-safe-area-context": ">= 4",
-    "react-native-svg": ">= 14",
-    "styled-components": ">= 6.1.8"
+    "@babel/core": "*",
+    "@babel/runtime": "*",
+    "expo-haptics": "*",
+    "expo-image": "*",
+    "expo-status-bar": "*",
+    "react": "*",
+    "react-native": "*",
+    "react-native-gesture-handler": "*",
+    "react-native-reanimated": "*",
+    "react-native-safe-area-context": "*",
+    "react-native-svg": "*",
+    "styled-components": "*"
   },
   "workspaces": [
     "example"
