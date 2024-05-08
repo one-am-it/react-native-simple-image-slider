@@ -128,7 +128,7 @@ export type BaseSimpleImageSliderProps = {
      */
     dataWindowSize?: number;
     /**
-     * @description The tag to be used for shared transitions. This is applied to the first image in the list.
+     * @description The tag to be used for shared transitions. This is applied to the current image in the list.
      */
     sharedTransitionTag?: string;
     /**
@@ -270,7 +270,7 @@ const BaseSimpleImageSlider = forwardRef<
     const renderItem = useCallback(
         ({ item, index }: ListRenderItemInfo<SimpleImageSliderItem>) => {
             const ImageComponent =
-                sharedTransitionTag && index === 0 ? AnimatedStyledImage : StyledImage;
+                sharedTransitionTag && index === currentItem ? AnimatedStyledImage : StyledImage;
 
             return (
                 <Pressable
@@ -296,7 +296,15 @@ const BaseSimpleImageSlider = forwardRef<
                 </Pressable>
             );
         },
-        [imageAspectRatio, imageHeight, imageStyle, imageWidth, onItemPress, sharedTransitionTag]
+        [
+            currentItem,
+            imageAspectRatio,
+            imageHeight,
+            imageStyle,
+            imageWidth,
+            onItemPress,
+            sharedTransitionTag,
+        ]
     );
 
     const onViewableItemsChanged = useCallback(
