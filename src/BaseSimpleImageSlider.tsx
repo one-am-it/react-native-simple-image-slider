@@ -9,7 +9,7 @@ import React, {
 } from 'react';
 import { FlashList, type ListRenderItemInfo } from '@shopify/flash-list';
 import mergeRefs from 'merge-refs';
-import { Image, type ImageProps } from 'expo-image';
+import { Image, type ImageProps, type ImageStyle } from 'expo-image';
 import { Pressable, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
 import type ViewToken from '@shopify/flash-list/src/viewability/ViewToken';
 import styled from 'styled-components/native';
@@ -131,6 +131,10 @@ export type BaseSimpleImageSliderProps = {
      * @description The tag to be used for shared transitions. This is applied to the first image in the list.
      */
     sharedTransitionTag?: string;
+    /**
+     * @description Style that will be applied to ebvery image in the slider.
+     */
+    imageStyle?: StyleProp<ImageStyle>;
 };
 
 const StyledAbsoluteComponentContainer = styled.View<{
@@ -220,6 +224,7 @@ const BaseSimpleImageSlider = forwardRef<
         onPinchToZoomRequestClose,
         dataWindowSize = 5,
         sharedTransitionTag,
+        imageStyle,
     },
     ref
 ) {
@@ -286,11 +291,12 @@ const BaseSimpleImageSlider = forwardRef<
                         source={item.source}
                         contentFit={'cover'}
                         contentPosition={'center'}
+                        style={imageStyle}
                     />
                 </Pressable>
             );
         },
-        [imageAspectRatio, imageHeight, imageWidth, onItemPress, sharedTransitionTag]
+        [imageAspectRatio, imageHeight, imageStyle, imageWidth, onItemPress, sharedTransitionTag]
     );
 
     const onViewableItemsChanged = useCallback(
