@@ -123,11 +123,6 @@ export type BaseSimpleImageSliderProps = {
      */
     onPinchToZoomRequestClose?: PinchToZoomProps['onDismiss'];
     /**
-     * @description If greater than 0, items will be loaded in groups of this size.
-     * @default 5
-     */
-    dataWindowSize?: number;
-    /**
      * @description The tag to be used for shared transitions. This is applied to the current image in the list.
      */
     sharedTransitionTag?: string;
@@ -222,7 +217,6 @@ const BaseSimpleImageSlider = forwardRef<
         enablePinchToZoom = false,
         onPinchToZoomStatusChange,
         onPinchToZoomRequestClose,
-        dataWindowSize = 5,
         sharedTransitionTag,
         imageStyle,
     },
@@ -245,19 +239,6 @@ const BaseSimpleImageSlider = forwardRef<
         () => (maxItems !== undefined ? data?.slice(0, maxItems) ?? [] : data ?? []),
         [data, maxItems]
     );
-
-    const [currentGroupIndex, setCurrentGroupIndex] = useState(0);
-
-    const nextGroup = useCallback(() => {
-        setCurrentGroupIndex((prev) => prev + 1);
-    }, []);
-
-    const internalData = useMemo(() => {
-        if (dataWindowSize <= 0) {
-            return slicedData;
-        }
-        return slicedData.slice(0, (currentGroupIndex + 1) * dataWindowSize);
-    }, [currentGroupIndex, dataWindowSize, slicedData]);
 
     useEffect(() => {
         setCurrentItem(indexOverride ?? 0);
@@ -358,9 +339,7 @@ const BaseSimpleImageSlider = forwardRef<
             horizontal={true}
             keyExtractor={keyExtractor}
             renderItem={renderItem}
-            data={internalData}
-            onEndReached={nextGroup}
-            onEndReachedThreshold={0.5}
+            data={slicedData}
             estimatedItemSize={estimatedItemSize}
             estimatedListSize={{
                 width: estimatedItemSize,
