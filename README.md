@@ -14,7 +14,7 @@ Includes a full screen gallery component with gesture support.
 #### Expo
 
 ```shell
-npx expo install expo-image expo-haptics expo-status-bar react-native-reanimated react-native-svg \
+npx expo install @shopify/flash-list expo-image expo-haptics expo-status-bar react-native-reanimated react-native-svg \
  react-native-gesture-handler react-native-safe-area-context styled-components \
   @one-am/react-native-simple-image-slider
 ```
@@ -24,7 +24,7 @@ npx expo install expo-image expo-haptics expo-status-bar react-native-reanimated
 ##### npm
 
 ```shell
-npm install expo-image expo-haptics expo-status-bar react-native-reanimated react-native-svg \
+npm install @shopify/flash-list expo-image expo-haptics expo-status-bar react-native-reanimated react-native-svg \
  react-native-gesture-handler react-native-safe-area-context styled-components \
   @one-am/react-native-simple-image-slider
 ```
@@ -32,7 +32,7 @@ npm install expo-image expo-haptics expo-status-bar react-native-reanimated reac
 ##### yarn
 
 ```shell
-yarn add expo-image expo-haptics expo-status-bar react-native-reanimated react-native-svg \
+yarn add @shopify/flash-list expo-image expo-haptics expo-status-bar react-native-reanimated react-native-svg \
  react-native-gesture-handler react-native-safe-area-context styled-components \
   @one-am/react-native-simple-image-slider
 ```

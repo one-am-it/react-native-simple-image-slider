@@ -169,10 +169,7 @@ const FullScreenImageSlider = forwardRef<
 
                 {renderDescription && data[internalIndex] ? (
                     <StyledDescriptionContainer style={styles.descriptionContainer}>
-                        {renderDescription(
-                            data[internalIndex] as SimpleImageSliderItem,
-                            internalIndex
-                        )}
+                        {renderDescription(data[internalIndex], internalIndex)}
                     </StyledDescriptionContainer>
                 ) : null}
             </StyledModalContentContainer>
