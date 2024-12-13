@@ -53,6 +53,22 @@
     "registry": "https://registry.npmjs.org/",
     "access": "public"
   },
+  "dependencies": {
+    "merge-refs": "^1.2.2"
+  },
+  "peerDependencies": {
+    "@shopify/flash-list": "*",
+    "expo-haptics": "*",
+    "expo-image": "*",
+    "expo-status-bar": "*",
+    "react": "*",
+    "react-native": "*",
+    "react-native-gesture-handler": "*",
+    "react-native-reanimated": "*",
+    "react-native-safe-area-context": "*",
+    "react-native-svg": "*",
+    "styled-components": "*"
+  },
   "devDependencies": {
     "@babel/runtime": "^7.24.1",
     "@commitlint/config-conventional": "^17.0.2",
@@ -100,19 +116,6 @@
   "resolutions": {
     "styled-components": "^6.1.13"
   },
-  "peerDependencies": {
-    "@shopify/flash-list": "*",
-    "expo-haptics": "*",
-    "expo-image": "*",
-    "expo-status-bar": "*",
-    "react": "*",
-    "react-native": "*",
-    "react-native-gesture-handler": "*",
-    "react-native-reanimated": "*",
-    "react-native-safe-area-context": "*",
-    "react-native-svg": "*",
-    "styled-components": "*"
-  },
   "workspaces": [
     "example"
   ],
@@ -159,8 +162,5 @@
         }
       ]
     ]
-  },
-  "dependencies": {
-    "merge-refs": "^1.2.2"
   }
 }
