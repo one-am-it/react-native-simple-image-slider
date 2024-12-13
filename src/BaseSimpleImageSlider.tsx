@@ -236,7 +236,7 @@ const BaseSimpleImageSlider = forwardRef<
     const [currentItem, setCurrentItem] = useState(0);
 
     const slicedData = useMemo(
-        () => (maxItems !== undefined ? data?.slice(0, maxItems) ?? [] : data ?? []),
+        () => (maxItems !== undefined ? (data?.slice(0, maxItems) ?? []) : (data ?? [])),
         [data, maxItems]
     );
 
@@ -323,6 +323,7 @@ const BaseSimpleImageSlider = forwardRef<
 
     const list = (
         <FlashList
+            // @ts-expect-error - there's just a small inconsistency with hitSlop typing
             renderScrollComponent={ScrollView}
             scrollEnabled={scrollEnabled}
             disableScrollViewPanResponder={enablePinchToZoom ? !scrollEnabled : false}
