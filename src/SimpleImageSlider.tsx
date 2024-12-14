@@ -19,6 +19,12 @@ export type SimpleImageSliderProps = BaseSimpleImageSliderProps & {
      * @description Passed to the {@link FullScreenImageSlider} component.
      */
     FullScreenCloseButtonIcon?: FullScreenImageSliderProps['CloseButtonIcon'];
+    /**
+     * @description The aspect ratio of the images when full screen.
+     *
+     * @default {@link FullScreenImageSliderProps.imageAspectRatio}
+     */
+    fullScreenImageAspectRatio?: number;
 };
 
 /**
@@ -33,6 +39,8 @@ const SimpleImageSlider = forwardRef<FlashList<SimpleImageSliderItem>, SimpleIma
             onViewableItemChange,
             FullScreenCloseButtonIcon,
             renderFullScreenDescription,
+            imageAspectRatio,
+            fullScreenImageAspectRatio,
             ...props
         },
         ref
@@ -72,6 +80,7 @@ const SimpleImageSlider = forwardRef<FlashList<SimpleImageSliderItem>, SimpleIma
             <>
                 <BaseListImageSlider
                     {...props}
+                    imageAspectRatio={imageAspectRatio}
                     data={data}
                     ref={mergeRefs(ref, listRef)}
                     onItemPress={fullScreenEnabled ? openFullScreen : onItemPress}
@@ -80,6 +89,7 @@ const SimpleImageSlider = forwardRef<FlashList<SimpleImageSliderItem>, SimpleIma
                 {fullScreenEnabled ? (
                     <FullScreenImageSlider
                         {...props}
+                        imageAspectRatio={fullScreenImageAspectRatio ?? imageAspectRatio}
                         ref={fullScreenListRef}
                         open={fullScreen}
                         onRequestClose={onRequestClose}
