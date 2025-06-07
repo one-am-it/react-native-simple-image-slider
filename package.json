@@ -66,8 +66,7 @@
     "react-native-gesture-handler": "*",
     "react-native-reanimated": "*",
     "react-native-safe-area-context": "*",
-    "react-native-svg": "*",
-    "styled-components": "*"
+    "react-native-svg": "*"
   },
   "devDependencies": {
     "@babel/runtime": "^7.27.6",
@@ -111,7 +110,6 @@
     "react-native-svg": "15.11.2",
     "react-native-web": "^0.20.0",
     "release-it": "^15.0.0",
-    "styled-components": "^6.1.13",
     "typescript": "^5.4.2",
     "typescript-plugin-styled-components": "^3.0.0"
   },

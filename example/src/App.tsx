@@ -4,7 +4,6 @@ import {
     SimpleImageSliderThemeProvider,
     SimpleImageSlider,
 } from '@one-am/react-native-simple-image-slider';
-import styled from 'styled-components/native';
 
 import pictureOne from '../assets/photos/1.jpg';
 import pictureTwo from '../assets/photos/2.jpg';
@@ -41,21 +40,15 @@ const photos = [
     pictureFourteen,
 ];
 
-const StyledContainer = styled(SafeAreaView)`
-    flex: 1;
-    align-items: center;
-    justify-content: center;
-`;
-
-const StyledDescription = styled(Text)`
-    color: #ffffff;
-`;
-
 export default function App() {
     const { width } = useWindowDimensions();
     return (
         <SafeAreaProvider>
-            <StyledContainer>
+            <SafeAreaView style={{
+                flex: 1,
+                alignItems: 'center',
+                justifyContent: 'center',
+            }}>
                 <SimpleImageSliderThemeProvider>
                     <SimpleImageSlider
                         data={photos.map((photo, index) => ({
@@ -66,11 +59,11 @@ export default function App() {
                         imageAspectRatio={16 / 9}
                         fullScreenEnabled={true}
                         renderFullScreenDescription={(_, index) => (
-                            <StyledDescription>Picture {index}</StyledDescription>
+                            <Text style={{color: '#ffffff'}}>Picture {index}</Text>
                         )}
                     />
                 </SimpleImageSliderThemeProvider>
-            </StyledContainer>
+            </SafeAreaView>
         </SafeAreaProvider>
     );
 }
