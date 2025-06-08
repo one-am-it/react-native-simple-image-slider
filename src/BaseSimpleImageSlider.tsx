@@ -219,9 +219,13 @@ const BaseSimpleImageSlider = forwardRef<
                     <ImageComponent
                         sharedTransitionTag={sharedTransitionTag}
                         transition={200}
+                        // https://github.com/expo/expo/issues/34810
+                        /* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */
                         placeholder={item.placeholder}
                         placeholderContentFit={'cover'}
                         recyclingKey={item.key}
+                        // https://github.com/expo/expo/issues/34810
+                        /* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */
                         source={item.source}
                         contentFit={'cover'}
                         contentPosition={'center'}
