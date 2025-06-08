@@ -126,6 +126,7 @@ export default function PinchToZoom({
                                 (-viewWidth.value * (scale.value - minimumZoomScale)) / 2,
                                 (viewWidth.value * (scale.value - minimumZoomScale)) / 2
                             );
+
                             translationY.value = clamp(
                                 prevTranslationY.value +
                                     -1 *
@@ -173,8 +174,8 @@ export default function PinchToZoom({
             originY,
             prevTranslationX,
             prevTranslationY,
-            viewWidth.value,
-            viewHeight.value,
+            viewWidth,
+            viewHeight,
             minimumZoomScale,
             onDismiss,
             onScaleReset,
@@ -247,15 +248,15 @@ export default function PinchToZoom({
             disabled,
             minimumZoomScale,
             onDismiss,
-            prevScale.value,
+            prevScale,
             prevTranslationX,
             prevTranslationY,
-            scale.value,
+            scale,
             windowHeight,
             translationX,
             translationY,
-            viewHeight.value,
-            viewWidth.value,
+            viewHeight,
+            viewWidth,
         ]
     );
 
@@ -298,10 +299,10 @@ export default function PinchToZoom({
     useAnimatedReaction(
         () => {
             return {
-                scale: scale,
+                scale: scale.value,
                 translation: {
-                    x: translationX,
-                    y: translationY,
+                    x: translationX.value,
+                    y: translationY.value,
                 },
             };
         },

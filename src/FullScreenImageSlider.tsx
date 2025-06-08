@@ -113,8 +113,8 @@ const FullScreenImageSlider = forwardRef<
 
     const onPinchToZoomStatusChange = useCallback(
         ({ translation, scale }: PinchToZoomStatus) => {
-            if (scale.value <= 1) {
-                if (translation.x.value === 0 && translation.y.value === 0) {
+            if (scale <= 1) {
+                if (translation.x === 0 && translation.y === 0) {
                     runOnJS(setStatusBarStyle)('light');
                     backgroundOpacity.value = withTiming(1);
                 } else {
