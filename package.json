@@ -57,7 +57,7 @@
     "merge-refs": "^1.2.2"
   },
   "peerDependencies": {
-    "@shopify/flash-list": "^1.7.6",
+    "@shopify/flash-list": "<2.0.0",
     "expo-haptics": "*",
     "expo-image": "*",
     "expo-status-bar": "*",
@@ -75,7 +75,7 @@
     "@react-native/babel-preset": "^0.75.0-main",
     "@react-native/eslint-config": "^0.73.1",
     "@release-it/conventional-changelog": "^5.0.0",
-    "@shopify/flash-list": "1.7.6",
+    "@shopify/flash-list": "1.8.2",
     "@types/jest": "^29.5.5",
     "@types/react": "^18.2.44",
     "@typescript-eslint/eslint-plugin": "^5.62.0",

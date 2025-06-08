@@ -10,8 +10,8 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.27.6",
-    "@shopify/flash-list": "1.7.6",
-    "expo": "^53.0.10",
+    "@shopify/flash-list": "1.8.2",
+    "expo": "^53.0.11",
     "expo-haptics": "~14.1.4",
     "expo-image": "~2.2.0",
     "expo-status-bar": "~2.2.3",
@@ -30,6 +30,13 @@
     "@expo/webpack-config": "^19.0.1",
     "babel-loader": "^8.1.0",
     "babel-plugin-module-resolver": "^5.0.0"
+  },
+  "expo": {
+    "install": {
+      "exclude": [
+        "@shopify/flash-list@1.7.6"
+      ]
+    }
   },
   "private": true
 }

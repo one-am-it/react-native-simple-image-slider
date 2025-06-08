@@ -21,7 +21,7 @@ import pictureThirteen from '../assets/photos/13.jpg';
 import pictureFourteen from '../assets/photos/14.jpg';
 
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { Text, useWindowDimensions } from 'react-native';
+import { Text } from 'react-native';
 
 const photos = [
     pictureOne,
@@ -41,12 +41,11 @@ const photos = [
 ];
 
 export default function App() {
-    const { width } = useWindowDimensions();
     return (
         <SafeAreaProvider>
             <SafeAreaView style={{
                 flex: 1,
-                alignItems: 'center',
+                alignItems: 'stretch',
                 justifyContent: 'center',
             }}>
                 <SimpleImageSliderThemeProvider>
@@ -55,7 +54,6 @@ export default function App() {
                             source: photo,
                             key: index.toString(),
                         }))}
-                        imageWidth={width}
                         imageAspectRatio={16 / 9}
                         fullScreenEnabled={true}
                         renderFullScreenDescription={(_, index) => (

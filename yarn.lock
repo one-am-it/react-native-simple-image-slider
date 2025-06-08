@@ -2808,23 +2808,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@expo/fingerprint@npm:0.12.4":
-  version: 0.12.4
-  resolution: "@expo/fingerprint@npm:0.12.4"
+"@expo/fingerprint@npm:0.13.0":
+  version: 0.13.0
+  resolution: "@expo/fingerprint@npm:0.13.0"
   dependencies:
     "@expo/spawn-async": ^1.7.2
     arg: ^5.0.2
     chalk: ^4.1.2
     debug: ^4.3.4
     find-up: ^5.0.0
-    getenv: ^1.0.0
+    getenv: ^2.0.0
+    ignore: ^5.3.1
     minimatch: ^9.0.0
     p-limit: ^3.1.0
     resolve-from: ^5.0.0
     semver: ^7.6.0
   bin:
     fingerprint: bin/cli.js
-  checksum: 45a3393ef4cdb370790ee2afc0dc51bb0f7c47229fe2a98483879facd172cc3b977f6345f8f776935e8d676969144aa901e208d4e454d9da73a4ab438526141b
+  checksum: d177169ae114764b9993b9c452af2ed442a4518580c609ffd1a1e1b7c17f90d8592d5d8d1e894e8e282272791c82a3b0c0341f7d23f2e63e25ad83078d54ee33
   languageName: node
   linkType: hard
 
@@ -3658,10 +3659,10 @@ __metadata:
     "@babel/core": ^7.27.4
     "@babel/runtime": ^7.27.6
     "@expo/webpack-config": ^19.0.1
-    "@shopify/flash-list": 1.7.6
+    "@shopify/flash-list": 1.8.2
     babel-loader: ^8.1.0
     babel-plugin-module-resolver: ^5.0.0
-    expo: ^53.0.10
+    expo: ^53.0.11
     expo-haptics: ~14.1.4
     expo-image: ~2.2.0
     expo-status-bar: ~2.2.3
@@ -3687,7 +3688,7 @@ __metadata:
     "@react-native/babel-preset": ^0.75.0-main
     "@react-native/eslint-config": ^0.73.1
     "@release-it/conventional-changelog": ^5.0.0
-    "@shopify/flash-list": 1.7.6
+    "@shopify/flash-list": 1.8.2
     "@types/jest": ^29.5.5
     "@types/react": ^18.2.44
     "@typescript-eslint/eslint-plugin": ^5.62.0
@@ -3726,7 +3727,7 @@ __metadata:
     typescript: ^5.4.2
     typescript-plugin-styled-components: ^3.0.0
   peerDependencies:
-    "@shopify/flash-list": ^1.7.6
+    "@shopify/flash-list": <2.0.0
     expo-haptics: "*"
     expo-image: "*"
     expo-status-bar: "*"
@@ -4100,9 +4101,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@shopify/flash-list@npm:1.7.6":
-  version: 1.7.6
-  resolution: "@shopify/flash-list@npm:1.7.6"
+"@shopify/flash-list@npm:1.8.2":
+  version: 1.8.2
+  resolution: "@shopify/flash-list@npm:1.8.2"
   dependencies:
     recyclerlistview: 4.2.3
     tslib: 2.8.1
@@ -4110,7 +4111,7 @@ __metadata:
     "@babel/runtime": "*"
     react: "*"
     react-native: "*"
-  checksum: 160ec8025549d4d9bf42ae00cd9175cd59d82630fb56bc77fd617c5af8da47d0ccff81a91811eeeaecd41b49eb1387ed8480b2c825bed1313ea98657c771a7a7
+  checksum: 2d769de4e66022262e1325ad5acec7580a646741f5e113b9e7e079d04c4bec3a7158fbcfd95e542447951f18339a5961f665994f6618f370835a5edafdec4cc3
   languageName: node
   linkType: hard
 
@@ -8915,9 +8916,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-modules-autolinking@npm:2.1.10":
-  version: 2.1.10
-  resolution: "expo-modules-autolinking@npm:2.1.10"
+"expo-modules-autolinking@npm:2.1.11":
+  version: 2.1.11
+  resolution: "expo-modules-autolinking@npm:2.1.11"
   dependencies:
     "@expo/spawn-async": ^1.7.2
     chalk: ^4.1.0
@@ -8928,7 +8929,7 @@ __metadata:
     resolve-from: ^5.0.0
   bin:
     expo-modules-autolinking: bin/expo-modules-autolinking.js
-  checksum: c482595f5237ed32813d7f6c31e9f3f9b1edfe00aebf0ff282ccf2da1284868bd6f06fc2837a8f33d90a88e3d7f105ef0c9c075622b0b3319e6b5748f52ec81d
+  checksum: 636cb7364855807db5cca5be6094bc1b23783703717b048720e04c00a1fded0e2559f2f6ce5be0c4918649171b02893533a3b91cbda5b118ad978eebb640e66b
   languageName: node
   linkType: hard
 
@@ -8987,15 +8988,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo@npm:^53.0.10":
-  version: 53.0.10
-  resolution: "expo@npm:53.0.10"
+"expo@npm:^53.0.11":
+  version: 53.0.11
+  resolution: "expo@npm:53.0.11"
   dependencies:
     "@babel/runtime": ^7.20.0
     "@expo/cli": 0.24.14
     "@expo/config": ~11.0.10
     "@expo/config-plugins": ~10.0.2
-    "@expo/fingerprint": 0.12.4
+    "@expo/fingerprint": 0.13.0
     "@expo/metro-config": 0.20.14
     "@expo/vector-icons": ^14.0.0
     babel-preset-expo: ~13.2.0
@@ -9004,7 +9005,7 @@ __metadata:
     expo-file-system: ~18.1.10
     expo-font: ~13.3.1
     expo-keep-awake: ~14.1.4
-    expo-modules-autolinking: 2.1.10
+    expo-modules-autolinking: 2.1.11
     expo-modules-core: 2.4.0
     react-native-edge-to-edge: 1.6.0
     whatwg-url-without-unicode: 8.0.0-3
@@ -9025,7 +9026,7 @@ __metadata:
     expo: bin/cli
     expo-modules-autolinking: bin/autolinking
     fingerprint: bin/fingerprint
-  checksum: 37754df2ad0936d55a602f4295a304684eb10cad4e7c332aa40666aa97e04335821ababc73720c45e0b0c2c192969c0f337d7c3cf615156e6def08b1e58613a9
+  checksum: 43a4a5aca799c8ffd679dad5754c9b7021ebf8756a5a764bbf83fa4d7169f0551ee034012bb76744baa69e293a736a5689d748fb3b298570727e7c534b19152e
   languageName: node
   linkType: hard
 
@@ -10406,7 +10407,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ignore@npm:^5.0.5, ignore@npm:^5.1.9, ignore@npm:^5.2.0, ignore@npm:^5.2.4":
+"ignore@npm:^5.0.5, ignore@npm:^5.1.9, ignore@npm:^5.2.0, ignore@npm:^5.2.4, ignore@npm:^5.3.1":
   version: 5.3.2
   resolution: "ignore@npm:5.3.2"
   checksum: 2acfd32a573260ea522ea0bfeff880af426d68f6831f973129e2ba7363f422923cf53aab62f8369cbf4667c7b25b6f8a3761b34ecdb284ea18e87a5262a865be
