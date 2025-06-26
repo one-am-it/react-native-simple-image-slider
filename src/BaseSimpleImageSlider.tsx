@@ -11,6 +11,8 @@ import { FlashList, type ListRenderItemInfo } from '@shopify/flash-list';
 import mergeRefs from 'merge-refs';
 import { Image, type ImageStyle } from 'expo-image';
 import {
+    type LayoutChangeEvent,
+    Platform,
     Pressable,
     type StyleProp,
     StyleSheet,
@@ -183,26 +185,50 @@ const BaseSimpleImageSlider = forwardRef<
         );
     }
 
+    const listRef = useRef<FlashList<SimpleImageSliderItem>>(null);
+
     const styles = useMemo(
         () => makeStyles({ imageAspectRatio, imageWidth, imageHeight }),
         [imageAspectRatio, imageHeight, imageWidth]
     );
-
-    const listRef = useRef<FlashList<SimpleImageSliderItem>>(null);
-    const [currentItem, setCurrentItem] = useState(0);
-
     const slicedData = useMemo(
         () => (maxItems !== undefined ? (data?.slice(0, maxItems) ?? []) : (data ?? [])),
         [data, maxItems]
     );
+    const estimatedItemSize = useMemo(() => {
+        return imageWidth ?? (imageHeight ? imageHeight * (imageAspectRatio ?? 4 / 3) : 350);
+    }, [imageAspectRatio, imageHeight, imageWidth]);
 
-    useEffect(() => {
-        setCurrentItem(indexOverride ?? 0);
+    const [currentItem, setCurrentItem] = useState(0);
+    const [scrollEnabled, setScrollEnabled] = useState(true);
+    const [snapToInterval, setSnapToInterval] = useState<number | undefined>(undefined);
 
-        listRef.current?.scrollToIndex({ index: indexOverride ?? 0, animated: false });
-    }, [indexOverride, slicedData]);
+    const handleScaleChange = useCallback(() => {
+        setScrollEnabled(false);
+    }, []);
 
-    const keyExtractor = useCallback((item: SimpleImageSliderItem) => item.key, []);
+    const handleScaleReset = useCallback(() => {
+        setScrollEnabled(true);
+    }, []);
+
+    const handleViewableItemsChanged = useCallback(
+        ({ viewableItems }: { viewableItems: ViewToken[]; changed: ViewToken[] }) => {
+            const newIndex = viewableItems[0]?.index;
+            if (newIndex !== undefined && newIndex !== null) {
+                setCurrentItem(newIndex);
+                onViewableItemChange?.(newIndex);
+            }
+        },
+        [onViewableItemChange]
+    );
+
+    const handlePinchToZoomStatusChange = useCallback(
+        (status: PinchToZoomStatus) => {
+            listRef.current?.recordInteraction();
+            onPinchToZoomStatusChange?.(status);
+        },
+        [onPinchToZoomStatusChange]
+    );
 
     const renderItem = useCallback(
         ({ item, index }: ListRenderItemInfo<SimpleImageSliderItem>) => {
@@ -237,38 +263,20 @@ const BaseSimpleImageSlider = forwardRef<
         [currentItem, imageStyle, onItemPress, sharedTransitionTag, styles.image]
     );
 
-    const onViewableItemsChanged = useCallback(
-        ({ viewableItems }: { viewableItems: ViewToken[]; changed: ViewToken[] }) => {
-            const newIndex = viewableItems[0]?.index;
-            if (newIndex !== undefined && newIndex !== null) {
-                setCurrentItem(newIndex);
-                onViewableItemChange?.(newIndex);
-            }
-        },
-        [onViewableItemChange]
-    );
+    const keyExtractor = useCallback((item: SimpleImageSliderItem) => item.key, []);
 
-    const [scrollEnabled, setScrollEnabled] = useState(true);
-
-    const onScaleChange = useCallback(() => {
-        setScrollEnabled(false);
+    const handleListLayout = useCallback((event: LayoutChangeEvent) => {
+        if (Platform.OS === 'ios') {
+            // temporary workaround for iOS scrolling a bit more than expected
+            setSnapToInterval(event.nativeEvent.layout.width - 0.5);
+        }
     }, []);
 
-    const onScaleReset = useCallback(() => {
-        setScrollEnabled(true);
-    }, []);
+    useEffect(() => {
+        setCurrentItem(indexOverride ?? 0);
 
-    const estimatedItemSize = useMemo(() => {
-        return imageWidth ?? (imageHeight ? imageHeight * (imageAspectRatio ?? 4 / 3) : 350);
-    }, [imageAspectRatio, imageHeight, imageWidth]);
-
-    const internalOnPinchToZoomStatusChange = useCallback(
-        (status: PinchToZoomStatus) => {
-            listRef.current?.recordInteraction();
-            onPinchToZoomStatusChange?.(status);
-        },
-        [onPinchToZoomStatusChange]
-    );
+        listRef.current?.scrollToIndex({ index: indexOverride ?? 0, animated: false });
+    }, [indexOverride, slicedData]);
 
     const list = (
         <FlashList
@@ -277,12 +285,13 @@ const BaseSimpleImageSlider = forwardRef<
             disableScrollViewPanResponder={enablePinchToZoom ? !scrollEnabled : false}
             ref={mergeRefs(ref, listRef)}
             initialScrollIndex={indexOverride ?? currentItem ?? 0}
-            onViewableItemsChanged={onViewableItemsChanged}
+            onViewableItemsChanged={handleViewableItemsChanged}
             viewabilityConfig={{
                 itemVisiblePercentThreshold: 55,
             }}
             decelerationRate={'fast'}
-            pagingEnabled={true}
+            pagingEnabled={snapToInterval === undefined}
+            snapToInterval={snapToInterval}
             showsHorizontalScrollIndicator={false}
             showsVerticalScrollIndicator={false}
             horizontal={true}
@@ -294,6 +303,7 @@ const BaseSimpleImageSlider = forwardRef<
                 width: estimatedItemSize,
                 height: imageHeight ?? estimatedItemSize / imageAspectRatio,
             }}
+            onLayout={handleListLayout}
         />
     );
 
@@ -303,9 +313,9 @@ const BaseSimpleImageSlider = forwardRef<
                 <PinchToZoom
                     style={styles.pinchToZoom}
                     onDismiss={onPinchToZoomRequestClose}
-                    onStatusChange={internalOnPinchToZoomStatusChange}
-                    onScaleChange={onScaleChange}
-                    onScaleReset={onScaleReset}
+                    onStatusChange={handlePinchToZoomStatusChange}
+                    onScaleChange={handleScaleChange}
+                    onScaleReset={handleScaleReset}
                     maximumZoomScale={5}
                     minimumZoomScale={1}
                 >
