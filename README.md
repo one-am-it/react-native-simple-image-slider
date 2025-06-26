@@ -13,10 +13,18 @@ Includes a full screen gallery component with gesture support.
 
 #### Expo
 
+##### npm
+
 ```shell
 npx expo install @shopify/flash-list expo-image expo-haptics expo-status-bar react-native-reanimated react-native-svg \
- react-native-gesture-handler react-native-safe-area-context styled-components \
-  @one-am/react-native-simple-image-slider
+ react-native-gesture-handler react-native-safe-area-context @one-am/react-native-simple-image-slider
+```
+
+##### yarn
+
+```shell
+yarn dlx expo install @shopify/flash-list expo-image expo-haptics expo-status-bar react-native-reanimated react-native-svg \
+ react-native-gesture-handler react-native-safe-area-context @one-am/react-native-simple-image-slider
 ```
 
 #### Non-Expo
@@ -25,16 +33,14 @@ npx expo install @shopify/flash-list expo-image expo-haptics expo-status-bar rea
 
 ```shell
 npm install @shopify/flash-list expo-image expo-haptics expo-status-bar react-native-reanimated react-native-svg \
- react-native-gesture-handler react-native-safe-area-context styled-components \
-  @one-am/react-native-simple-image-slider
+ react-native-gesture-handler react-native-safe-area-context @one-am/react-native-simple-image-slider
 ```
 
 ##### yarn
 
 ```shell
 yarn add @shopify/flash-list expo-image expo-haptics expo-status-bar react-native-reanimated react-native-svg \
- react-native-gesture-handler react-native-safe-area-context styled-components \
-  @one-am/react-native-simple-image-slider
+ react-native-gesture-handler react-native-safe-area-context @one-am/react-native-simple-image-slider
 ```
 
 ## Usage
