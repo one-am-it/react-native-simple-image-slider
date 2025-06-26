@@ -1,5 +1,8 @@
-import SimpleImageSliderThemeProvider from './SimpleImageSliderThemeProvider';
-import type { SimpleImageSliderTheme } from './@types/styled';
+import SimpleImageSliderThemeProvider, {
+    useSimpleImageSliderTheme,
+    type SimpleImageSliderTheme,
+    type SimpleImageSliderThemeProviderProps,
+} from './SimpleImageSliderThemeProvider';
 import BaseListImageSlider, { type BaseSimpleImageSliderProps } from './BaseSimpleImageSlider';
 import SimpleImageSlider, { type SimpleImageSliderProps } from './SimpleImageSlider';
 import FullScreenImageSlider, { type FullScreenImageSliderProps } from './FullScreenImageSlider';
@@ -9,7 +12,9 @@ import PageCounter, { type PageCounterProps } from './PageCounter';
 
 export {
     SimpleImageSliderThemeProvider,
+    useSimpleImageSliderTheme,
     type SimpleImageSliderTheme,
+    type SimpleImageSliderThemeProviderProps,
     BaseListImageSlider,
     type BaseSimpleImageSliderProps,
     SimpleImageSlider,

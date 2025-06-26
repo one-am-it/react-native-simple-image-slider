@@ -1,0 +1,43 @@
+spec:
+  inputs:
+    node-image:
+      default: 'node:20'
+    prepare-stage:
+      default: 'prepare'
+    check-stage:
+      default: 'check'
+    deploy-stage:
+      default: 'deploy'
+---
+
+stages:
+  - $[[ inputs.prepare-stage ]]
+  - $[[ inputs.check-stage ]]
+  - $[[ inputs.deploy-stage ]]
+
+prepare:
+  image: $[[ inputs.node-image ]]
+  stage: $[[ inputs.prepare-stage ]]
+  script:
+    - yarn install --immutable
+  artifacts:
+    expire_in: 30 mins
+    paths:
+      - node_modules
+      - example/node_modules
+  only:
+    - merge_requests
+    - tags
+    - main
+
+check:
+  image: $[[ inputs.node-image ]]
+  stage: $[[ inputs.check-stage ]]
+  script:
+    - yarn typecheck
+    - yarn lint
+  when: on_success
+  only:
+    - merge_requests
+    - tags
+    - main

@@ -1,30 +1,49 @@
-import React, { type PropsWithChildren, useMemo } from 'react';
-import { type DefaultTheme, ThemeProvider } from 'styled-components/native';
+import React, { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
+
+export type SimpleImageSliderTheme = {
+    colors: {
+        pageCounterBackground: string;
+        pageCounterBorder: string;
+        fullScreenCloseButton: string;
+        descriptionContainerBorder: string;
+    };
+};
+
+const defaultTheme: SimpleImageSliderTheme = {
+    colors: {
+        pageCounterBackground: '#D3D3D3',
+        pageCounterBorder: '#000000',
+        fullScreenCloseButton: '#FFFFFF',
+        descriptionContainerBorder: '#FFFFFF',
+    },
+};
+
+const ThemeContext = createContext<SimpleImageSliderTheme>(defaultTheme);
 
 export type SimpleImageSliderThemeProviderProps = PropsWithChildren<{
     overrides?: {
-        colors: Partial<DefaultTheme['colors']>;
+        colors: Partial<SimpleImageSliderTheme['colors']>;
     };
 }>;
+
+export function useSimpleImageSliderTheme() {
+    return useContext(ThemeContext);
+}
 
 export default function SimpleImageSliderThemeProvider({
     overrides,
     children,
 }: SimpleImageSliderThemeProviderProps) {
-    const theme: DefaultTheme = useMemo(
+    const theme: SimpleImageSliderTheme = useMemo(
         () => ({
+            ...defaultTheme,
             colors: {
-                simpleImageSlider: {
-                    pageCounterBackground: '#D3D3D3',
-                    pageCounterBorder: '#000000',
-                    fullScreenCloseButton: '#FFFFFF',
-                    descriptionContainerBorder: '#FFFFFF',
-                    ...overrides?.colors?.simpleImageSlider,
-                },
+                ...defaultTheme.colors,
+                ...overrides?.colors,
             },
         }),
-        [overrides?.colors?.simpleImageSlider]
+        [overrides?.colors]
     );
 
-    return <ThemeProvider theme={theme}>{children}</ThemeProvider>;
+    return <ThemeContext.Provider value={theme}>{children}</ThemeContext.Provider>;
 }

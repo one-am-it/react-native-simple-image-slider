@@ -9,10 +9,17 @@ import React, {
 } from 'react';
 import { FlashList, type ListRenderItemInfo } from '@shopify/flash-list';
 import mergeRefs from 'merge-refs';
-import { Image, type ImageProps, type ImageStyle } from 'expo-image';
-import { Pressable, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
+import { Image, type ImageStyle } from 'expo-image';
+import {
+    type LayoutChangeEvent,
+    Platform,
+    Pressable,
+    type StyleProp,
+    StyleSheet,
+    type TextStyle,
+    type ViewStyle,
+} from 'react-native';
 import type ViewToken from '@shopify/flash-list/src/viewability/ViewToken';
-import styled from 'styled-components/native';
 import PageCounter, { type PageCounterProps } from './PageCounter';
 import PinchToZoom, { type PinchToZoomProps } from './PinchToZoom';
 import { GestureHandlerRootView, ScrollView } from 'react-native-gesture-handler';
@@ -20,6 +27,7 @@ import renderProp, { type RenderProp } from './utils/renderProp';
 import type { SimpleImageSliderItem } from './@types/slider';
 import type { PinchToZoomStatus } from './@types/pinch-to-zoom';
 import Animated from 'react-native-reanimated';
+import { AbsoluteComponentContainer } from './AbsoluteComponentContainer';
 
 export type BaseSimpleImageSliderProps = {
     /**
@@ -127,63 +135,12 @@ export type BaseSimpleImageSliderProps = {
      */
     sharedTransitionTag?: string;
     /**
-     * @description Style that will be applied to ebvery image in the slider.
+     * @description Style that will be applied to every image in the slider.
      */
     imageStyle?: StyleProp<ImageStyle>;
 };
 
-const StyledAbsoluteComponentContainer = styled.View<{
-    position: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
-}>`
-    z-index: 1000;
-    position: absolute;
-    bottom: ${({ position }) =>
-        position === 'bottom-left' || position === 'bottom-right' ? `16px` : 'auto'};
-    top: ${({ position }) =>
-        position === 'top-left' || position === 'top-right' ? `16px` : 'auto'};
-    left: ${({ position }) =>
-        position === 'top-left' || position === 'bottom-left' ? `16px` : 'auto'};
-    right: ${({ position }) =>
-        position === 'top-right' || position === 'bottom-right' ? `16px` : 'auto'};
-`;
-
-const StyledPageCounter = styled(PageCounter)<{
-    position: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
-}>`
-    z-index: 1000;
-    position: absolute;
-    bottom: ${({ position }) =>
-        position === 'bottom-left' || position === 'bottom-right' ? `16px` : 'auto'};
-    top: ${({ position }) =>
-        position === 'top-left' || position === 'top-right' ? `16px` : 'auto'};
-    left: ${({ position }) =>
-        position === 'top-left' || position === 'bottom-left' ? `16px` : 'auto'};
-    right: ${({ position }) =>
-        position === 'top-right' || position === 'bottom-right' ? `16px` : 'auto'};
-`;
-
-const StyledContainer = styled(GestureHandlerRootView)<{ aspectRatio: number }>`
-    aspect-ratio: ${({ aspectRatio }) => aspectRatio ?? 4 / 3};
-    width: 100%;
-`;
-
-const StyledImage = styled(Image)<
-    ImageProps & {
-        imageWidth?: number;
-        imageHeight?: number;
-        imageAspectRatio: number;
-    }
->`
-    width: ${({ imageWidth }) => (imageWidth ? `${imageWidth}px` : '100%')};
-    height: ${({ imageHeight }) => (imageHeight ? `${imageHeight}px` : '100%')};
-    aspect-ratio: ${({ imageAspectRatio }) => imageAspectRatio};
-`;
-
-const AnimatedStyledImage = Animated.createAnimatedComponent(StyledImage);
-
-const StyledPinchToZoom = styled(PinchToZoom)`
-    z-index: 1000;
-`;
+const AnimatedImage = Animated.createAnimatedComponent(Image);
 
 /**
  * @description A simple image slider that displays a list of images. This is the component
@@ -206,7 +163,7 @@ const BaseSimpleImageSlider = forwardRef<
         pageCounterPosition = 'bottom-left',
         pageCounterStyle,
         pageCounterTextStyle,
-        PageCounterComponent,
+        PageCounterComponent = PageCounter,
         renderPageCounter,
         TopRightComponent,
         TopLeftComponent,
@@ -228,30 +185,55 @@ const BaseSimpleImageSlider = forwardRef<
         );
     }
 
-    const ActualPageCounterComponent = PageCounterComponent
-        ? makeStyledPageCounter(PageCounterComponent)
-        : StyledPageCounter;
-
     const listRef = useRef<FlashList<SimpleImageSliderItem>>(null);
-    const [currentItem, setCurrentItem] = useState(0);
 
+    const styles = useMemo(
+        () => makeStyles({ imageAspectRatio, imageWidth, imageHeight }),
+        [imageAspectRatio, imageHeight, imageWidth]
+    );
     const slicedData = useMemo(
         () => (maxItems !== undefined ? (data?.slice(0, maxItems) ?? []) : (data ?? [])),
         [data, maxItems]
     );
+    const estimatedItemSize = useMemo(() => {
+        return imageWidth ?? (imageHeight ? imageHeight * (imageAspectRatio ?? 4 / 3) : 350);
+    }, [imageAspectRatio, imageHeight, imageWidth]);
 
-    useEffect(() => {
-        setCurrentItem(indexOverride ?? 0);
+    const [currentItem, setCurrentItem] = useState(0);
+    const [scrollEnabled, setScrollEnabled] = useState(true);
+    const [snapToInterval, setSnapToInterval] = useState<number | undefined>(undefined);
 
-        listRef.current?.scrollToIndex({ index: indexOverride ?? 0, animated: false });
-    }, [indexOverride, slicedData]);
+    const handleScaleChange = useCallback(() => {
+        setScrollEnabled(false);
+    }, []);
 
-    const keyExtractor = useCallback((item: SimpleImageSliderItem) => item.key, []);
+    const handleScaleReset = useCallback(() => {
+        setScrollEnabled(true);
+    }, []);
+
+    const handleViewableItemsChanged = useCallback(
+        ({ viewableItems }: { viewableItems: ViewToken[]; changed: ViewToken[] }) => {
+            const newIndex = viewableItems[0]?.index;
+            if (newIndex !== undefined && newIndex !== null) {
+                setCurrentItem(newIndex);
+                onViewableItemChange?.(newIndex);
+            }
+        },
+        [onViewableItemChange]
+    );
+
+    const handlePinchToZoomStatusChange = useCallback(
+        (status: PinchToZoomStatus) => {
+            listRef.current?.recordInteraction();
+            onPinchToZoomStatusChange?.(status);
+        },
+        [onPinchToZoomStatusChange]
+    );
 
     const renderItem = useCallback(
         ({ item, index }: ListRenderItemInfo<SimpleImageSliderItem>) => {
             const ImageComponent =
-                sharedTransitionTag && index === currentItem ? AnimatedStyledImage : StyledImage;
+                sharedTransitionTag && index === currentItem ? AnimatedImage : Image;
 
             return (
                 <Pressable
@@ -263,78 +245,53 @@ const BaseSimpleImageSlider = forwardRef<
                     <ImageComponent
                         sharedTransitionTag={sharedTransitionTag}
                         transition={200}
+                        // https://github.com/expo/expo/issues/34810
+                        /* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */
                         placeholder={item.placeholder}
                         placeholderContentFit={'cover'}
-                        imageWidth={imageWidth}
-                        imageHeight={imageHeight}
-                        imageAspectRatio={imageAspectRatio}
                         recyclingKey={item.key}
+                        // https://github.com/expo/expo/issues/34810
+                        /* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */
                         source={item.source}
                         contentFit={'cover'}
                         contentPosition={'center'}
-                        style={imageStyle}
+                        style={[styles.image, imageStyle]}
                     />
                 </Pressable>
             );
         },
-        [
-            currentItem,
-            imageAspectRatio,
-            imageHeight,
-            imageStyle,
-            imageWidth,
-            onItemPress,
-            sharedTransitionTag,
-        ]
+        [currentItem, imageStyle, onItemPress, sharedTransitionTag, styles.image]
     );
 
-    const onViewableItemsChanged = useCallback(
-        ({ viewableItems }: { viewableItems: ViewToken[]; changed: ViewToken[] }) => {
-            const newIndex = viewableItems[0]?.index;
-            if (newIndex !== undefined && newIndex !== null) {
-                setCurrentItem(newIndex);
-                onViewableItemChange?.(newIndex);
-            }
-        },
-        [onViewableItemChange]
-    );
+    const keyExtractor = useCallback((item: SimpleImageSliderItem) => item.key, []);
 
-    const [scrollEnabled, setScrollEnabled] = useState(true);
-
-    const onScaleChange = useCallback(() => {
-        setScrollEnabled(false);
+    const handleListLayout = useCallback((event: LayoutChangeEvent) => {
+        if (Platform.OS === 'ios') {
+            // temporary workaround for iOS scrolling a bit more than expected
+            setSnapToInterval(event.nativeEvent.layout.width - 0.5);
+        }
     }, []);
 
-    const onScaleReset = useCallback(() => {
-        setScrollEnabled(true);
-    }, []);
+    useEffect(() => {
+        setCurrentItem(indexOverride ?? 0);
 
-    const estimatedItemSize = useMemo(() => {
-        return imageWidth ?? (imageHeight ? imageHeight * (imageAspectRatio ?? 4 / 3) : 350);
-    }, [imageAspectRatio, imageHeight, imageWidth]);
-
-    const internalOnPinchToZoomStatusChange = useCallback(
-        (status: PinchToZoomStatus) => {
-            listRef.current?.recordInteraction();
-            onPinchToZoomStatusChange?.(status);
-        },
-        [onPinchToZoomStatusChange]
-    );
+        listRef.current?.scrollToIndex({ index: indexOverride ?? 0, animated: false });
+    }, [indexOverride, slicedData]);
 
     const list = (
         <FlashList
-            // @ts-expect-error - there's just a small inconsistency with hitSlop typing
             renderScrollComponent={ScrollView}
             scrollEnabled={scrollEnabled}
             disableScrollViewPanResponder={enablePinchToZoom ? !scrollEnabled : false}
             ref={mergeRefs(ref, listRef)}
             initialScrollIndex={indexOverride ?? currentItem ?? 0}
-            onViewableItemsChanged={onViewableItemsChanged}
+            onViewableItemsChanged={handleViewableItemsChanged}
             viewabilityConfig={{
                 itemVisiblePercentThreshold: 55,
             }}
             decelerationRate={'fast'}
-            pagingEnabled={true}
+            pagingEnabled={snapToInterval === undefined}
+            snapToInterval={snapToInterval}
             showsHorizontalScrollIndicator={false}
             showsVerticalScrollIndicator={false}
             horizontal={true}
@@ -346,22 +303,24 @@ const BaseSimpleImageSlider = forwardRef<
                 width: estimatedItemSize,
                 height: imageHeight ?? estimatedItemSize / imageAspectRatio,
             }}
+            onLayout={handleListLayout}
         />
     );
 
     return (
-        <StyledContainer aspectRatio={imageAspectRatio} style={style}>
+        <GestureHandlerRootView style={[styles.container, style]}>
             {enablePinchToZoom ? (
-                <StyledPinchToZoom
+                <PinchToZoom
+                    style={styles.pinchToZoom}
                     onDismiss={onPinchToZoomRequestClose}
-                    onStatusChange={internalOnPinchToZoomStatusChange}
-                    onScaleChange={onScaleChange}
-                    onScaleReset={onScaleReset}
+                    onStatusChange={handlePinchToZoomStatusChange}
+                    onScaleChange={handleScaleChange}
+                    onScaleReset={handleScaleReset}
                     maximumZoomScale={5}
                     minimumZoomScale={1}
                 >
                     {list}
-                </StyledPinchToZoom>
+                </PinchToZoom>
             ) : (
                 list
             )}
@@ -369,54 +328,63 @@ const BaseSimpleImageSlider = forwardRef<
                 renderPageCounter ? (
                     renderPageCounter(currentItem + 1, slicedData.length)
                 ) : (
-                    <ActualPageCounterComponent
-                        position={pageCounterPosition}
-                        totalPages={slicedData.length}
-                        currentPage={currentItem + 1}
-                        style={pageCounterStyle}
-                        textStyle={pageCounterTextStyle}
-                    />
+                    <AbsoluteComponentContainer position={pageCounterPosition}>
+                        <PageCounterComponent
+                            totalPages={slicedData.length}
+                            currentPage={currentItem + 1}
+                            style={pageCounterStyle}
+                            textStyle={pageCounterTextStyle}
+                        />
+                    </AbsoluteComponentContainer>
                 )
             ) : null}
             {TopRightComponent ? (
-                <StyledAbsoluteComponentContainer position={'top-right'}>
+                <AbsoluteComponentContainer position={'top-right'}>
                     {renderProp(TopRightComponent)}
-                </StyledAbsoluteComponentContainer>
+                </AbsoluteComponentContainer>
             ) : null}
             {TopLeftComponent ? (
-                <StyledAbsoluteComponentContainer position={'top-left'}>
+                <AbsoluteComponentContainer position={'top-left'}>
                     {renderProp(TopLeftComponent)}
-                </StyledAbsoluteComponentContainer>
+                </AbsoluteComponentContainer>
             ) : null}
             {BottomRightComponent ? (
-                <StyledAbsoluteComponentContainer position={'bottom-right'}>
+                <AbsoluteComponentContainer position={'bottom-right'}>
                     {renderProp(BottomRightComponent)}
-                </StyledAbsoluteComponentContainer>
+                </AbsoluteComponentContainer>
             ) : null}
             {BottomLeftComponent ? (
-                <StyledAbsoluteComponentContainer position={'bottom-left'}>
+                <AbsoluteComponentContainer position={'bottom-left'}>
                     {renderProp(BottomLeftComponent)}
-                </StyledAbsoluteComponentContainer>
+                </AbsoluteComponentContainer>
             ) : null}
-        </StyledContainer>
+        </GestureHandlerRootView>
     );
 });
 
-const makeStyledPageCounter = (
-    PageCounterComponent: React.FunctionComponent<PageCounterProps>
-) => styled(PageCounterComponent)<{
-    position: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
-}>`
-    z-index: 1000;
-    position: absolute;
-    bottom: ${({ position }) =>
-        position === 'bottom-left' || position === 'bottom-right' ? `16px` : 'auto'};
-    top: ${({ position }) =>
-        position === 'top-left' || position === 'top-right' ? `16px` : 'auto'};
-    left: ${({ position }) =>
-        position === 'top-left' || position === 'bottom-left' ? `16px` : 'auto'};
-    right: ${({ position }) =>
-        position === 'top-right' || position === 'bottom-right' ? `16px` : 'auto'};
-`;
+const makeStyles = ({
+    imageAspectRatio,
+    imageWidth,
+    imageHeight,
+}: {
+    imageAspectRatio?: number;
+    imageWidth?: number;
+    imageHeight?: number;
+}) => {
+    return StyleSheet.create({
+        container: {
+            width: '100%',
+            aspectRatio: imageAspectRatio ?? 4 / 3,
+        },
+        pinchToZoom: {
+            zIndex: 1000,
+        },
+        image: {
+            width: imageWidth ?? '100%',
+            height: imageHeight ?? '100%',
+            aspectRatio: imageAspectRatio ?? 4 / 3,
+        },
+    });
+};
 
 export default BaseSimpleImageSlider;

@@ -1,9 +1,7 @@
-import type { SharedValue } from 'react-native-reanimated';
-
 export type PinchToZoomStatus = {
-    scale: SharedValue<number>;
+    scale: number;
     translation: {
-        x: SharedValue<number>;
-        y: SharedValue<number>;
+        x: number;
+        y: number;
     };
 };

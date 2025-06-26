@@ -6,7 +6,14 @@ import React, {
     useMemo,
     useState,
 } from 'react';
-import { Modal, type ScaledSize, StyleSheet, useWindowDimensions } from 'react-native';
+import {
+    Modal,
+    type ScaledSize,
+    StyleSheet,
+    TouchableOpacity,
+    useWindowDimensions,
+    View,
+} from 'react-native';
 import IconX from './icons/IconX';
 import Animated, {
     runOnJS,
@@ -15,13 +22,16 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 import { setStatusBarStyle } from 'expo-status-bar';
-import styled, { useTheme } from 'styled-components/native';
 import { FlashList } from '@shopify/flash-list';
 import BaseListImageSlider, { type BaseSimpleImageSliderProps } from './BaseSimpleImageSlider';
 import { type EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { PinchToZoomStatus } from './@types/pinch-to-zoom';
 import type { SimpleImageSliderItem } from './@types/slider';
 import renderProp, { type RenderProp } from './utils/renderProp';
+import {
+    type SimpleImageSliderTheme,
+    useSimpleImageSliderTheme,
+} from './SimpleImageSliderThemeProvider';
 
 export type FullScreenImageSliderProps = Omit<BaseSimpleImageSliderProps, 'imageWidth'> & {
     /**
@@ -48,25 +58,6 @@ export type FullScreenImageSliderProps = Omit<BaseSimpleImageSliderProps, 'image
     onFadeOut?: () => void;
 };
 
-const StyledDescriptionContainer = styled.View`
-    position: absolute;
-    border-top-width: 1px;
-    border-top-color: ${({ theme }) => theme.colors.simpleImageSlider.descriptionContainerBorder};
-    width: 100%;
-    padding-top: 20px;
-`;
-
-const StyledModalCloseButton = styled.TouchableOpacity`
-    position: absolute;
-    z-index: 1000;
-`;
-
-const StyledModalContentContainer = styled(Animated.View)`
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-`;
-
 /**
  * @description A full screen image slider that displays images in a modal.
  */
@@ -87,11 +78,11 @@ const FullScreenImageSlider = forwardRef<
     ref
 ) {
     const windowDimensions = useWindowDimensions();
-    const theme = useTheme();
+    const theme = useSimpleImageSliderTheme();
     const safeAreaInsets = useSafeAreaInsets();
     const styles = useMemo(
-        () => makeStyles(safeAreaInsets, windowDimensions),
-        [safeAreaInsets, windowDimensions]
+        () => makeStyles(safeAreaInsets, windowDimensions, theme),
+        [safeAreaInsets, windowDimensions, theme]
     );
 
     const [internalIndex, setInternalIndex] = useState<number>(0);
@@ -122,8 +113,8 @@ const FullScreenImageSlider = forwardRef<
 
     const onPinchToZoomStatusChange = useCallback(
         ({ translation, scale }: PinchToZoomStatus) => {
-            if (scale.value <= 1) {
-                if (translation.x.value === 0 && translation.y.value === 0) {
+            if (scale <= 1) {
+                if (translation.x === 0 && translation.y === 0) {
                     runOnJS(setStatusBarStyle)('light');
                     backgroundOpacity.value = withTiming(1);
                 } else {
@@ -147,14 +138,14 @@ const FullScreenImageSlider = forwardRef<
             transparent={true}
             visible={open}
         >
-            <StyledModalContentContainer style={[styles.modalContent, modalContentStyle]}>
-                <StyledModalCloseButton style={styles.closeButton} onPress={onRequestClose}>
+            <Animated.View style={[styles.modalContent, modalContentStyle]}>
+                <TouchableOpacity style={styles.closeButton} onPress={onRequestClose}>
                     {CloseButtonIcon ? (
                         renderProp(CloseButtonIcon)
                     ) : (
-                        <IconX color={theme.colors.simpleImageSlider.fullScreenCloseButton} />
+                        <IconX color={theme.colors.fullScreenCloseButton} />
                     )}
-                </StyledModalCloseButton>
+                </TouchableOpacity>
                 <BaseListImageSlider
                     data={data}
                     enablePinchToZoom={true}
@@ -168,28 +159,42 @@ const FullScreenImageSlider = forwardRef<
                 />
 
                 {renderDescription && data[internalIndex] ? (
-                    <StyledDescriptionContainer style={styles.descriptionContainer}>
+                    <View style={styles.descriptionContainer}>
                         {renderDescription(data[internalIndex], internalIndex)}
-                    </StyledDescriptionContainer>
+                    </View>
                 ) : null}
-            </StyledModalContentContainer>
+            </Animated.View>
         </Modal>
     );
 });
 
 export default FullScreenImageSlider;
 
-const makeStyles = (safeAreaInsets: EdgeInsets, windowDimensions: ScaledSize) => {
+const makeStyles = (
+    safeAreaInsets: EdgeInsets,
+    windowDimensions: ScaledSize,
+    theme: SimpleImageSliderTheme
+) => {
     return StyleSheet.create({
         closeButton: {
+            position: 'absolute',
+            zIndex: 1000,
             top: safeAreaInsets.top,
             right: safeAreaInsets.right + 20,
         },
         modalContent: {
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 16,
             height: windowDimensions.height,
             width: windowDimensions.width,
         },
         descriptionContainer: {
+            position: 'absolute',
+            borderTopWidth: 1,
+            borderTopColor: theme.colors.descriptionContainerBorder,
+            width: '100%',
+            paddingTop: 20,
             bottom: safeAreaInsets.bottom + 100,
             paddingLeft: safeAreaInsets.left + 20,
             paddingRight: safeAreaInsets.right + 20,

@@ -4,7 +4,6 @@ import {
     SimpleImageSliderThemeProvider,
     SimpleImageSlider,
 } from '@one-am/react-native-simple-image-slider';
-import styled from 'styled-components/native';
 
 import pictureOne from '../assets/photos/1.jpg';
 import pictureTwo from '../assets/photos/2.jpg';
@@ -22,7 +21,7 @@ import pictureThirteen from '../assets/photos/13.jpg';
 import pictureFourteen from '../assets/photos/14.jpg';
 
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { Text, useWindowDimensions } from 'react-native';
+import { Text } from 'react-native';
 
 const photos = [
     pictureOne,
@@ -41,36 +40,28 @@ const photos = [
     pictureFourteen,
 ];
 
-const StyledContainer = styled(SafeAreaView)`
-    flex: 1;
-    align-items: center;
-    justify-content: center;
-`;
-
-const StyledDescription = styled(Text)`
-    color: #ffffff;
-`;
-
 export default function App() {
-    const { width } = useWindowDimensions();
     return (
         <SafeAreaProvider>
-            <StyledContainer>
+            <SafeAreaView style={{
+                flex: 1,
+                alignItems: 'stretch',
+                justifyContent: 'center',
+            }}>
                 <SimpleImageSliderThemeProvider>
                     <SimpleImageSlider
                         data={photos.map((photo, index) => ({
                             source: photo,
                             key: index.toString(),
                         }))}
-                        imageWidth={width}
                         imageAspectRatio={16 / 9}
                         fullScreenEnabled={true}
                         renderFullScreenDescription={(_, index) => (
-                            <StyledDescription>Picture {index}</StyledDescription>
+                            <Text style={{color: '#ffffff'}}>Picture {index}</Text>
                         )}
                     />
                 </SimpleImageSliderThemeProvider>
-            </StyledContainer>
+            </SafeAreaView>
         </SafeAreaProvider>
     );
 }

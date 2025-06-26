@@ -1,6 +1,16 @@
-import React from 'react';
-import { type StyleProp, Text, type TextStyle, type ViewStyle } from 'react-native';
-import styled from 'styled-components/native';
+import React, { useMemo } from 'react';
+import {
+    type StyleProp,
+    StyleSheet,
+    Text,
+    type TextStyle,
+    View,
+    type ViewStyle,
+} from 'react-native';
+import {
+    type SimpleImageSliderTheme,
+    useSimpleImageSliderTheme,
+} from './SimpleImageSliderThemeProvider';
 
 export type PageCounterProps = {
     /**
@@ -21,29 +31,37 @@ export type PageCounterProps = {
     textStyle?: StyleProp<TextStyle>;
 };
 
-const StyledContainer = styled.View`
-    background-color: ${({ theme }) => theme.colors.simpleImageSlider.pageCounterBackground};
-    border-width: 1px;
-    border-color: ${({ theme }) => theme.colors.simpleImageSlider.pageCounterBorder};
-    border-radius: 8px;
-    padding: 6px 5px;
-    width: 75px;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-`;
-
 export default function PageCounter({
     currentPage,
     totalPages,
     style,
     textStyle,
 }: PageCounterProps) {
+    const theme = useSimpleImageSliderTheme();
+    const styles = useMemo(() => makeStyles(theme), [theme]);
+
     return (
-        <StyledContainer style={style}>
+        <View style={[styles.container, style]}>
             <Text style={textStyle}>
                 {currentPage} / {totalPages}
             </Text>
-        </StyledContainer>
+        </View>
     );
 }
+
+const makeStyles = (theme: SimpleImageSliderTheme) => {
+    return StyleSheet.create({
+        container: {
+            backgroundColor: theme.colors.pageCounterBackground,
+            borderWidth: 1,
+            borderColor: theme.colors.pageCounterBorder,
+            borderRadius: 8,
+            paddingVertical: 6,
+            paddingHorizontal: 5,
+            width: 75,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+        },
+    });
+};
