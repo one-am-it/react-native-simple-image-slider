@@ -86,7 +86,7 @@ export type BaseSimpleImageSliderProps = {
      */
     PageCounterComponent?: React.FunctionComponent<PageCounterProps>;
     /**
-     * @description Callback that renders the page counter. If provided, this will replace the default page counter.
+     * @description Callback that renders the page counter. Overrides `PageCounterComponent` if provided.
      * @param currentPage The current page number.
      * @param totalPages The total number of pages.
      */
@@ -179,12 +179,6 @@ const BaseSimpleImageSlider = forwardRef<
     },
     ref
 ) {
-    if (renderPageCounter !== undefined && PageCounterComponent !== undefined) {
-        throw new Error(
-            'You should provide either `renderPageCounter` or `PageCounterComponent`, not both.'
-        );
-    }
-
     const listRef = useRef<FlashList<SimpleImageSliderItem>>(null);
 
     const styles = useMemo(
