@@ -43,11 +43,13 @@ const photos = [
 export default function App() {
     return (
         <SafeAreaProvider>
-            <SafeAreaView style={{
-                flex: 1,
-                alignItems: 'stretch',
-                justifyContent: 'center',
-            }}>
+            <SafeAreaView
+                style={{
+                    flex: 1,
+                    alignItems: 'stretch',
+                    justifyContent: 'center',
+                }}
+            >
                 <SimpleImageSliderThemeProvider>
                     <SimpleImageSlider
                         data={photos.map((photo, index) => ({
@@ -57,7 +59,7 @@ export default function App() {
                         imageAspectRatio={16 / 9}
                         fullScreenEnabled={true}
                         renderFullScreenDescription={(_, index) => (
-                            <Text style={{color: '#ffffff'}}>Picture {index}</Text>
+                            <Text style={{ color: '#ffffff' }}>Picture {index}</Text>
                         )}
                     />
                 </SimpleImageSliderThemeProvider>

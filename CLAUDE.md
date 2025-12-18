@@ -9,6 +9,7 @@ This is a React Native image slider library (`@one-am/react-native-simple-image-
 ## Development Commands
 
 ### Build & Preparation
+
 ```bash
 yarn prepare              # Build library with react-native-builder-bob (auto-runs on install)
 yarn clean               # Delete lib/ directory
@@ -16,12 +17,14 @@ yarn typecheck           # Run TypeScript type checking (no emit)
 ```
 
 ### Code Quality
+
 ```bash
 yarn lint                # Run ESLint on all source files
 yarn test                # Run Jest tests
 ```
 
 ### Example App
+
 ```bash
 yarn example start       # Start Expo dev server
 yarn example android     # Run example on Android
@@ -30,6 +33,7 @@ yarn example web         # Run example in browser
 ```
 
 ### Release
+
 ```bash
 yarn release             # Run release-it for versioning and publishing
 yarn sync:deps           # Sync peer dependencies to dev dependencies
@@ -42,48 +46,51 @@ yarn sync:deps           # Sync peer dependencies to dev dependencies
 The library exports three main slider components:
 
 1. **BaseSimpleImageSlider** (`src/BaseSimpleImageSlider.tsx`) - Core foundation component
-   - Uses `@shopify/flash-list` for horizontal scrolling performance
-   - Handles image rendering with `expo-image`
-   - Provides ref forwarding to FlashList for imperative control (`.scrollToIndex()`)
-   - Supports custom page counter, corner components (TopLeft, TopRight, etc.)
+    - Uses `@shopify/flash-list` for horizontal scrolling performance
+    - Handles image rendering with `expo-image`
+    - Provides ref forwarding to FlashList for imperative control (`.scrollToIndex()`)
+    - Supports custom page counter, corner components (TopLeft, TopRight, etc.)
 
 2. **SimpleImageSlider** (`src/SimpleImageSlider.tsx`) - Standard slider with optional full-screen
-   - Wraps BaseSimpleImageSlider
-   - Optionally includes FullScreenImageSlider modal on image press
-   - Pass `fullScreenEnabled={true}` to enable full-screen gallery
+    - Wraps BaseSimpleImageSlider
+    - Optionally includes FullScreenImageSlider modal on image press
+    - Pass `fullScreenEnabled={true}` to enable full-screen gallery
 
 3. **FullScreenImageSlider** (`src/FullScreenImageSlider.tsx`) - Modal full-screen gallery
-   - Uses React Native Modal component
-   - Reuses BaseSimpleImageSlider internally for consistency
-   - Includes status bar color management and safe area support
-   - Fade in/out animations with Reanimated
+    - Uses React Native Modal component
+    - Reuses BaseSimpleImageSlider internally for consistency
+    - Includes status bar color management and safe area support
+    - Fade in/out animations with Reanimated
 
 ### Supporting Components
 
 - **PinchToZoom** (`src/PinchToZoom.tsx`) - Gesture wrapper for zoom/pan
-  - Uses `react-native-gesture-handler` for pinch/pan/tap detection
-  - Animated with `react-native-reanimated` for 60fps performance
-  - Includes haptic feedback on zoom start/end
+    - Uses `react-native-gesture-handler` for pinch/pan/tap detection
+    - Animated with `react-native-reanimated` for 60fps performance
+    - Includes haptic feedback on zoom start/end
 
 - **PageCounter** (`src/PageCounter.tsx`) - Page indicator (e.g., "1/10")
 
 - **SimpleImageSliderThemeProvider** (`src/SimpleImageSliderThemeProvider.tsx`) - Theme context
-  - Simple color-based theming (pageCounterBackground, pageCounterBorder, fullScreenCloseButton, descriptionContainerBorder)
+    - Simple color-based theming (pageCounterBackground, pageCounterBorder, fullScreenCloseButton, descriptionContainerBorder)
 
 ### Key Design Patterns
 
 **Render Props Pattern**: Most visual elements support render props for customization:
+
 ```typescript
 type RenderProp<Props> =
-  | React.ComponentType<Props>
-  | React.ReactElement
-  | string
-  | undefined
-  | null;
+    | React.ComponentType<Props>
+    | React.ReactElement
+    | string
+    | undefined
+    | null;
 ```
+
 Used for: PageCounter, corner components, close button, descriptions.
 
 **Ref Forwarding**: All components use `forwardRef` to expose FlashList refs for programmatic scrolling:
+
 ```typescript
 sliderRef.current?.scrollToIndex({ index: 2, animated: true });
 ```
@@ -95,15 +102,18 @@ sliderRef.current?.scrollToIndex({ index: 2, animated: true });
 **Tool**: `react-native-builder-bob` v0.35.2
 
 **Outputs** (in `lib/` directory):
+
 - `lib/commonjs/` - CommonJS modules
 - `lib/module/` - ES modules
 - `lib/typescript/` - TypeScript type definitions
 
 **TypeScript Configs**:
+
 - `tsconfig.json` - Base config with strict mode enabled
 - `tsconfig.build.json` - Extends base, excludes example app
 
 **Key TypeScript Settings**:
+
 - Strict mode enabled with `noUnusedLocals`, `noUnusedParameters`, `noImplicitReturns`
 - Target: ESNext
 - JSX: react
@@ -115,11 +125,13 @@ sliderRef.current?.scrollToIndex({ index: 2, animated: true });
 **Current Status**: Tests are not yet implemented (placeholder exists in `src/__tests__/index.test.tsx`)
 
 **To Run Tests**:
+
 ```bash
 yarn test
 ```
 
 When writing tests:
+
 - Use `@testing-library/react-native` for component testing
 - Mock native modules (gesture-handler, reanimated, expo-image)
 - Test files go in `src/__tests__/`
@@ -127,11 +139,13 @@ When writing tests:
 ## Code Quality
 
 **Pre-commit Hooks** (via lefthook):
+
 - Runs `yarn lint` on JS/TS changes
 - Runs `yarn typecheck` on type definition changes
 - Validates commit messages with commitlint (conventional commits)
 
 **Commit Message Format**: Uses conventional commits (Angular preset)
+
 ```
 feat: add new feature
 fix: bug fix
@@ -140,6 +154,7 @@ chore: maintenance tasks
 ```
 
 **ESLint Rules**:
+
 - Max complexity: 10 (warning)
 - `@typescript-eslint/no-shadow`: error
 - `react-hooks/exhaustive-deps`: error (level 2)
@@ -149,6 +164,7 @@ chore: maintenance tasks
 ## Important Dependencies
 
 All these are peer dependencies and must be installed:
+
 - `@shopify/flash-list` <2.0.0 - High-performance list component
 - `expo-image` - Optimized image rendering
 - `expo-haptics` - Haptic feedback
@@ -183,6 +199,7 @@ lib/                                   # Built output (generated, git-ignored)
 ## iOS Scrolling Quirk
 
 BaseSimpleImageSlider includes a platform-specific workaround for iOS scroll behavior:
+
 ```typescript
 // iOS has a bug where snapToInterval causes scroll overshoot
 snapToInterval={Platform.OS === 'ios' ? imageWidth - 1 : imageWidth}
@@ -193,6 +210,7 @@ Keep this in mind when modifying scroll behavior.
 ## Release Process
 
 Releases are managed with `release-it`:
+
 1. Commits follow conventional format (feat, fix, docs, etc.)
 2. Run `yarn release` to bump version and publish
 3. Creates git tag: `v${version}`
@@ -204,6 +222,7 @@ Current version: 0.16.1
 ## Workspace Setup
 
 This is a Yarn 3 workspace with:
+
 - Root: Library code
 - `example/`: Expo app for testing
 

@@ -1,15 +1,4 @@
-# Ignore all files
-**/*
-
-# Don't ignore in src/
-!src/
-!src/**
-!example/src/
-!example/src/**
-
-!*.js
-!*.ts
-!*.tsx
-!*.jsx
-
-**/babel.config.js
+node_modules/
+lib/
+**/storybook.requires.ts
+CHANGELOG.md

@@ -1,0 +1,11 @@
+{
+    "permissions": {
+        "allow": [
+            "Read(//Users/dvolta/Projects/OneAM/one-ui/**)",
+            "Bash(yarn lint)",
+            "Bash(yarn list:*)"
+        ],
+        "deny": [],
+        "ask": []
+    }
+}

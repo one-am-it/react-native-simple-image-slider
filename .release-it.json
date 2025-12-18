@@ -1,0 +1,59 @@
+{
+    "git": {
+        "commitMessage": "chore: release ${version}",
+        "tagName": "v${version}"
+    },
+    "npm": {
+        "publish": true
+    },
+    "gitlab": {
+        "release": true
+    },
+    "plugins": {
+        "@release-it/conventional-changelog": {
+            "infile": "CHANGELOG.md",
+            "preset": {
+                "name": "conventionalcommits",
+                "types": [
+                    {
+                        "type": "feat",
+                        "section": "✨ Features"
+                    },
+                    {
+                        "type": "fix",
+                        "section": "🐛 Fixes"
+                    },
+                    {
+                        "type": "docs",
+                        "section": "📝 Documentation"
+                    },
+                    {
+                        "type": "style",
+                        "section": "💅 Style Changes"
+                    },
+                    {
+                        "type": "chore",
+                        "section": "🧹 Chores"
+                    },
+                    {
+                        "type": "refactor",
+                        "section": "♻️ Refactors"
+                    },
+                    {
+                        "type": "test",
+                        "section": "🧪 Tests"
+                    },
+                    {
+                        "type": "ci",
+                        "section": "⚙️ CI/CD"
+                    }
+                ]
+            },
+            "writerOpts": {
+                "groupBy": "type",
+                "commitGroupsSort": ["type", "scope"],
+                "commitsSort": ["scope", "subject"]
+            }
+        }
+    }
+}
