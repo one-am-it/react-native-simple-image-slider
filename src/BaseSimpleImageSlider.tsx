@@ -28,17 +28,17 @@ export type BaseSimpleImageSliderProps = {
      */
     style?: StyleProp<ViewStyle>;
     /**
-     * @description The width of the images. If not provided, the image will take the full width of the container.
-     *  Will be calculated automatically if `imageHeight` and `imageAspectRatio` are provided.
+     * @description The width of the images. If not provided, defaults to '100%' of container width.
+     * When combined with `imageAspectRatio`, the CSS aspect-ratio property will determine the height.
      */
     imageWidth?: number;
     /**
-     * @description The height of the images. If not provided, the image will take the full height of the container.
-     *  Will be calculated automatically if `imageWidth` and `imageAspectRatio` are provided.
+     * @description The height of the images. If not provided, defaults to '100%' of container height.
+     * When combined with `imageAspectRatio`, the CSS aspect-ratio property will determine the width.
      */
     imageHeight?: number;
     /**
-     * @description The aspect ratio of the images. Will be ignored if `imageWidth` and `imageHeight` are provided.
+     * @description The aspect ratio of the images (width / height). Used by CSS aspect-ratio property for sizing.
      * @default 4 / 3
      */
     imageAspectRatio?: number;

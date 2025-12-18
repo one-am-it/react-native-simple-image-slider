@@ -5,7 +5,7 @@ import type {
     SimpleImageSliderTheme,
     SimpleImageSliderThemeProviderProps,
 } from './SimpleImageSliderThemeProvider';
-import BaseListImageSlider from './BaseSimpleImageSlider';
+import BaseSimpleImageSlider from './BaseSimpleImageSlider';
 import type { BaseSimpleImageSliderProps } from './BaseSimpleImageSlider';
 import SimpleImageSlider from './SimpleImageSlider';
 import type { SimpleImageSliderProps } from './SimpleImageSlider';
@@ -16,13 +16,15 @@ import type { PinchToZoomProps } from './PinchToZoom';
 import type { SimpleImageSliderItem } from './@types/slider';
 import PageCounter from './PageCounter';
 import type { PageCounterProps } from './PageCounter';
+import type { RenderProp } from './utils/renderProp';
+import type { PinchToZoomStatus } from './@types/pinch-to-zoom';
 
 export {
     SimpleImageSliderThemeProvider,
     useSimpleImageSliderTheme,
     type SimpleImageSliderTheme,
     type SimpleImageSliderThemeProviderProps,
-    BaseListImageSlider,
+    BaseSimpleImageSlider,
     type BaseSimpleImageSliderProps,
     SimpleImageSlider,
     type SimpleImageSliderProps,
@@ -33,4 +35,6 @@ export {
     type SimpleImageSliderItem,
     PageCounter,
     type PageCounterProps,
+    type RenderProp,
+    type PinchToZoomStatus,
 };

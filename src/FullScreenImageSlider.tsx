@@ -12,7 +12,7 @@ import { setStatusBarStyle } from 'expo-status-bar';
 import type { FlashListRef } from '@shopify/flash-list';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { EdgeInsets } from 'react-native-safe-area-context';
-import BaseListImageSlider from './BaseSimpleImageSlider';
+import BaseSimpleImageSlider from './BaseSimpleImageSlider';
 import type { BaseSimpleImageSliderProps } from './BaseSimpleImageSlider';
 import IconX from './icons/IconX';
 import type { PinchToZoomStatus } from './@types/pinch-to-zoom';
@@ -134,7 +134,7 @@ function FullScreenImageSlider({
                         <IconX color={theme.colors.fullScreenCloseButton} />
                     )}
                 </TouchableOpacity>
-                <BaseListImageSlider
+                <BaseSimpleImageSlider
                     data={data}
                     enablePinchToZoom={true}
                     onPinchToZoomStatusChange={onPinchToZoomStatusChange}

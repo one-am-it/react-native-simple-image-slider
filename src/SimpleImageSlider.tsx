@@ -3,7 +3,7 @@ import type { FlashListRef } from '@shopify/flash-list';
 import mergeRefs from 'merge-refs';
 import FullScreenImageSlider from './FullScreenImageSlider';
 import type { FullScreenImageSliderProps } from './FullScreenImageSlider';
-import BaseListImageSlider from './BaseSimpleImageSlider';
+import BaseSimpleImageSlider from './BaseSimpleImageSlider';
 import type { BaseSimpleImageSliderProps } from './BaseSimpleImageSlider';
 import type { SimpleImageSliderItem } from './@types/slider';
 
@@ -77,7 +77,7 @@ function SimpleImageSlider({
 
     return (
         <>
-            <BaseListImageSlider
+            <BaseSimpleImageSlider
                 {...props}
                 imageAspectRatio={imageAspectRatio}
                 data={data}

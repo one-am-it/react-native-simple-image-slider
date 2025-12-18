@@ -6,7 +6,8 @@
             "Bash(yarn list:*)",
             "Bash(yarn typecheck:*)",
             "WebFetch(domain:shopify.github.io)",
-            "Bash(yarn lint:*)"
+            "Bash(yarn lint:*)",
+            "Bash(cat:*)"
         ],
         "deny": [],
         "ask": []

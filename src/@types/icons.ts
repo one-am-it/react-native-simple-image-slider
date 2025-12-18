@@ -1,6 +1,7 @@
-import type React from 'react';
+import type { SvgProps } from 'react-native-svg';
 
-export interface IconsProps extends Partial<Omit<React.SVGProps<SVGSVGElement>, 'stroke'>> {
+export interface IconsProps extends Omit<SvgProps, 'width' | 'height' | 'stroke' | 'strokeWidth'> {
     size?: number;
     stroke?: number;
+    color?: string;
 }
