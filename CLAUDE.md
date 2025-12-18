@@ -79,15 +79,12 @@ The library exports three main slider components:
 **Render Props Pattern**: Most visual elements support render props for customization:
 
 ```typescript
-type RenderProp<Props> =
-    | React.ComponentType<Props>
-    | React.ReactElement
-    | string
-    | undefined
-    | null;
+type RenderProp = React.ComponentType<unknown> | React.ReactElement | undefined | null;
 ```
 
 Used for: PageCounter, corner components, close button, descriptions.
+
+**Note:** The `RenderProp` type does not accept strings to maintain type safety and clarity.
 
 **Ref Forwarding**: All components use `forwardRef` to expose FlashList refs for programmatic scrolling:
 
@@ -178,7 +175,7 @@ All these are peer dependencies and must be installed:
 ```
 src/
 ├── index.tsx                          # Main entry point (exports all components)
-├── BaseSimpleImageSlider.tsx          # Core list slider
+├── BaseSimpleImageSlider.tsx          # Core list slider (exported as BaseSimpleImageSlider)
 ├── SimpleImageSlider.tsx              # Standard slider with optional full-screen
 ├── FullScreenImageSlider.tsx          # Full-screen modal gallery
 ├── PinchToZoom.tsx                    # Gesture handler for zoom/pan
@@ -186,8 +183,14 @@ src/
 ├── SimpleImageSliderThemeProvider.tsx # Theme context provider
 ├── AbsoluteComponentContainer.tsx     # Layout utility for corner components
 ├── @types/                            # Type definitions
+│   ├── icons.ts                       # IconsProps (extends SvgProps from react-native-svg)
+│   ├── pinch-to-zoom.ts               # PinchToZoomStatus type
+│   └── slider.ts                      # SimpleImageSliderItem type
 ├── utils/                             # Utility functions
+│   ├── clamp.ts                       # Worklet-compatible value clamping
+│   └── renderProp.tsx                 # RenderProp utility and type
 └── icons/                             # SVG icons
+    └── IconX.tsx                      # Close button icon
 
 example/                               # Expo example app
 ├── src/App.tsx                        # Demo implementation
@@ -218,6 +221,31 @@ Releases are managed with `release-it`:
 5. Creates GitLab release
 
 Current version: 0.16.1
+
+## Recent Changes (v0.17.0 Breaking Changes)
+
+### Export Naming
+
+- **Breaking:** `BaseListImageSlider` renamed to `BaseSimpleImageSlider` for consistency with component name and types.
+
+### Type System Improvements
+
+- **Breaking:** Removed `string` from `RenderProp` type for better type safety.
+- Added exports for `RenderProp` and `PinchToZoomStatus` types.
+- Fixed `IconsProps` to use `SvgProps` from `react-native-svg` instead of web SVG types.
+
+### Code Quality
+
+- Removed all `@ts-ignore` suppressions with proper typing.
+- Removed empty `src/@types/common.ts` file.
+- Corrected misleading JSDoc comments about imageWidth/imageHeight auto-calculation.
+
+### Documentation
+
+- Comprehensive README with full API reference for all components.
+- Theme customization guide with examples.
+- Advanced usage patterns (refs, corner components, custom page counters).
+- Complete type documentation.
 
 ## Workspace Setup
 
