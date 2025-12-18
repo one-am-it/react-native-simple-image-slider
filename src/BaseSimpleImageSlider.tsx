@@ -1,32 +1,21 @@
-import React, {
-    forwardRef,
-    type ReactElement,
-    useCallback,
-    useEffect,
-    useMemo,
-    useRef,
-    useState,
-} from 'react';
-import { FlashList, type ListRenderItemInfo } from '@shopify/flash-list';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { ReactElement } from 'react';
+import { FlashList } from '@shopify/flash-list';
+import type { FlashListRef, ListRenderItemInfo, ViewToken } from '@shopify/flash-list';
 import mergeRefs from 'merge-refs';
-import { Image, type ImageStyle } from 'expo-image';
-import {
-    type LayoutChangeEvent,
-    Platform,
-    Pressable,
-    type StyleProp,
-    StyleSheet,
-    type TextStyle,
-    type ViewStyle,
-} from 'react-native';
-import type ViewToken from '@shopify/flash-list/src/viewability/ViewToken';
-import PageCounter, { type PageCounterProps } from './PageCounter';
-import PinchToZoom, { type PinchToZoomProps } from './PinchToZoom';
+import { Image } from 'expo-image';
+import type { ImageStyle } from 'expo-image';
+import { Platform, Pressable, StyleSheet } from 'react-native';
+import type { LayoutChangeEvent, StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { GestureHandlerRootView, ScrollView } from 'react-native-gesture-handler';
-import renderProp, { type RenderProp } from './utils/renderProp';
+import PageCounter from './PageCounter';
+import type { PageCounterProps } from './PageCounter';
+import PinchToZoom from './PinchToZoom';
+import type { PinchToZoomProps } from './PinchToZoom';
+import renderProp from './utils/renderProp';
+import type { RenderProp } from './utils/renderProp';
 import type { SimpleImageSliderItem } from './@types/slider';
 import type { PinchToZoomStatus } from './@types/pinch-to-zoom';
-import Animated from 'react-native-reanimated';
 import { AbsoluteComponentContainer } from './AbsoluteComponentContainer';
 
 export type BaseSimpleImageSliderProps = {
@@ -131,55 +120,47 @@ export type BaseSimpleImageSliderProps = {
      */
     onPinchToZoomRequestClose?: PinchToZoomProps['onDismiss'];
     /**
-     * @description The tag to be used for shared transitions. This is applied to the current image in the list.
-     */
-    sharedTransitionTag?: string;
-    /**
      * @description Style that will be applied to every image in the slider.
      */
     imageStyle?: StyleProp<ImageStyle>;
+    /**
+     * @description Ref to the FlashList component.
+     */
+    ref?: React.Ref<FlashListRef<SimpleImageSliderItem>>;
 };
-
-const AnimatedImage = Animated.createAnimatedComponent(Image);
 
 /**
  * @description A simple image slider that displays a list of images. This is the component
  *  that {@link SimpleImageSlider} and {@link FullScreenImageSlider}
  *  are built upon. You should normally use one of those two components instead of this one.
  */
-const BaseSimpleImageSlider = forwardRef<
-    FlashList<SimpleImageSliderItem>,
-    BaseSimpleImageSliderProps
->(function BaseSimpleImageSlider(
-    {
-        data,
-        style,
-        imageWidth,
-        imageHeight,
-        imageAspectRatio = 4 / 3,
-        onItemPress,
-        maxItems,
-        showPageCounter = true,
-        pageCounterPosition = 'bottom-left',
-        pageCounterStyle,
-        pageCounterTextStyle,
-        PageCounterComponent = PageCounter,
-        renderPageCounter,
-        TopRightComponent,
-        TopLeftComponent,
-        BottomRightComponent,
-        BottomLeftComponent,
-        indexOverride,
-        onViewableItemChange,
-        enablePinchToZoom = false,
-        onPinchToZoomStatusChange,
-        onPinchToZoomRequestClose,
-        sharedTransitionTag,
-        imageStyle,
-    },
-    ref
-) {
-    const listRef = useRef<FlashList<SimpleImageSliderItem>>(null);
+function BaseSimpleImageSlider({
+    data,
+    style,
+    imageWidth,
+    imageHeight,
+    imageAspectRatio = 4 / 3,
+    onItemPress,
+    maxItems,
+    showPageCounter = true,
+    pageCounterPosition = 'bottom-left',
+    pageCounterStyle,
+    pageCounterTextStyle,
+    PageCounterComponent = PageCounter,
+    renderPageCounter,
+    TopRightComponent,
+    TopLeftComponent,
+    BottomRightComponent,
+    BottomLeftComponent,
+    indexOverride,
+    onViewableItemChange,
+    enablePinchToZoom = false,
+    onPinchToZoomStatusChange,
+    onPinchToZoomRequestClose,
+    imageStyle,
+    ref,
+}: BaseSimpleImageSliderProps) {
+    const listRef = useRef<FlashListRef<SimpleImageSliderItem>>(null);
 
     const styles = useMemo(
         () => makeStyles({ imageAspectRatio, imageWidth, imageHeight }),
@@ -189,9 +170,6 @@ const BaseSimpleImageSlider = forwardRef<
         () => (maxItems !== undefined ? (data?.slice(0, maxItems) ?? []) : (data ?? [])),
         [data, maxItems]
     );
-    const estimatedItemSize = useMemo(() => {
-        return imageWidth ?? (imageHeight ? imageHeight * (imageAspectRatio ?? 4 / 3) : 350);
-    }, [imageAspectRatio, imageHeight, imageWidth]);
 
     const [currentItem, setCurrentItem] = useState(0);
     const [scrollEnabled, setScrollEnabled] = useState(true);
@@ -206,7 +184,12 @@ const BaseSimpleImageSlider = forwardRef<
     }, []);
 
     const handleViewableItemsChanged = useCallback(
-        ({ viewableItems }: { viewableItems: ViewToken[]; changed: ViewToken[] }) => {
+        ({
+            viewableItems,
+        }: {
+            viewableItems: ViewToken<SimpleImageSliderItem>[];
+            changed: ViewToken<SimpleImageSliderItem>[];
+        }) => {
             const newIndex = viewableItems[0]?.index;
             if (newIndex !== undefined && newIndex !== null) {
                 setCurrentItem(newIndex);
@@ -224,28 +207,23 @@ const BaseSimpleImageSlider = forwardRef<
         [onPinchToZoomStatusChange]
     );
 
+    const handleItemPress = useCallback(
+        (item: SimpleImageSliderItem, index: number) => {
+            listRef.current?.recordInteraction();
+            onItemPress?.(item, index);
+        },
+        [onItemPress]
+    );
+
     const renderItem = useCallback(
         ({ item, index }: ListRenderItemInfo<SimpleImageSliderItem>) => {
-            const ImageComponent =
-                sharedTransitionTag && index === currentItem ? AnimatedImage : Image;
-
             return (
-                <Pressable
-                    onPress={() => {
-                        listRef.current?.recordInteraction();
-                        onItemPress?.(item, index);
-                    }}
-                >
-                    <ImageComponent
-                        sharedTransitionTag={sharedTransitionTag}
-                        transition={200}
-                        // https://github.com/expo/expo/issues/34810
-                        /* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */
+                // eslint-disable-next-line react/jsx-no-bind -- Arrow function necessary to pass item/index from renderItem context
+                <Pressable onPress={() => handleItemPress(item, index)}>
+                    <Image
                         placeholder={item.placeholder}
                         placeholderContentFit={'cover'}
                         recyclingKey={item.key}
-                        // https://github.com/expo/expo/issues/34810
-                        /* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */
                         source={item.source}
                         contentFit={'cover'}
                         contentPosition={'center'}
@@ -254,7 +232,7 @@ const BaseSimpleImageSlider = forwardRef<
                 </Pressable>
             );
         },
-        [currentItem, imageStyle, onItemPress, sharedTransitionTag, styles.image]
+        [handleItemPress, imageStyle, styles.image]
     );
 
     const keyExtractor = useCallback((item: SimpleImageSliderItem) => item.key, []);
@@ -271,6 +249,93 @@ const BaseSimpleImageSlider = forwardRef<
 
         listRef.current?.scrollToIndex({ index: indexOverride ?? 0, animated: false });
     }, [indexOverride, slicedData]);
+
+    const renderPageCounterComponent = useCallback(() => {
+        if (!showPageCounter) {
+            return null;
+        }
+
+        if (renderPageCounter) {
+            return renderPageCounter(currentItem + 1, slicedData.length);
+        }
+
+        return (
+            <AbsoluteComponentContainer position={pageCounterPosition}>
+                <PageCounterComponent
+                    totalPages={slicedData.length}
+                    currentPage={currentItem + 1}
+                    style={pageCounterStyle}
+                    textStyle={pageCounterTextStyle}
+                />
+            </AbsoluteComponentContainer>
+        );
+    }, [
+        showPageCounter,
+        renderPageCounter,
+        currentItem,
+        slicedData.length,
+        pageCounterPosition,
+        PageCounterComponent,
+        pageCounterStyle,
+        pageCounterTextStyle,
+    ]);
+
+    const renderCornerComponents = useCallback(
+        () => (
+            <>
+                {TopRightComponent ? (
+                    <AbsoluteComponentContainer position={'top-right'}>
+                        {renderProp(TopRightComponent)}
+                    </AbsoluteComponentContainer>
+                ) : null}
+                {TopLeftComponent ? (
+                    <AbsoluteComponentContainer position={'top-left'}>
+                        {renderProp(TopLeftComponent)}
+                    </AbsoluteComponentContainer>
+                ) : null}
+                {BottomRightComponent ? (
+                    <AbsoluteComponentContainer position={'bottom-right'}>
+                        {renderProp(BottomRightComponent)}
+                    </AbsoluteComponentContainer>
+                ) : null}
+                {BottomLeftComponent ? (
+                    <AbsoluteComponentContainer position={'bottom-left'}>
+                        {renderProp(BottomLeftComponent)}
+                    </AbsoluteComponentContainer>
+                ) : null}
+            </>
+        ),
+        [BottomLeftComponent, BottomRightComponent, TopLeftComponent, TopRightComponent]
+    );
+
+    const renderListWithPinchToZoom = useCallback(
+        (listElement: React.ReactElement) => {
+            if (enablePinchToZoom) {
+                return (
+                    <PinchToZoom
+                        style={styles.pinchToZoom}
+                        onDismiss={onPinchToZoomRequestClose}
+                        onStatusChange={handlePinchToZoomStatusChange}
+                        onScaleChange={handleScaleChange}
+                        onScaleReset={handleScaleReset}
+                        maximumZoomScale={5}
+                        minimumZoomScale={1}
+                    >
+                        {listElement}
+                    </PinchToZoom>
+                );
+            }
+            return listElement;
+        },
+        [
+            enablePinchToZoom,
+            handlePinchToZoomStatusChange,
+            handleScaleChange,
+            handleScaleReset,
+            onPinchToZoomRequestClose,
+            styles.pinchToZoom,
+        ]
+    );
 
     const list = (
         <FlashList
@@ -292,69 +357,18 @@ const BaseSimpleImageSlider = forwardRef<
             keyExtractor={keyExtractor}
             renderItem={renderItem}
             data={slicedData}
-            estimatedItemSize={estimatedItemSize}
-            estimatedListSize={{
-                width: estimatedItemSize,
-                height: imageHeight ?? estimatedItemSize / imageAspectRatio,
-            }}
             onLayout={handleListLayout}
         />
     );
 
     return (
         <GestureHandlerRootView style={[styles.container, style]}>
-            {enablePinchToZoom ? (
-                <PinchToZoom
-                    style={styles.pinchToZoom}
-                    onDismiss={onPinchToZoomRequestClose}
-                    onStatusChange={handlePinchToZoomStatusChange}
-                    onScaleChange={handleScaleChange}
-                    onScaleReset={handleScaleReset}
-                    maximumZoomScale={5}
-                    minimumZoomScale={1}
-                >
-                    {list}
-                </PinchToZoom>
-            ) : (
-                list
-            )}
-            {showPageCounter ? (
-                renderPageCounter ? (
-                    renderPageCounter(currentItem + 1, slicedData.length)
-                ) : (
-                    <AbsoluteComponentContainer position={pageCounterPosition}>
-                        <PageCounterComponent
-                            totalPages={slicedData.length}
-                            currentPage={currentItem + 1}
-                            style={pageCounterStyle}
-                            textStyle={pageCounterTextStyle}
-                        />
-                    </AbsoluteComponentContainer>
-                )
-            ) : null}
-            {TopRightComponent ? (
-                <AbsoluteComponentContainer position={'top-right'}>
-                    {renderProp(TopRightComponent)}
-                </AbsoluteComponentContainer>
-            ) : null}
-            {TopLeftComponent ? (
-                <AbsoluteComponentContainer position={'top-left'}>
-                    {renderProp(TopLeftComponent)}
-                </AbsoluteComponentContainer>
-            ) : null}
-            {BottomRightComponent ? (
-                <AbsoluteComponentContainer position={'bottom-right'}>
-                    {renderProp(BottomRightComponent)}
-                </AbsoluteComponentContainer>
-            ) : null}
-            {BottomLeftComponent ? (
-                <AbsoluteComponentContainer position={'bottom-left'}>
-                    {renderProp(BottomLeftComponent)}
-                </AbsoluteComponentContainer>
-            ) : null}
+            {renderListWithPinchToZoom(list)}
+            {renderPageCounterComponent()}
+            {renderCornerComponents()}
         </GestureHandlerRootView>
     );
-});
+}
 
 const makeStyles = ({
     imageAspectRatio,

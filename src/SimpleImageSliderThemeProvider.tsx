@@ -1,4 +1,5 @@
-import React, { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
+import React, { createContext, useContext, useMemo } from 'react';
+import type { PropsWithChildren } from 'react';
 
 export type SimpleImageSliderTheme = {
     colors: {

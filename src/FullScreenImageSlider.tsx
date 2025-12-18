@@ -1,20 +1,7 @@
-import React, {
-    forwardRef,
-    type ReactNode,
-    useCallback,
-    useEffect,
-    useMemo,
-    useState,
-} from 'react';
-import {
-    Modal,
-    type ScaledSize,
-    StyleSheet,
-    TouchableOpacity,
-    useWindowDimensions,
-    View,
-} from 'react-native';
-import IconX from './icons/IconX';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import type { ReactNode } from 'react';
+import { Modal, StyleSheet, TouchableOpacity, useWindowDimensions, View } from 'react-native';
+import type { ScaledSize } from 'react-native';
 import Animated, {
     runOnJS,
     useAnimatedStyle,
@@ -22,18 +9,20 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 import { setStatusBarStyle } from 'expo-status-bar';
-import { FlashList } from '@shopify/flash-list';
-import BaseListImageSlider, { type BaseSimpleImageSliderProps } from './BaseSimpleImageSlider';
-import { type EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
+import type { FlashListRef } from '@shopify/flash-list';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import type { EdgeInsets } from 'react-native-safe-area-context';
+import BaseListImageSlider from './BaseSimpleImageSlider';
+import type { BaseSimpleImageSliderProps } from './BaseSimpleImageSlider';
+import IconX from './icons/IconX';
 import type { PinchToZoomStatus } from './@types/pinch-to-zoom';
 import type { SimpleImageSliderItem } from './@types/slider';
-import renderProp, { type RenderProp } from './utils/renderProp';
-import {
-    type SimpleImageSliderTheme,
-    useSimpleImageSliderTheme,
-} from './SimpleImageSliderThemeProvider';
+import renderProp from './utils/renderProp';
+import type { RenderProp } from './utils/renderProp';
+import { useSimpleImageSliderTheme } from './SimpleImageSliderThemeProvider';
+import type { SimpleImageSliderTheme } from './SimpleImageSliderThemeProvider';
 
-export type FullScreenImageSliderProps = Omit<BaseSimpleImageSliderProps, 'imageWidth'> & {
+export type FullScreenImageSliderProps = Omit<BaseSimpleImageSliderProps, 'imageWidth' | 'ref'> & {
     /**
      * @description Whether the modal is open or not.
      */
@@ -56,27 +45,26 @@ export type FullScreenImageSliderProps = Omit<BaseSimpleImageSliderProps, 'image
      * @description Callback that is called when the modal begins to fade out.
      */
     onFadeOut?: () => void;
+    /**
+     * @description Ref to the FlashList component.
+     */
+    ref?: React.Ref<FlashListRef<SimpleImageSliderItem>>;
 };
 
 /**
  * @description A full screen image slider that displays images in a modal.
  */
-const FullScreenImageSlider = forwardRef<
-    FlashList<SimpleImageSliderItem>,
-    FullScreenImageSliderProps
->(function FullScreenImageSlider(
-    {
-        CloseButtonIcon,
-        open,
-        onRequestClose,
-        renderDescription,
-        onViewableItemChange,
-        onFadeOut,
-        data,
-        ...props
-    },
-    ref
-) {
+function FullScreenImageSlider({
+    CloseButtonIcon,
+    open,
+    onRequestClose,
+    renderDescription,
+    onViewableItemChange,
+    onFadeOut,
+    data,
+    ref,
+    ...props
+}: FullScreenImageSliderProps) {
     const windowDimensions = useWindowDimensions();
     const theme = useSimpleImageSliderTheme();
     const safeAreaInsets = useSafeAreaInsets();
@@ -166,7 +154,7 @@ const FullScreenImageSlider = forwardRef<
             </Animated.View>
         </Modal>
     );
-});
+}
 
 export default FullScreenImageSlider;
 

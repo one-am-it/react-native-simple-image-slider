@@ -1,10 +1,7 @@
-import React, { type PropsWithChildren, useCallback, useMemo } from 'react';
-import {
-    type LayoutChangeEvent,
-    type StyleProp,
-    useWindowDimensions,
-    type ViewStyle,
-} from 'react-native';
+import React, { useCallback, useMemo } from 'react';
+import type { PropsWithChildren } from 'react';
+import { useWindowDimensions } from 'react-native';
+import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 import Animated, {
     cancelAnimation,
     runOnJS,
@@ -14,8 +11,8 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import { clamp } from './utils/clamp';
 import * as Haptics from 'expo-haptics';
+import { clamp } from './utils/clamp';
 import type { PinchToZoomStatus } from './@types/pinch-to-zoom';
 
 export type PinchToZoomProps = PropsWithChildren<{

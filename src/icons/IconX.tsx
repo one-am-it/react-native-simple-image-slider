@@ -4,7 +4,6 @@ import type { IconsProps } from '../@types/icons';
 
 function IconX({ size = 24, color = '#1f2937', stroke = 2, ...props }: IconsProps) {
     return (
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         <Svg
             width={size}

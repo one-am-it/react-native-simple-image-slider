@@ -1,16 +1,8 @@
 import React, { useMemo } from 'react';
-import {
-    type StyleProp,
-    StyleSheet,
-    Text,
-    type TextStyle,
-    View,
-    type ViewStyle,
-} from 'react-native';
-import {
-    type SimpleImageSliderTheme,
-    useSimpleImageSliderTheme,
-} from './SimpleImageSliderThemeProvider';
+import { StyleSheet, Text, View } from 'react-native';
+import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
+import { useSimpleImageSliderTheme } from './SimpleImageSliderThemeProvider';
+import type { SimpleImageSliderTheme } from './SimpleImageSliderThemeProvider';
 
 export type PageCounterProps = {
     /**

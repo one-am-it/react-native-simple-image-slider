@@ -1,8 +1,10 @@
-import React, { forwardRef, useCallback, useRef, useState } from 'react';
-import { FlashList } from '@shopify/flash-list';
+import React, { useCallback, useRef, useState } from 'react';
+import type { FlashListRef } from '@shopify/flash-list';
 import mergeRefs from 'merge-refs';
-import FullScreenImageSlider, { type FullScreenImageSliderProps } from './FullScreenImageSlider';
-import BaseListImageSlider, { type BaseSimpleImageSliderProps } from './BaseSimpleImageSlider';
+import FullScreenImageSlider from './FullScreenImageSlider';
+import type { FullScreenImageSliderProps } from './FullScreenImageSlider';
+import BaseListImageSlider from './BaseSimpleImageSlider';
+import type { BaseSimpleImageSliderProps } from './BaseSimpleImageSlider';
 import type { SimpleImageSliderItem } from './@types/slider';
 
 export type SimpleImageSliderProps = BaseSimpleImageSliderProps & {
@@ -30,81 +32,77 @@ export type SimpleImageSliderProps = BaseSimpleImageSliderProps & {
 /**
  * @description A simple image slider that displays images in a list and can show a {@link FullScreenImageSlider} on press.
  */
-const SimpleImageSlider = forwardRef<FlashList<SimpleImageSliderItem>, SimpleImageSliderProps>(
-    function ListImageSlider(
-        {
-            data,
-            fullScreenEnabled = false,
-            onItemPress,
-            onViewableItemChange,
-            FullScreenCloseButtonIcon,
-            renderFullScreenDescription,
-            imageAspectRatio,
-            fullScreenImageAspectRatio,
-            ...props
-        },
-        ref
-    ) {
-        const listRef = useRef<FlashList<SimpleImageSliderItem>>(null);
-        const fullScreenListRef = useRef<FlashList<SimpleImageSliderItem>>(null);
+function SimpleImageSlider({
+    data,
+    fullScreenEnabled = false,
+    onItemPress,
+    onViewableItemChange,
+    FullScreenCloseButtonIcon,
+    renderFullScreenDescription,
+    imageAspectRatio,
+    fullScreenImageAspectRatio,
+    ref,
+    ...props
+}: SimpleImageSliderProps) {
+    const listRef = useRef<FlashListRef<SimpleImageSliderItem>>(null);
+    const fullScreenListRef = useRef<FlashListRef<SimpleImageSliderItem>>(null);
 
-        const [fullScreen, setFullScreen] = useState(false);
-        const [currentIndex, setCurrentIndex] = useState(0);
+    const [fullScreen, setFullScreen] = useState(false);
+    const [currentIndex, setCurrentIndex] = useState(0);
 
-        const internalOnViewableItemChange = useCallback(
-            (index: number) => {
-                setCurrentIndex(index);
-                onViewableItemChange?.(index);
-            },
-            [onViewableItemChange]
-        );
-
-        const onFullScreenViewableItemChange = useCallback((index: number) => {
+    const internalOnViewableItemChange = useCallback(
+        (index: number) => {
             setCurrentIndex(index);
-        }, []);
+            onViewableItemChange?.(index);
+        },
+        [onViewableItemChange]
+    );
 
-        const openFullScreen = useCallback(() => {
-            setFullScreen(true);
-        }, []);
+    const onFullScreenViewableItemChange = useCallback((index: number) => {
+        setCurrentIndex(index);
+    }, []);
 
-        const onRequestClose = useCallback(() => {
-            listRef.current?.scrollToIndex({ index: currentIndex });
-            setFullScreen(false);
-        }, [currentIndex]);
+    const openFullScreen = useCallback(() => {
+        setFullScreen(true);
+    }, []);
 
-        const onFadeOut = useCallback(() => {
-            listRef.current?.scrollToIndex({ index: currentIndex });
-        }, [currentIndex]);
+    const onRequestClose = useCallback(() => {
+        listRef.current?.scrollToIndex({ index: currentIndex });
+        setFullScreen(false);
+    }, [currentIndex]);
 
-        return (
-            <>
-                <BaseListImageSlider
+    const onFadeOut = useCallback(() => {
+        listRef.current?.scrollToIndex({ index: currentIndex });
+    }, [currentIndex]);
+
+    return (
+        <>
+            <BaseListImageSlider
+                {...props}
+                imageAspectRatio={imageAspectRatio}
+                data={data}
+                ref={mergeRefs(ref, listRef)}
+                onItemPress={fullScreenEnabled ? openFullScreen : onItemPress}
+                onViewableItemChange={internalOnViewableItemChange}
+            />
+            {fullScreenEnabled ? (
+                <FullScreenImageSlider
                     {...props}
-                    imageAspectRatio={imageAspectRatio}
+                    imageAspectRatio={fullScreenImageAspectRatio ?? imageAspectRatio}
+                    ref={fullScreenListRef}
+                    open={fullScreen}
+                    onRequestClose={onRequestClose}
                     data={data}
-                    ref={mergeRefs(ref, listRef)}
-                    onItemPress={fullScreenEnabled ? openFullScreen : onItemPress}
-                    onViewableItemChange={internalOnViewableItemChange}
+                    showPageCounter={false}
+                    indexOverride={currentIndex}
+                    onViewableItemChange={onFullScreenViewableItemChange}
+                    renderDescription={renderFullScreenDescription}
+                    CloseButtonIcon={FullScreenCloseButtonIcon}
+                    onFadeOut={onFadeOut}
                 />
-                {fullScreenEnabled ? (
-                    <FullScreenImageSlider
-                        {...props}
-                        imageAspectRatio={fullScreenImageAspectRatio ?? imageAspectRatio}
-                        ref={fullScreenListRef}
-                        open={fullScreen}
-                        onRequestClose={onRequestClose}
-                        data={data}
-                        showPageCounter={false}
-                        indexOverride={currentIndex}
-                        onViewableItemChange={onFullScreenViewableItemChange}
-                        renderDescription={renderFullScreenDescription}
-                        CloseButtonIcon={FullScreenCloseButtonIcon}
-                        onFadeOut={onFadeOut}
-                    />
-                ) : null}
-            </>
-        );
-    }
-);
+            ) : null}
+        </>
+    );
+}
 
 export default SimpleImageSlider;

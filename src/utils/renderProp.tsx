@@ -14,7 +14,6 @@ export default function renderProp(Component: RenderProp) {
         ) : isValidElement(Component) ? (
             Component
         ) : (
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             <Component />
         )

@@ -5,6 +5,8 @@ import {
     SimpleImageSlider,
 } from '@one-am/react-native-simple-image-slider';
 
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { Text } from 'react-native';
 import pictureOne from '../assets/photos/1.jpg';
 import pictureTwo from '../assets/photos/2.jpg';
 import pictureThree from '../assets/photos/3.jpg';
@@ -19,9 +21,6 @@ import pictureEleven from '../assets/photos/11.jpg';
 import pictureTwelve from '../assets/photos/12.jpg';
 import pictureThirteen from '../assets/photos/13.jpg';
 import pictureFourteen from '../assets/photos/14.jpg';
-
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { Text } from 'react-native';
 
 const photos = [
     pictureOne,
@@ -58,6 +57,7 @@ export default function App() {
                         }))}
                         imageAspectRatio={16 / 9}
                         fullScreenEnabled={true}
+                        // eslint-disable-next-line react/jsx-no-bind -- Render prop requires arrow function to receive dynamic parameters
                         renderFullScreenDescription={(_, index) => (
                             <Text style={{ color: '#ffffff' }}>Picture {index}</Text>
                         )}

@@ -75,6 +75,12 @@ module.exports = defineConfig([
     // (it's test/development code only, uses workspace-linked packages)
     {
         files: ['example/**/*'],
+        languageOptions: {
+            parser: typescriptParser,
+            parserOptions: {
+                projectService: false,
+            },
+        },
         rules: {
             'import/no-extraneous-dependencies': 'off',
         },

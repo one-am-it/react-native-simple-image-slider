@@ -3,7 +3,10 @@
         "allow": [
             "Read(//Users/dvolta/Projects/OneAM/one-ui/**)",
             "Bash(yarn lint)",
-            "Bash(yarn list:*)"
+            "Bash(yarn list:*)",
+            "Bash(yarn typecheck:*)",
+            "WebFetch(domain:shopify.github.io)",
+            "Bash(yarn lint:*)"
         ],
         "deny": [],
         "ask": []
