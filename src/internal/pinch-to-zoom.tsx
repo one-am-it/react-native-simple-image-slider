@@ -12,8 +12,8 @@ import Animated, {
 } from 'react-native-reanimated';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import * as Haptics from 'expo-haptics';
-import { clamp } from './utils/clamp';
-import type { PinchToZoomStatus } from './@types/pinch-to-zoom';
+import { clamp } from '../utils/clamp';
+import type { PinchToZoomStatus } from '../types/pinch-to-zoom';
 
 export type PinchToZoomProps = PropsWithChildren<{
     /**

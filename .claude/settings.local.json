@@ -7,7 +7,13 @@
             "Bash(yarn typecheck:*)",
             "WebFetch(domain:shopify.github.io)",
             "Bash(yarn lint:*)",
-            "Bash(cat:*)"
+            "Bash(cat:*)",
+            "WebSearch",
+            "WebFetch(domain:ui.shadcn.com)",
+            "WebFetch(domain:vercel.com)",
+            "WebFetch(domain:www.patterns.dev)",
+            "WebFetch(domain:gluestack.io)",
+            "mcp__shadcn__view_items_in_registries"
         ],
         "deny": [],
         "ask": []

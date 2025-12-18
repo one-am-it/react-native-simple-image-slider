@@ -1,8 +1,12 @@
 import * as React from 'react';
 
 import {
-    SimpleImageSliderThemeProvider,
-    SimpleImageSlider,
+    Slider,
+    SliderContent,
+    SliderPageCounter,
+    SliderFullScreen,
+    SliderCloseButton,
+    SliderDescription,
 } from '@one-am/react-native-simple-image-slider';
 
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
@@ -49,20 +53,25 @@ export default function App() {
                     justifyContent: 'center',
                 }}
             >
-                <SimpleImageSliderThemeProvider>
-                    <SimpleImageSlider
-                        data={photos.map((photo, index) => ({
-                            source: photo,
-                            key: index.toString(),
-                        }))}
-                        imageAspectRatio={16 / 9}
-                        fullScreenEnabled={true}
-                        // eslint-disable-next-line react/jsx-no-bind -- Render prop requires arrow function to receive dynamic parameters
-                        renderFullScreenDescription={(_, index) => (
-                            <Text style={{ color: '#ffffff' }}>Picture {index}</Text>
-                        )}
-                    />
-                </SimpleImageSliderThemeProvider>
+                <Slider
+                    data={photos.map((photo, index) => ({
+                        source: photo,
+                        key: index.toString(),
+                    }))}
+                    imageAspectRatio={16 / 9}
+                >
+                    <SliderContent />
+                    <SliderPageCounter position="bottom-left" />
+                    <SliderFullScreen>
+                        <SliderContent enablePinchToZoom />
+                        <SliderCloseButton />
+                        <SliderDescription
+                            render={(_, index) => (
+                                <Text style={{ color: '#ffffff' }}>Picture {index + 1}</Text>
+                            )}
+                        />
+                    </SliderFullScreen>
+                </Slider>
             </SafeAreaView>
         </SafeAreaProvider>
     );

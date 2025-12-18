@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a React Native image slider library (`@one-am/react-native-simple-image-slider`) built with performance as a priority. It uses FlashList for efficient scrolling and expo-image for optimized image rendering. The library includes a basic slider component and a full-screen gallery with pinch-to-zoom gesture support.
+This is a React Native image slider library (`@one-am/react-native-simple-image-slider`) built with a **compositional API** inspired by shadcn/ui. It uses FlashList for efficient scrolling and expo-image for optimized image rendering. The library provides primitive components that can be composed together to create custom galleries.
 
 ## Development Commands
 
@@ -41,50 +41,120 @@ yarn sync:deps           # Sync peer dependencies to dev dependencies
 
 ## Architecture
 
+### Compositional API Pattern
+
+The library uses a **flat exports** pattern (like shadcn/ui) where users compose primitive components:
+
+```tsx
+<Slider data={images}>
+    <SliderContent />
+    <SliderPageCounter position="bottom-left" />
+    <SliderFullScreen>
+        <SliderContent enablePinchToZoom />
+        <SliderCloseButton />
+    </SliderFullScreen>
+</Slider>
+```
+
 ### Component Hierarchy
 
-The library exports three main slider components:
+The library exports 7 main primitives:
 
-1. **BaseSimpleImageSlider** (`src/BaseSimpleImageSlider.tsx`) - Core foundation component
+1. **Slider** (`src/primitives/slider.tsx`) - Root component with Context provider
+    - Wraps children in `SliderProvider` for state sharing
+    - Uses `GestureHandlerRootView` for gesture support
+    - Provides state via React Context to all children
+
+2. **SliderContent** (`src/primitives/slider-content.tsx`) - FlashList wrapper
     - Uses `@shopify/flash-list` for horizontal scrolling performance
     - Handles image rendering with `expo-image`
-    - Provides ref forwarding to FlashList for imperative control (`.scrollToIndex()`)
-    - Supports custom page counter, corner components (TopLeft, TopRight, etc.)
+    - Supports ref forwarding to FlashList for imperative control (`.scrollToIndex()`)
+    - Optionally wraps in `PinchToZoom` for gesture support
 
-2. **SimpleImageSlider** (`src/SimpleImageSlider.tsx`) - Standard slider with optional full-screen
-    - Wraps BaseSimpleImageSlider
-    - Optionally includes FullScreenImageSlider modal on image press
-    - Pass `fullScreenEnabled={true}` to enable full-screen gallery
+3. **SliderPageCounter** (`src/primitives/slider-page-counter.tsx`) - Page indicator
+    - Positioned absolutely (top-left, top-right, bottom-left, bottom-right)
+    - Reads `currentIndex` and `totalItems` from context
+    - Supports custom render prop for full customization
 
-3. **FullScreenImageSlider** (`src/FullScreenImageSlider.tsx`) - Modal full-screen gallery
+4. **SliderCorner** (`src/primitives/slider-corner.tsx`) - Positioned container
+    - Absolute positioning utility for custom overlays
+    - Configurable offset from edges (default: 16px)
+
+5. **SliderFullScreen** (`src/primitives/slider-full-screen.tsx`) - Modal full-screen gallery
     - Uses React Native Modal component
-    - Reuses BaseSimpleImageSlider internally for consistency
-    - Includes status bar color management and safe area support
-    - Fade in/out animations with Reanimated
+    - Creates **nested context** with its own index state
+    - Includes fade in/out animations with Reanimated
+    - Syncs index with parent on open/close
 
-### Supporting Components
+6. **SliderCloseButton** (`src/primitives/slider-close-button.tsx`) - Close button
+    - Positioned in safe area (top-right by default)
+    - Calls `closeFullScreen()` from context
+    - Supports custom icon children
 
-- **PinchToZoom** (`src/PinchToZoom.tsx`) - Gesture wrapper for zoom/pan
-    - Uses `react-native-gesture-handler` for pinch/pan/tap detection
-    - Animated with `react-native-reanimated` for 60fps performance
-    - Includes haptic feedback on zoom start/end
+7. **SliderDescription** (`src/primitives/slider-description.tsx`) - Description container
+    - Positioned at bottom with safe area insets
+    - Receives current item and index via render prop
 
-- **PageCounter** (`src/PageCounter.tsx`) - Page indicator (e.g., "1/10")
+### Context Architecture
 
-- **SimpleImageSliderThemeProvider** (`src/SimpleImageSliderThemeProvider.tsx`) - Theme context
-    - Simple color-based theming (pageCounterBackground, pageCounterBorder, fullScreenCloseButton, descriptionContainerBorder)
+**File**: `src/context/slider-context.tsx`
+
+The context provides shared state to all primitives:
+
+```typescript
+type SliderContextValue = {
+    // Data
+    data: SliderItem[];
+    totalItems: number;
+
+    // State
+    currentIndex: number;
+    setCurrentIndex: (index: number) => void;
+
+    // Dimensions
+    imageAspectRatio: number;
+    containerWidth: number;
+    containerHeight: number;
+
+    // Refs
+    listRef: RefObject<FlashListRef<SliderItem> | null>;
+    scrollToIndex: (index: number, animated?: boolean) => void;
+
+    // Full-screen
+    isFullScreenOpen: boolean;
+    openFullScreen: () => void;
+    closeFullScreen: () => void;
+
+    // Callbacks
+    onItemPress?: (item: SliderItem, index: number) => void;
+    registerOnItemPress: (handler) => void;
+
+    // Layout
+    handleLayout: (event: LayoutChangeEvent) => void;
+};
+```
+
+### Nested Context for Full-Screen
+
+`SliderFullScreen` creates a **nested SliderProvider** that:
+
+- Inherits `data` from parent context
+- Has its own `currentIndex` state (synced on open/close)
+- Has its own `listRef` for the full-screen FlashList
+- Overrides `closeFullScreen` to sync index back to parent
+
+This allows full-screen gallery to scroll independently while maintaining sync with the inline slider.
 
 ### Key Design Patterns
 
-**Render Props Pattern**: Most visual elements support render props for customization:
+**Context Hook Pattern**: All primitives use `useSlider()` to access shared state:
 
 ```typescript
-type RenderProp = React.ComponentType<unknown> | React.ReactElement | undefined | null;
+function SliderPageCounter() {
+    const { currentIndex, totalItems } = useSlider();
+    // ...
+}
 ```
-
-Used for: PageCounter, corner components, close button, descriptions.
-
-**Note:** The `RenderProp` type does not accept strings to maintain type safety and clarity.
 
 **Ref Forwarding**: All components use `forwardRef` to expose FlashList refs for programmatic scrolling:
 
@@ -92,7 +162,7 @@ Used for: PageCounter, corner components, close button, descriptions.
 sliderRef.current?.scrollToIndex({ index: 2, animated: true });
 ```
 
-**Composition**: Components are built to be composed together. BaseSimpleImageSlider is reused in both SimpleImageSlider and FullScreenImageSlider.
+**Composition over Props**: Instead of 30+ props on a single component, functionality is distributed across composable primitives.
 
 ## Build System
 
@@ -174,34 +244,41 @@ All these are peer dependencies and must be installed:
 
 ```
 src/
-├── index.tsx                          # Main entry point (exports all components)
-├── BaseSimpleImageSlider.tsx          # Core list slider (exported as BaseSimpleImageSlider)
-├── SimpleImageSlider.tsx              # Standard slider with optional full-screen
-├── FullScreenImageSlider.tsx          # Full-screen modal gallery
-├── PinchToZoom.tsx                    # Gesture handler for zoom/pan
-├── PageCounter.tsx                    # Page indicator component
-├── SimpleImageSliderThemeProvider.tsx # Theme context provider
-├── AbsoluteComponentContainer.tsx     # Layout utility for corner components
-├── @types/                            # Type definitions
-│   ├── icons.ts                       # IconsProps (extends SvgProps from react-native-svg)
-│   ├── pinch-to-zoom.ts               # PinchToZoomStatus type
-│   └── slider.ts                      # SimpleImageSliderItem type
-├── utils/                             # Utility functions
-│   ├── clamp.ts                       # Worklet-compatible value clamping
-│   └── renderProp.tsx                 # RenderProp utility and type
-└── icons/                             # SVG icons
-    └── IconX.tsx                      # Close button icon
+├── index.ts                    # Main entry point (exports all primitives)
+├── primitives/
+│   ├── slider.tsx               # Root component with Context
+│   ├── slider-content.tsx        # FlashList wrapper
+│   ├── slider-page-counter.tsx    # Page indicator
+│   ├── slider-corner.tsx         # Positioned container
+│   ├── slider-full-screen.tsx     # Modal full-screen
+│   ├── slider-close-button.tsx    # Close button
+│   ├── slider-description.tsx    # Description overlay
+│   └── index.ts                 # Barrel export
+├── context/
+│   └── slider-context.tsx        # Context provider + useSlider hook
+├── hooks/
+│   └── use-slider-state.ts        # Internal state management
+├── @types/
+│   ├── context.ts               # Context and SliderItem types
+│   ├── icons.ts                 # IconsProps (extends SvgProps)
+│   └── pinch-to-zoom.ts         # PinchToZoomStatus type
+├── utils/
+│   └── clamp.ts                 # Worklet-compatible value clamping
+├── icons/
+│   └── icon-x.tsx                # Close button icon
+└── internal/
+    └── pinch-to-zoom.tsx          # Internal gesture wrapper
 
-example/                               # Expo example app
-├── src/App.tsx                        # Demo implementation
-└── assets/photos/                     # Sample images
+example/                         # Expo example app
+├── src/App.tsx                  # Demo implementation with new API
+└── assets/photos/               # Sample images
 
-lib/                                   # Built output (generated, git-ignored)
+lib/                             # Built output (generated, git-ignored)
 ```
 
 ## iOS Scrolling Quirk
 
-BaseSimpleImageSlider includes a platform-specific workaround for iOS scroll behavior:
+SliderContent includes a platform-specific workaround for iOS scroll behavior:
 
 ```typescript
 // iOS has a bug where snapToInterval causes scroll overshoot
@@ -220,32 +297,58 @@ Releases are managed with `release-it`:
 4. Publishes to npm: `@one-am/react-native-simple-image-slider`
 5. Creates GitLab release
 
-Current version: 0.16.1
+Current version: 0.17.0+ (compositional API)
 
-## Recent Changes (v0.17.0 Breaking Changes)
+## Breaking Changes (v1.0.0)
 
-### Export Naming
+### Removed Components
 
-- **Breaking:** `BaseListImageSlider` renamed to `BaseSimpleImageSlider` for consistency with component name and types.
+- `SimpleImageSlider` - replaced with compositional API
+- `BaseSimpleImageSlider` - replaced with `Slider` + `SliderContent`
+- `FullScreenImageSlider` - replaced with `SliderFullScreen`
+- `SimpleImageSliderThemeProvider` - theming now via props only
+- `PageCounter` - replaced with `SliderPageCounter`
 
-### Type System Improvements
+### Renamed Types
 
-- **Breaking:** Removed `string` from `RenderProp` type for better type safety.
-- Added exports for `RenderProp` and `PinchToZoomStatus` types.
-- Fixed `IconsProps` to use `SvgProps` from `react-native-svg` instead of web SVG types.
+- `SimpleImageSliderItem` → `SliderItem`
 
-### Code Quality
+### New Exports
 
-- Removed all `@ts-ignore` suppressions with proper typing.
-- Removed empty `src/@types/common.ts` file.
-- Corrected misleading JSDoc comments about imageWidth/imageHeight auto-calculation.
+- `Slider`, `SliderContent`, `SliderPageCounter`, `SliderCorner`, `SliderFullScreen`, `SliderCloseButton`, `SliderDescription`
+- `useSlider` hook
+- `SliderContextValue` type
 
-### Documentation
+### Migration Example
 
-- Comprehensive README with full API reference for all components.
-- Theme customization guide with examples.
-- Advanced usage patterns (refs, corner components, custom page counters).
-- Complete type documentation.
+**Before (v0.x)**:
+
+```tsx
+<SimpleImageSliderThemeProvider>
+    <SimpleImageSlider
+        data={images}
+        fullScreenEnabled={true}
+        pageCounterPosition="bottom-left"
+        TopRightComponent={<Badge />}
+    />
+</SimpleImageSliderThemeProvider>
+```
+
+**After (v1.0)**:
+
+```tsx
+<Slider data={images}>
+    <SliderContent />
+    <SliderPageCounter position="bottom-left" />
+    <SliderCorner position="top-right">
+        <Badge />
+    </SliderCorner>
+    <SliderFullScreen>
+        <SliderContent enablePinchToZoom />
+        <SliderCloseButton />
+    </SliderFullScreen>
+</Slider>
+```
 
 ## Workspace Setup
 
@@ -255,3 +358,5 @@ This is a Yarn 3 workspace with:
 - `example/`: Expo app for testing
 
 Use `yarn example <command>` to run commands in the example workspace.
+
+- tutti gli export alla fine, usare sempre export type per i tipi. niente export di default.
