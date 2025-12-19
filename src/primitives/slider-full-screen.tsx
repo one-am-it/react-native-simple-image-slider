@@ -27,6 +27,14 @@ function SliderFullScreen({ children, style }: SliderFullScreenProps) {
                     height: windowDimensions.height,
                     width: windowDimensions.width,
                 },
+                contentContainer: {
+                    width: '100%',
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                },
             }),
         [windowDimensions]
     );
@@ -88,11 +96,7 @@ function SliderFullScreen({ children, style }: SliderFullScreenProps) {
                     onIndexChange={handleIndexChange}
                     onFullScreenChange={parentContext.closeFullScreen}
                 >
-                    <View
-                        style={{ width: windowDimensions.width, height: windowDimensions.height }}
-                    >
-                        {children}
-                    </View>
+                    <View style={styles.contentContainer}>{children}</View>
                 </SliderProvider>
             </Animated.View>
         </Modal>
