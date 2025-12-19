@@ -58,7 +58,6 @@ export default function App() {
                         source: photo,
                         key: index.toString(),
                     }))}
-                    imageAspectRatio={16 / 9}
                 >
                     <SliderContent />
                     <SliderPageCounter position="bottom-left" />

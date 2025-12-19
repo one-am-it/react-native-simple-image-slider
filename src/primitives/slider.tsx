@@ -9,6 +9,10 @@ type SliderProps = {
     children: React.ReactNode;
     data: SliderItem[];
     initialIndex?: number;
+    /**
+     * Optional aspect ratio override. If not provided, aspect ratio will be
+     * auto-detected from the first image. Falls back to 4:3 if detection fails.
+     */
     imageAspectRatio?: number;
     style?: StyleProp<ViewStyle>;
     onIndexChange?: (index: number) => void;

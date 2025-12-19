@@ -2,16 +2,26 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { LayoutChangeEvent } from 'react-native';
 import type { FlashListRef } from '@shopify/flash-list';
 import type { SliderContextValue, SliderProviderProps, SliderItem } from '../types/context';
+import { useImageAspectRatio } from './use-image-aspect-ratio';
 
 export function useSliderState(props: SliderProviderProps): SliderContextValue {
     const {
         data,
         initialIndex = 0,
-        imageAspectRatio = 4 / 3,
+        imageAspectRatio: aspectRatioOverride,
         onIndexChange,
         onItemPress: onItemPressProp,
         onFullScreenChange,
     } = props;
+
+    // Get first image source for aspect ratio detection
+    const firstImageSource = data?.[0]?.source;
+
+    // Use the hook for aspect ratio detection
+    const { aspectRatio: imageAspectRatio, isLoading: isAspectRatioLoading } = useImageAspectRatio(
+        firstImageSource,
+        aspectRatioOverride
+    );
 
     const listRef = useRef<FlashListRef<SliderItem>>(null);
     const [currentIndex, setCurrentIndex] = useState(initialIndex);
@@ -71,6 +81,7 @@ export function useSliderState(props: SliderProviderProps): SliderContextValue {
         currentIndex,
         setCurrentIndex: handleSetCurrentIndex,
         imageAspectRatio,
+        isAspectRatioLoading,
         containerWidth,
         containerHeight,
         listRef,

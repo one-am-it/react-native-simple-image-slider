@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useLayoutEffect, useMemo, useState } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
@@ -34,6 +34,7 @@ function SliderContent({
     } = useSlider();
 
     const [scrollEnabled, setScrollEnabled] = useState(true);
+    const [itemWidth, setItemWidth] = useState(0);
 
     const slicedData = useMemo(
         () => (maxItems !== undefined ? (data?.slice(0, maxItems) ?? []) : (data ?? [])),
@@ -44,15 +45,18 @@ function SliderContent({
         () =>
             StyleSheet.create({
                 image: {
-                    width: '100%',
+                    width: itemWidth,
                     height: '100%',
-                    aspectRatio: imageAspectRatio,
                 },
                 pinchToZoom: {
                     zIndex: 1000,
                 },
+                list: {
+                    width: '100%',
+                    aspectRatio: imageAspectRatio,
+                },
             }),
-        [imageAspectRatio]
+        [imageAspectRatio, itemWidth]
     );
 
     const handleViewableItemsChanged = useCallback(
@@ -81,6 +85,7 @@ function SliderContent({
     const renderItem = useCallback(
         ({ item, index }: ListRenderItemInfo<SliderItem>) => {
             return (
+                // eslint-disable-next-line react/jsx-no-bind
                 <Pressable onPress={() => handleItemPress(item, index)}>
                     <Image
                         placeholder={item.placeholder}
@@ -107,6 +112,15 @@ function SliderContent({
         setScrollEnabled(true);
     }, []);
 
+    const measureWindowSize = useCallback(() => {
+        const windowSize = listRef.current?.getWindowSize();
+        setItemWidth(windowSize?.width ?? 0);
+    }, [listRef]);
+
+    useLayoutEffect(() => {
+        measureWindowSize();
+    }, [measureWindowSize]);
+
     const list = (
         <FlashList
             renderScrollComponent={ScrollView}
@@ -118,6 +132,7 @@ function SliderContent({
             viewabilityConfig={{
                 itemVisiblePercentThreshold: 55,
             }}
+            pagingEnabled={true}
             decelerationRate={'fast'}
             showsHorizontalScrollIndicator={false}
             showsVerticalScrollIndicator={false}
@@ -127,6 +142,7 @@ function SliderContent({
             data={slicedData}
             contentContainerStyle={style}
             onLayout={onLayout}
+            style={styles.list}
         />
     );
 

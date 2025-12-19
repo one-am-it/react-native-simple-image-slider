@@ -7,12 +7,11 @@ import { useSlider, SliderProvider } from '../context/slider-context';
 
 type SliderFullScreenProps = {
     children?: React.ReactNode;
-    imageAspectRatio?: number;
     enablePinchToZoom?: boolean;
     style?: StyleProp<ViewStyle>;
 };
 
-function SliderFullScreen({ children, imageAspectRatio, style }: SliderFullScreenProps) {
+function SliderFullScreen({ children, style }: SliderFullScreenProps) {
     const parentContext = useSlider();
     const windowDimensions = useWindowDimensions();
 
@@ -78,7 +77,7 @@ function SliderFullScreen({ children, imageAspectRatio, style }: SliderFullScree
                 <SliderProvider
                     data={parentContext.data}
                     initialIndex={fullScreenIndex}
-                    imageAspectRatio={imageAspectRatio ?? parentContext.imageAspectRatio}
+                    imageAspectRatio={parentContext.imageAspectRatio}
                     onIndexChange={handleIndexChange}
                     onFullScreenChange={parentContext.closeFullScreen}
                 >

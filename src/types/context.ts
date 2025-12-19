@@ -18,6 +18,7 @@ type SliderContextValue = {
 
     // Dimensions
     imageAspectRatio: number;
+    isAspectRatioLoading: boolean;
     containerWidth: number;
     containerHeight: number;
 
