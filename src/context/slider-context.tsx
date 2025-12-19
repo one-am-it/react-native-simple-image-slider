@@ -1,10 +1,10 @@
 import React, { createContext, useContext, useMemo } from 'react';
 import type { SliderContextValue, SliderProviderProps } from '../types/context';
-import { useSliderState } from '../hooks/use-slider-state';
+import { useSliderState } from '../hooks';
 
 const SliderContext = createContext<SliderContextValue | null>(null);
 
-export function SliderProvider(props: SliderProviderProps) {
+function SliderProvider(props: SliderProviderProps) {
     const { children } = props;
     const state = useSliderState(props);
 
@@ -13,7 +13,7 @@ export function SliderProvider(props: SliderProviderProps) {
     return <SliderContext.Provider value={contextValue}>{children}</SliderContext.Provider>;
 }
 
-export function useSlider(): SliderContextValue {
+function useSlider(): SliderContextValue {
     const context = useContext(SliderContext);
 
     if (!context) {
@@ -22,3 +22,5 @@ export function useSlider(): SliderContextValue {
 
     return context;
 }
+
+export { SliderProvider, useSlider };

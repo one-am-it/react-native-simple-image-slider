@@ -1,45 +1,9 @@
-import type { RefObject, ReactNode } from 'react';
-import type { StyleProp, ViewStyle, LayoutChangeEvent } from 'react-native';
-import type { FlashListRef } from '@shopify/flash-list';
+import type { ReactNode } from 'react';
+import type { StyleProp, ViewStyle } from 'react-native';
 import type { ImageProps } from 'expo-image';
 
 type SliderItem = ImageProps & {
     key: string;
-};
-
-type SliderContextValue = {
-    // Data
-    data: SliderItem[];
-    totalItems: number;
-
-    // State
-    currentIndex: number;
-    setCurrentIndex: (index: number) => void;
-
-    // Dimensions
-    imageAspectRatio: number;
-    isAspectRatioLoading: boolean;
-    containerWidth: number;
-    containerHeight: number;
-
-    // Refs
-    listRef: RefObject<FlashListRef<SliderItem> | null>;
-    scrollToIndex: (index: number, animated?: boolean) => void;
-
-    // Full-screen
-    isFullScreenOpen: boolean;
-    openFullScreen: () => void;
-    closeFullScreen: () => void;
-    hasFullScreen: boolean;
-    registerFullScreen: () => void;
-    unregisterFullScreen: () => void;
-
-    // Callbacks
-    onItemPress?: (item: SliderItem, index: number) => void;
-    registerOnItemPress: (handler: (item: SliderItem, index: number) => void) => void;
-
-    // Layout
-    onLayout: (event: LayoutChangeEvent) => void;
 };
 
 type SliderProviderProps = {
@@ -53,4 +17,5 @@ type SliderProviderProps = {
     onFullScreenChange?: (isOpen: boolean) => void;
 };
 
-export type { SliderItem, SliderContextValue, SliderProviderProps };
+export type { SliderItem, SliderProviderProps };
+export type { SliderContextValue } from './slider-state';
