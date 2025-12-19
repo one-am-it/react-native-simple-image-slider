@@ -74,9 +74,14 @@ function SliderFullScreen({ children, style }: SliderFullScreenProps) {
         parentContext.closeFullScreen();
     }, [fullScreenIndex, parentContext]);
 
-    const handleIndexChange = useCallback((index: number) => {
-        setFullScreenIndex(index);
-    }, []);
+    const handleIndexChange = useCallback(
+        (index: number) => {
+            setFullScreenIndex(index);
+            parentContext.setCurrentIndex(index);
+            parentContext.scrollToIndex(index, false);
+        },
+        [parentContext]
+    );
 
     const handlePinchStatusChange = useCallback(
         (status: PinchToZoomStatus) => {
