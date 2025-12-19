@@ -28,6 +28,7 @@ export function useSliderState(props: SliderProviderProps): SliderContextValue {
     const [containerWidth, setContainerWidth] = useState(0);
     const [containerHeight, setContainerHeight] = useState(0);
     const [isFullScreenOpen, setIsFullScreenOpen] = useState(false);
+    const [hasFullScreen, setHasFullScreen] = useState(false);
     const [onItemPressCallback, setOnItemPressCallback] = useState<
         ((item: SliderItem, index: number) => void) | undefined
     >(() => onItemPressProp);
@@ -63,6 +64,14 @@ export function useSliderState(props: SliderProviderProps): SliderContextValue {
         []
     );
 
+    const registerFullScreen = useCallback(() => {
+        setHasFullScreen(true);
+    }, []);
+
+    const unregisterFullScreen = useCallback(() => {
+        setHasFullScreen(false);
+    }, []);
+
     const handleLayout = useCallback((event: LayoutChangeEvent) => {
         setContainerWidth(event.nativeEvent.layout.width);
         setContainerHeight(event.nativeEvent.layout.height);
@@ -89,6 +98,9 @@ export function useSliderState(props: SliderProviderProps): SliderContextValue {
         isFullScreenOpen,
         openFullScreen,
         closeFullScreen,
+        hasFullScreen,
+        registerFullScreen,
+        unregisterFullScreen,
         onItemPress: onItemPressCallback,
         registerOnItemPress,
         onLayout: handleLayout,

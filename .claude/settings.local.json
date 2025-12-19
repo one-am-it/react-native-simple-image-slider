@@ -14,7 +14,8 @@
             "WebFetch(domain:www.patterns.dev)",
             "WebFetch(domain:gluestack.io)",
             "mcp__shadcn__view_items_in_registries",
-            "WebFetch(domain:docs.expo.dev)"
+            "WebFetch(domain:docs.expo.dev)",
+            "Bash(yarn prepare)"
         ],
         "deny": [],
         "ask": []

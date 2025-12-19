@@ -30,6 +30,9 @@ type SliderContextValue = {
     isFullScreenOpen: boolean;
     openFullScreen: () => void;
     closeFullScreen: () => void;
+    hasFullScreen: boolean;
+    registerFullScreen: () => void;
+    unregisterFullScreen: () => void;
 
     // Callbacks
     onItemPress?: (item: SliderItem, index: number) => void;

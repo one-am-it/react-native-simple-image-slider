@@ -45,6 +45,13 @@ function SliderFullScreen({ children, style }: SliderFullScreenProps) {
         }
     }, [parentContext.isFullScreenOpen]);
 
+    useEffect(() => {
+        parentContext.registerFullScreen();
+        return () => {
+            parentContext.unregisterFullScreen();
+        };
+    }, [parentContext]);
+
     const backgroundOpacity = useSharedValue(1);
 
     const modalContentStyle = useAnimatedStyle(() => {

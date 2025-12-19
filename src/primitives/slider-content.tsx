@@ -31,6 +31,8 @@ function SliderContent({
         listRef,
         onItemPress,
         onLayout,
+        hasFullScreen,
+        openFullScreen,
     } = useSlider();
 
     const [scrollEnabled, setScrollEnabled] = useState(true);
@@ -78,8 +80,11 @@ function SliderContent({
         (item: SliderItem, index: number) => {
             listRef.current?.recordInteraction();
             onItemPress?.(item, index);
+            if (hasFullScreen) {
+                openFullScreen();
+            }
         },
-        [listRef, onItemPress]
+        [listRef, onItemPress, hasFullScreen, openFullScreen]
     );
 
     const renderItem = useCallback(
