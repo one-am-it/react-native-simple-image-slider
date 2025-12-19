@@ -48,6 +48,7 @@ yarn add @shopify/flash-list expo-image expo-haptics expo-status-bar react-nativ
 import {
     Slider,
     SliderContent,
+    SliderCorner,
     SliderPageCounter,
     SliderFullScreen,
     SliderCloseButton,
@@ -64,7 +65,9 @@ function Gallery() {
     return (
         <Slider data={images} imageAspectRatio={16 / 9}>
             <SliderContent />
-            <SliderPageCounter position="bottom-left" />
+            <SliderCorner position="bottom-left">
+                <SliderPageCounter />
+            </SliderCorner>
             <SliderFullScreen>
                 <SliderContent enablePinchToZoom />
                 <SliderCloseButton />
@@ -131,15 +134,15 @@ Renders the FlashList with images. Must be a child of `Slider`.
 
 Page indicator showing current/total (e.g., "1 / 10").
 
+**Note:** To position `SliderPageCounter`, wrap it in `SliderCorner`.
+
 #### Props
 
-| Prop        | Type                                                           | Default         | Description                     |
-| ----------- | -------------------------------------------------------------- | --------------- | ------------------------------- |
-| `position`  | `'top-left' \| 'top-right' \| 'bottom-left' \| 'bottom-right'` | `'bottom-left'` | Position on screen              |
-| `style`     | `StyleProp<ViewStyle>`                                         | -               | Container style override        |
-| `textStyle` | `StyleProp<TextStyle>`                                         | -               | Text style override             |
-| `render`    | `(current: number, total: number) => ReactElement`             | -               | Custom render function          |
-| `offset`    | `number`                                                       | `16`            | Distance from screen edges (px) |
+| Prop        | Type                                               | Default | Description              |
+| ----------- | -------------------------------------------------- | ------- | ------------------------ |
+| `style`     | `StyleProp<ViewStyle>`                             | -       | Container style override |
+| `textStyle` | `StyleProp<TextStyle>`                             | -       | Text style override      |
+| `render`    | `(current: number, total: number) => ReactElement` | -       | Custom render function   |
 
 ---
 
@@ -216,15 +219,17 @@ Description overlay for full-screen mode. Must be inside `SliderFullScreen`.
 ### Custom Page Counter
 
 ```tsx
-<SliderPageCounter
-    render={(current, total) => (
-        <View style={styles.customCounter}>
-            <Text style={styles.counterText}>
-                Photo {current} of {total}
-            </Text>
-        </View>
-    )}
-/>
+<SliderCorner position="top-right">
+    <SliderPageCounter
+        render={(current, total) => (
+            <View style={styles.customCounter}>
+                <Text style={styles.counterText}>
+                    Photo {current} of {total}
+                </Text>
+            </View>
+        )}
+    />
+</SliderCorner>
 ```
 
 ### Programmatic Scrolling
@@ -286,7 +291,9 @@ function NavigationButtons() {
 ```tsx
 <Slider data={images}>
     <SliderContent />
-    <SliderPageCounter />
+    <SliderCorner position="bottom-left">
+        <SliderPageCounter />
+    </SliderCorner>
 </Slider>
 ```
 

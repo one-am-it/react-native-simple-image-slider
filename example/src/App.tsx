@@ -3,6 +3,7 @@ import * as React from 'react';
 import {
     Slider,
     SliderContent,
+    SliderCorner,
     SliderPageCounter,
     SliderFullScreen,
     SliderCloseButton,
@@ -66,7 +67,9 @@ export default function App() {
                     }))}
                 >
                     <SliderContent />
-                    <SliderPageCounter position="bottom-left" />
+                    <SliderCorner position="bottom-left">
+                        <SliderPageCounter />
+                    </SliderCorner>
                     <SliderFullScreen>
                         <SliderContent enablePinchToZoom />
                         <SliderCloseButton />

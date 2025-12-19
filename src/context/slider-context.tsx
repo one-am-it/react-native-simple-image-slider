@@ -4,8 +4,7 @@ import { useSliderState } from '../hooks';
 
 const SliderContext = createContext<SliderContextValue | null>(null);
 
-function SliderProvider(props: SliderProviderProps) {
-    const { children } = props;
+function SliderProvider({ children, ...props }: SliderProviderProps) {
     const state = useSliderState(props);
 
     const contextValue = useMemo(() => state, [state]);

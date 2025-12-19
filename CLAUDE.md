@@ -48,7 +48,9 @@ The library uses a **flat exports** pattern (like shadcn/ui) where users compose
 ```tsx
 <Slider data={images}>
     <SliderContent />
-    <SliderPageCounter position="bottom-left" />
+    <SliderCorner position="bottom-left">
+        <SliderPageCounter />
+    </SliderCorner>
     <SliderFullScreen>
         <SliderContent enablePinchToZoom />
         <SliderCloseButton />
@@ -72,9 +74,10 @@ The library exports 7 main primitives:
     - Optionally wraps in `PinchToZoom` for gesture support
 
 3. **SliderPageCounter** (`src/primitives/slider-page-counter.tsx`) - Page indicator
-    - Positioned absolutely (top-left, top-right, bottom-left, bottom-right)
+    - Displays current page and total count
     - Reads `currentIndex` and `totalItems` from context
     - Supports custom render prop for full customization
+    - Must be wrapped in `SliderCorner` for positioning
 
 4. **SliderCorner** (`src/primitives/slider-corner.tsx`) - Positioned container
     - Absolute positioning utility for custom overlays
@@ -339,7 +342,9 @@ Current version: 0.17.0+ (compositional API)
 ```tsx
 <Slider data={images}>
     <SliderContent />
-    <SliderPageCounter position="bottom-left" />
+    <SliderCorner position="bottom-left">
+        <SliderPageCounter />
+    </SliderCorner>
     <SliderCorner position="top-right">
         <Badge />
     </SliderCorner>

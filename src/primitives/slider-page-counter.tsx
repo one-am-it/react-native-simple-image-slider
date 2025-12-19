@@ -5,41 +5,22 @@ import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { useSlider } from '../context/slider-context';
 
 type SliderPageCounterProps = {
-    position?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
     style?: StyleProp<ViewStyle>;
     textStyle?: StyleProp<TextStyle>;
     render?: (current: number, total: number) => ReactElement;
-    offset?: number;
 };
 
-function SliderPageCounter({
-    position = 'bottom-left',
-    style,
-    textStyle,
-    render,
-    offset = 16,
-}: SliderPageCounterProps) {
+function SliderPageCounter({ style, textStyle, render }: SliderPageCounterProps) {
     const { currentIndex, totalItems } = useSlider();
 
     const currentPage = currentIndex + 1;
 
-    const positionStyles = StyleSheet.create({
-        absolute: {
-            zIndex: 1000,
-            position: 'absolute',
-            bottom: position === 'bottom-left' || position === 'bottom-right' ? offset : 'auto',
-            top: position === 'top-left' || position === 'top-right' ? offset : 'auto',
-            left: position === 'top-left' || position === 'bottom-left' ? offset : 'auto',
-            right: position === 'top-right' || position === 'bottom-right' ? offset : 'auto',
-        },
-    });
-
     if (render) {
-        return <View style={positionStyles.absolute}>{render(currentPage, totalItems)}</View>;
+        return render(currentPage, totalItems);
     }
 
     return (
-        <View style={[positionStyles.absolute, styles.container, style]}>
+        <View style={[styles.container, style]}>
             <Text style={[styles.text, textStyle]}>
                 {currentPage} / {totalItems}
             </Text>

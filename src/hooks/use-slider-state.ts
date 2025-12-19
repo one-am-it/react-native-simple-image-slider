@@ -7,18 +7,16 @@ import {
     useSliderCallbacks,
 } from './internal';
 
-export function useSliderState(props: SliderProviderProps): SliderContextValue {
-    const {
-        data,
-        initialIndex,
-        imageAspectRatio: aspectRatioOverride,
-        onIndexChange,
-        onItemPress,
-        onFullScreenChange,
-        onPinchStatusChange,
-        onPinchDismiss,
-    } = props;
-
+export function useSliderState({
+    data,
+    initialIndex,
+    imageAspectRatio: aspectRatioOverride,
+    onIndexChange,
+    onItemPress,
+    onFullScreenChange,
+    onPinchStatusChange,
+    onPinchDismiss,
+}: Omit<SliderProviderProps, 'children'>): SliderContextValue {
     // Get first image source for aspect ratio detection
     const firstImageSource = data?.[0]?.source;
 
