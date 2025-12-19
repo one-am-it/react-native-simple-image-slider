@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import type { ImageProps } from 'expo-image';
+import type { PinchToZoomStatus } from './pinch-to-zoom';
 
 type SliderItem = ImageProps & {
     key: string;
@@ -15,6 +16,8 @@ type SliderProviderProps = {
     onIndexChange?: (index: number) => void;
     onItemPress?: (item: SliderItem, index: number) => void;
     onFullScreenChange?: (isOpen: boolean) => void;
+    onPinchStatusChange?: (status: PinchToZoomStatus) => void;
+    onPinchDismiss?: () => void;
 };
 
 export type { SliderItem, SliderProviderProps };

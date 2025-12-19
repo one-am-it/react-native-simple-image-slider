@@ -15,6 +15,8 @@ export function useSliderState(props: SliderProviderProps): SliderContextValue {
         onIndexChange,
         onItemPress,
         onFullScreenChange,
+        onPinchStatusChange,
+        onPinchDismiss,
     } = props;
 
     // Get first image source for aspect ratio detection
@@ -37,5 +39,7 @@ export function useSliderState(props: SliderProviderProps): SliderContextValue {
         ...layout,
         ...fullScreen,
         ...callbacks,
+        onPinchStatusChange,
+        onPinchDismiss,
     };
 }

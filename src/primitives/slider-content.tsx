@@ -33,6 +33,8 @@ function SliderContent({
         onLayout,
         hasFullScreen,
         openFullScreen,
+        onPinchStatusChange,
+        onPinchDismiss,
     } = useSlider();
 
     const [scrollEnabled, setScrollEnabled] = useState(true);
@@ -157,6 +159,8 @@ function SliderContent({
                 style={styles.pinchToZoom}
                 onScaleChange={handleScaleChange}
                 onScaleReset={handleScaleReset}
+                onStatusChange={onPinchStatusChange}
+                onDismiss={onPinchDismiss}
                 maximumZoomScale={5}
                 minimumZoomScale={1}
             >

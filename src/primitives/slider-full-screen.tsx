@@ -4,6 +4,7 @@ import type { StyleProp, ViewStyle } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { setStatusBarStyle } from 'expo-status-bar';
 import { useSlider, SliderProvider } from '../context/slider-context';
+import type { PinchToZoomStatus } from '../types/pinch-to-zoom';
 
 type SliderFullScreenProps = {
     children?: React.ReactNode;
@@ -77,6 +78,19 @@ function SliderFullScreen({ children, style }: SliderFullScreenProps) {
         setFullScreenIndex(index);
     }, []);
 
+    const handlePinchStatusChange = useCallback(
+        (status: PinchToZoomStatus) => {
+            if (status.scale <= 1) {
+                const maxTranslationY = windowDimensions.height / 2;
+                const progress = Math.min(Math.abs(status.translation.y) / maxTranslationY, 1);
+                backgroundOpacity.value = 1 - progress * 0.8;
+            } else {
+                backgroundOpacity.value = 1;
+            }
+        },
+        [windowDimensions.height, backgroundOpacity]
+    );
+
     if (!parentContext.isFullScreenOpen) {
         return null;
     }
@@ -95,6 +109,8 @@ function SliderFullScreen({ children, style }: SliderFullScreenProps) {
                     imageAspectRatio={parentContext.imageAspectRatio}
                     onIndexChange={handleIndexChange}
                     onFullScreenChange={parentContext.closeFullScreen}
+                    onPinchStatusChange={handlePinchStatusChange}
+                    onPinchDismiss={handleClose}
                 >
                     <View style={styles.contentContainer}>{children}</View>
                 </SliderProvider>
