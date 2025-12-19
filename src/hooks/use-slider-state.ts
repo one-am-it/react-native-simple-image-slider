@@ -80,6 +80,6 @@ export function useSliderState(props: SliderProviderProps): SliderContextValue {
         closeFullScreen,
         onItemPress: onItemPressCallback,
         registerOnItemPress,
-        handleLayout,
+        onLayout: handleLayout,
     };
 }

@@ -5,7 +5,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SliderProvider } from '../context/slider-context';
 import type { SliderItem } from '../types/context';
 
-export type SliderProps = {
+type SliderProps = {
     children: React.ReactNode;
     data: SliderItem[];
     initialIndex?: number;
@@ -16,9 +16,7 @@ export type SliderProps = {
     onFullScreenChange?: (isOpen: boolean) => void;
 };
 
-function Slider(props: SliderProps) {
-    const { children, style } = props;
-
+function Slider({ style, children, ...props }: SliderProps) {
     return (
         <SliderProvider {...props}>
             <GestureHandlerRootView style={[styles.container, style]}>
@@ -34,4 +32,5 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Slider;
+export type { SliderProps };
+export { Slider };

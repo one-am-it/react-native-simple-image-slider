@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
 
-export type SliderCornerProps = {
+type SliderCornerProps = {
     position: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
     children: React.ReactNode;
     style?: StyleProp<ViewStyle>;
@@ -24,4 +24,5 @@ function SliderCorner({ position, children, style, offset = 16 }: SliderCornerPr
     return <View style={[positionStyles.absolute, style]}>{children}</View>;
 }
 
-export default SliderCorner;
+export type { SliderCornerProps };
+export { SliderCorner };

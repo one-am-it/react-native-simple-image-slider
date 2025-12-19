@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSlider } from '../context/slider-context';
 import type { SliderItem } from '../types/context';
 
-export type SliderDescriptionProps = {
+type SliderDescriptionProps = {
     render: (item: SliderItem, index: number) => React.ReactNode;
     style?: StyleProp<ViewStyle>;
 };
@@ -40,4 +40,5 @@ function SliderDescription({ render, style }: SliderDescriptionProps) {
     );
 }
 
-export default SliderDescription;
+export type { SliderDescriptionProps };
+export { SliderDescription };

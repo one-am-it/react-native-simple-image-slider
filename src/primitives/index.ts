@@ -1,20 +1,10 @@
-import Slider from './slider';
-import SliderContent from './slider-content';
-import SliderPageCounter from './slider-page-counter';
-import SliderCorner from './slider-corner';
-import SliderFullScreen from './slider-full-screen';
-import SliderCloseButton from './slider-close-button';
-import SliderDescription from './slider-description';
-
-export {
-    Slider,
-    SliderContent,
-    SliderPageCounter,
-    SliderCorner,
-    SliderFullScreen,
-    SliderCloseButton,
-    SliderDescription,
-};
+export { Slider } from './slider';
+export { SliderContent } from './slider-content';
+export { SliderPageCounter } from './slider-page-counter';
+export { SliderCorner } from './slider-corner';
+export { SliderFullScreen } from './slider-full-screen';
+export { SliderCloseButton } from './slider-close-button';
+export { SliderDescription } from './slider-description';
 
 export type { SliderProps } from './slider';
 export type { SliderContentProps } from './slider-content';

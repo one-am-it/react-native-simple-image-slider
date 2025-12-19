@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { useSlider } from '../context/slider-context';
 
-export type SliderPageCounterProps = {
+type SliderPageCounterProps = {
     position?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
     style?: StyleProp<ViewStyle>;
     textStyle?: StyleProp<TextStyle>;
@@ -65,4 +65,5 @@ const styles = StyleSheet.create({
     },
 });
 
-export default SliderPageCounter;
+export type { SliderPageCounterProps };
+export { SliderPageCounter };

@@ -15,7 +15,7 @@ import * as Haptics from 'expo-haptics';
 import { clamp } from '../utils/clamp';
 import type { PinchToZoomStatus } from '../types/pinch-to-zoom';
 
-export type PinchToZoomProps = PropsWithChildren<{
+type PinchToZoomProps = PropsWithChildren<{
     /**
      * @description The minimum zoom scale of the image.
      * @default 1
@@ -59,7 +59,7 @@ export type PinchToZoomProps = PropsWithChildren<{
     onDismiss?: () => void;
 }>;
 
-export default function PinchToZoom({
+function PinchToZoom({
     minimumZoomScale = 1,
     maximumZoomScale = 8,
     style: propStyle,
@@ -340,3 +340,6 @@ export default function PinchToZoom({
         </GestureDetector>
     );
 }
+
+export type { PinchToZoomProps };
+export { PinchToZoom };

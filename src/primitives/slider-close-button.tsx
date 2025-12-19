@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSlider } from '../context/slider-context';
 import IconX from '../icons/icon-x';
 
-export type SliderCloseButtonProps = {
+type SliderCloseButtonProps = {
     children?: React.ReactNode;
     style?: StyleProp<ViewStyle>;
 };
@@ -30,4 +30,5 @@ function SliderCloseButton({ children, style }: SliderCloseButtonProps) {
     );
 }
 
-export default SliderCloseButton;
+export type { SliderCloseButtonProps };
+export { SliderCloseButton };

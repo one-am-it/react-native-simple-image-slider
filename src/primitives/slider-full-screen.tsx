@@ -1,16 +1,18 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Modal, StyleSheet, useWindowDimensions, View } from 'react-native';
+import type { StyleProp, ViewStyle } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { setStatusBarStyle } from 'expo-status-bar';
 import { useSlider, SliderProvider } from '../context/slider-context';
 
-export type SliderFullScreenProps = {
+type SliderFullScreenProps = {
     children?: React.ReactNode;
     imageAspectRatio?: number;
     enablePinchToZoom?: boolean;
+    style?: StyleProp<ViewStyle>;
 };
 
-function SliderFullScreen({ children, imageAspectRatio }: SliderFullScreenProps) {
+function SliderFullScreen({ children, imageAspectRatio, style }: SliderFullScreenProps) {
     const parentContext = useSlider();
     const windowDimensions = useWindowDimensions();
 
@@ -72,7 +74,7 @@ function SliderFullScreen({ children, imageAspectRatio }: SliderFullScreenProps)
             transparent={true}
             visible={parentContext.isFullScreenOpen}
         >
-            <Animated.View style={[styles.modalContent, modalContentStyle]}>
+            <Animated.View style={[styles.modalContent, modalContentStyle, style]}>
                 <SliderProvider
                     data={parentContext.data}
                     initialIndex={fullScreenIndex}
@@ -91,4 +93,5 @@ function SliderFullScreen({ children, imageAspectRatio }: SliderFullScreenProps)
     );
 }
 
-export default SliderFullScreen;
+export type { SliderFullScreenProps };
+export { SliderFullScreen };

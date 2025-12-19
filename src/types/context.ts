@@ -3,11 +3,11 @@ import type { StyleProp, ViewStyle, LayoutChangeEvent } from 'react-native';
 import type { FlashListRef } from '@shopify/flash-list';
 import type { ImageProps } from 'expo-image';
 
-export type SliderItem = ImageProps & {
+type SliderItem = ImageProps & {
     key: string;
 };
 
-export type SliderContextValue = {
+type SliderContextValue = {
     // Data
     data: SliderItem[];
     totalItems: number;
@@ -35,10 +35,10 @@ export type SliderContextValue = {
     registerOnItemPress: (handler: (item: SliderItem, index: number) => void) => void;
 
     // Layout
-    handleLayout: (event: LayoutChangeEvent) => void;
+    onLayout: (event: LayoutChangeEvent) => void;
 };
 
-export type SliderProviderProps = {
+type SliderProviderProps = {
     children: ReactNode;
     data: SliderItem[];
     initialIndex?: number;
@@ -48,3 +48,5 @@ export type SliderProviderProps = {
     onItemPress?: (item: SliderItem, index: number) => void;
     onFullScreenChange?: (isOpen: boolean) => void;
 };
+
+export type { SliderItem, SliderContextValue, SliderProviderProps };

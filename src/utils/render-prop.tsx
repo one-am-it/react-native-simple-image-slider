@@ -1,8 +1,8 @@
 import React, { isValidElement } from 'react';
 
-export type RenderProp = React.ComponentType<unknown> | React.ReactElement | undefined | null;
+type RenderProp = React.ComponentType<unknown> | React.ReactElement | undefined | null;
 
-export default function renderProp(Component: RenderProp) {
+function renderProp(Component: RenderProp) {
     if (!Component) {
         return null;
     }
@@ -14,3 +14,6 @@ export default function renderProp(Component: RenderProp) {
     const ComponentToRender = Component as React.ComponentType;
     return <ComponentToRender />;
 }
+
+export type { RenderProp };
+export { renderProp };
