@@ -2,23 +2,14 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useSlider } from '../context/slider-context';
-import type { SliderItem } from '../types/context';
 
 type SliderDescriptionProps = {
-    render: (item: SliderItem, index: number) => React.ReactNode;
+    children: React.ReactNode;
     style?: StyleProp<ViewStyle>;
 };
 
-function SliderDescription({ render, style }: SliderDescriptionProps) {
-    const { data, currentIndex } = useSlider();
+function SliderDescription({ children, style }: SliderDescriptionProps) {
     const safeAreaInsets = useSafeAreaInsets();
-
-    const currentItem = data[currentIndex];
-
-    if (!currentItem) {
-        return null;
-    }
 
     const positionStyles = StyleSheet.create({
         descriptionContainer: {
@@ -33,11 +24,7 @@ function SliderDescription({ render, style }: SliderDescriptionProps) {
         },
     });
 
-    return (
-        <View style={[positionStyles.descriptionContainer, style]}>
-            {render(currentItem, currentIndex)}
-        </View>
-    );
+    return <View style={[positionStyles.descriptionContainer, style]}>{children}</View>;
 }
 
 export type { SliderDescriptionProps };

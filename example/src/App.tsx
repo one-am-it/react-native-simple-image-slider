@@ -7,6 +7,7 @@ import {
     SliderFullScreen,
     SliderCloseButton,
     SliderDescription,
+    useSlider,
 } from '@one-am/react-native-simple-image-slider';
 
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
@@ -43,6 +44,11 @@ const photos = [
     pictureFourteen,
 ];
 
+function PictureDescription() {
+    const { currentIndex } = useSlider();
+    return <Text style={{ color: '#ffffff' }}>Picture {currentIndex + 1}</Text>;
+}
+
 export default function App() {
     return (
         <SafeAreaProvider>
@@ -64,11 +70,9 @@ export default function App() {
                     <SliderFullScreen>
                         <SliderContent enablePinchToZoom />
                         <SliderCloseButton />
-                        <SliderDescription
-                            render={(_, index) => (
-                                <Text style={{ color: '#ffffff' }}>Picture {index + 1}</Text>
-                            )}
-                        />
+                        <SliderDescription>
+                            <PictureDescription />
+                        </SliderDescription>
                     </SliderFullScreen>
                 </Slider>
             </SafeAreaView>
