@@ -3963,22 +3963,23 @@ __metadata:
     eslint-config-expo: ^10.0.0
     eslint-config-prettier: ^10.1.8
     eslint-plugin-prettier: ^5.5.4
-    expo-haptics: ~15.0.7
-    expo-image: ~2.3.0
-    expo-status-bar: ~3.0.8
-    expo-system-ui: ~6.0.8
+    expo-haptics: ~15.0.8
+    expo-image: ~3.0.11
+    expo-status-bar: ~3.0.9
+    expo-system-ui: ~6.0.9
     jest: ^29.7.0
     merge-refs: ^1.2.2
     prettier: ^3.4.2
     react: 19.1.0
-    react-dom: 19.0.0
+    react-dom: 19.1.0
     react-native: 0.81.5
     react-native-builder-bob: ^0.40.15
     react-native-gesture-handler: ~2.28.0
     react-native-reanimated: ~4.1.1
     react-native-safe-area-context: 5.6.2
     react-native-svg: 15.12.1
-    react-native-web: ^0.20.0
+    react-native-web: ^0.21.0
+    react-native-worklets: 0.5.1
     release-it: ^17.3.0
     typescript: ^5.2.2
     typescript-eslint: ^8.46.4
@@ -3994,6 +3995,7 @@ __metadata:
     react-native-reanimated: "*"
     react-native-safe-area-context: "*"
     react-native-svg: "*"
+    react-native-worklets: "*"
   languageName: unknown
   linkType: soft
 
@@ -5833,11 +5835,11 @@ __metadata:
   linkType: hard
 
 "baseline-browser-mapping@npm:^2.8.25":
-  version: 2.8.32
-  resolution: "baseline-browser-mapping@npm:2.8.32"
+  version: 2.9.11
+  resolution: "baseline-browser-mapping@npm:2.9.11"
   bin:
     baseline-browser-mapping: dist/cli.js
-  checksum: b26d79ca391037581575989675cc21155e3b4925745d3481bf936a1ce22f054cc9e0e67e938b692c305389b4996aecb3ad9ffaa5cda7f28f7db060c777bf4799
+  checksum: 2c4687cdcb9f74cdc9f584248fda4e3435ec31de192316dfd75ce4cae70cc64e5cc763b8e632ee6a452aa71bd1b9519e478bc190653fd0c30482ab24e49f4eea
   languageName: node
   linkType: hard
 
@@ -6145,24 +6147,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"caniuse-lite@npm:^1.0.30001688":
-  version: 1.0.30001688
-  resolution: "caniuse-lite@npm:1.0.30001688"
-  checksum: b48109e337f924a969ad3505d81cde32624b598f3ff67047dbd69a9bed59672cea37b6095c3a876174511447be5e356d87acac6c859d941572e57c220978e241
-  languageName: node
-  linkType: hard
-
-"caniuse-lite@npm:^1.0.30001718":
-  version: 1.0.30001721
-  resolution: "caniuse-lite@npm:1.0.30001721"
-  checksum: 1f1e1f5f070f97ee83a08601709413300957be624790a8f7b3aebd5746d648e8d50be4ef9572a50281198b2f7acc63fdfc1a0bc04c23bbffba0ab4b3c69d4b76
-  languageName: node
-  linkType: hard
-
-"caniuse-lite@npm:^1.0.30001754":
-  version: 1.0.30001757
-  resolution: "caniuse-lite@npm:1.0.30001757"
-  checksum: 84ce069d2457f2d2dc68ef9a23870962c89f2bc2a3a67b6b47a431842cfe74a27b8d156b05e5e36f320b501642ecbaf24526963b01468a8b64512ccb8267d135
+"caniuse-lite@npm:^1.0.30001688, caniuse-lite@npm:^1.0.30001718, caniuse-lite@npm:^1.0.30001754":
+  version: 1.0.30001761
+  resolution: "caniuse-lite@npm:1.0.30001761"
+  checksum: e1b6ed282fef24cbfccb944a4f1154804148ba59aa83bae2b5b652f375f4c6205579fadf530a23e93c2c901a736bbff6d8eebeabdf14c09c28125cda31d9a548
   languageName: node
   linkType: hard
 
@@ -8267,36 +8255,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-haptics@npm:~15.0.7":
-  version: 15.0.7
-  resolution: "expo-haptics@npm:15.0.7"
-  peerDependencies:
-    expo: "*"
-  checksum: 559cef2251b8e39401f99fc56a869372bf09d0111e97c82b59b4c8ef9f9a68bd95e88fd1e5b6a9ed586b7b694fbdca765fc2c1afd1138aa7eb6d7a394dff3b74
-  languageName: node
-  linkType: hard
-
 "expo-haptics@npm:~15.0.8":
   version: 15.0.8
   resolution: "expo-haptics@npm:15.0.8"
   peerDependencies:
     expo: "*"
   checksum: 8a59b78549f6672d2d418dcf9c2fc2e246604c082dfa58f1f7b5fd7c909d4e61530ca179a8a9b918dd22b3218c326655fad15ea9223813c3dc8a3d63bcce3075
-  languageName: node
-  linkType: hard
-
-"expo-image@npm:~2.3.0":
-  version: 2.3.0
-  resolution: "expo-image@npm:2.3.0"
-  peerDependencies:
-    expo: "*"
-    react: "*"
-    react-native: "*"
-    react-native-web: "*"
-  peerDependenciesMeta:
-    react-native-web:
-      optional: true
-  checksum: 14d6585175b56bb0536c7023addc57c69cde0b8446a0a9568ce02c132ccc21f78ab9f075aa36de569af1d486c984df25a3f44d0379b9a05ebd2231cdcfd856f6
   languageName: node
   linkType: hard
 
@@ -8359,18 +8323,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-status-bar@npm:~3.0.8":
-  version: 3.0.8
-  resolution: "expo-status-bar@npm:3.0.8"
-  dependencies:
-    react-native-is-edge-to-edge: ^1.2.1
-  peerDependencies:
-    react: "*"
-    react-native: "*"
-  checksum: 5bb05329e203995f198548f39ad55e4b09476ec5f55a1111fce30b83ae69acdaf80089b3816a7186892f3d2ad2d19c34e47928542c2c08bbd3a6e18994b78a7f
-  languageName: node
-  linkType: hard
-
 "expo-status-bar@npm:~3.0.9":
   version: 3.0.9
   resolution: "expo-status-bar@npm:3.0.9"
@@ -8380,23 +8332,6 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 35a780c4e0d5d9ec4c056320f02d92b27e91b1f89f970d90a6c938838a84f40917c7cf1230057eb235e1eab6a16de2711eaf5be09a169044ed8b306e9f0824bc
-  languageName: node
-  linkType: hard
-
-"expo-system-ui@npm:~6.0.8":
-  version: 6.0.8
-  resolution: "expo-system-ui@npm:6.0.8"
-  dependencies:
-    "@react-native/normalize-colors": 0.81.5
-    debug: ^4.3.2
-  peerDependencies:
-    expo: "*"
-    react-native: "*"
-    react-native-web: "*"
-  peerDependenciesMeta:
-    react-native-web:
-      optional: true
-  checksum: f09c0a46212916dff160c6468c4631b8c1f09ef0c8c182f31fbcee3edd51ff827117c6a43ef70e7bed9e134a59d74618a89c04cf563adc53741def83d2b87081
   languageName: node
   linkType: hard
 
@@ -13267,17 +13202,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dom@npm:19.0.0":
-  version: 19.0.0
-  resolution: "react-dom@npm:19.0.0"
-  dependencies:
-    scheduler: ^0.25.0
-  peerDependencies:
-    react: ^19.0.0
-  checksum: 009cc6e575263a0d1906f9dd4aa6532d2d3d0d71e4c2b7777c8fe4de585fa06b5b77cdc2e0fbaa2f3a4a5e5d3305c189ba152153f358ee7da4d9d9ba5d3a8975
-  languageName: node
-  linkType: hard
-
 "react-dom@npm:19.1.0":
   version: 19.1.0
   resolution: "react-dom@npm:19.1.0"
@@ -13405,25 +13329,6 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 5761d3b37e5adb4e58945146b210009decf0a436c194fc3dc5c025581aa5c602b5698d7eea493ddf9d31b4d90433fa54eaf1ed0cec721ab820cf895e1cf9614a
-  languageName: node
-  linkType: hard
-
-"react-native-web@npm:^0.20.0":
-  version: 0.20.0
-  resolution: "react-native-web@npm:0.20.0"
-  dependencies:
-    "@babel/runtime": ^7.18.6
-    "@react-native/normalize-colors": ^0.74.1
-    fbjs: ^3.0.4
-    inline-style-prefixer: ^7.0.1
-    memoize-one: ^6.0.0
-    nullthrows: ^1.1.1
-    postcss-value-parser: ^4.2.0
-    styleq: ^0.1.3
-  peerDependencies:
-    react: ^18.0.0 || ^19.0.0
-    react-dom: ^18.0.0 || ^19.0.0
-  checksum: 8a75802b8f281466ff07547de34df434c918c7102b7de4cbca19bd532e38c692e70fc318bc0f8f5507b6d00c64c46540c65e926f757dd74ae7f6d279d98a6ed8
   languageName: node
   linkType: hard
 
@@ -14053,13 +13958,6 @@ __metadata:
   version: 0.26.0
   resolution: "scheduler@npm:0.26.0"
   checksum: c63a9f1c0e5089b537231cff6c11f75455b5c8625ae09535c1d7cd0a1b0c77ceecdd9f1074e5e063da5d8dc11e73e8033dcac3361791088be08a6e60c0283ed9
-  languageName: node
-  linkType: hard
-
-"scheduler@npm:^0.25.0":
-  version: 0.25.0
-  resolution: "scheduler@npm:0.25.0"
-  checksum: b7bb9fddbf743e521e9aaa5198a03ae823f5e104ebee0cb9ec625392bb7da0baa1c28ab29cee4b1e407a94e76acc6eee91eeb749614f91f853efda2613531566
   languageName: node
   linkType: hard
 

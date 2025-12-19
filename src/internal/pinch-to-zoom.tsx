@@ -4,12 +4,12 @@ import { useWindowDimensions } from 'react-native';
 import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 import Animated, {
     cancelAnimation,
-    runOnJS,
     useAnimatedReaction,
     useAnimatedStyle,
     useSharedValue,
     withTiming,
 } from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import * as Haptics from 'expo-haptics';
 import { clamp } from '../utils/clamp';
@@ -97,7 +97,7 @@ function PinchToZoom({
                     cancelAnimation(scale);
                     prevScale.value = scale.value;
                     offsetScale.value = scale.value;
-                    if (onScaleChange) runOnJS(onScaleChange)();
+                    if (onScaleChange) scheduleOnRN(onScaleChange);
                 })
                 .onUpdate((e) => {
                     if (e.numberOfPointers === 2) {
@@ -140,15 +140,15 @@ function PinchToZoom({
 
                     if (scale.value < minimumZoomScale / 2 && prevScale.value <= minimumZoomScale) {
                         if (onDismiss) {
-                            runOnJS(onDismiss)();
+                            scheduleOnRN(onDismiss);
                         }
                     } else if (scale.value < minimumZoomScale) {
-                        runOnJS(Haptics.impactAsync)(Haptics.ImpactFeedbackStyle.Light);
+                        scheduleOnRN(Haptics.impactAsync, Haptics.ImpactFeedbackStyle.Light);
                         translationX.value = withTiming(0);
                         translationY.value = withTiming(0);
                         scale.value = withTiming(minimumZoomScale);
                         if (onScaleReset) {
-                            runOnJS(onScaleReset)();
+                            scheduleOnRN(onScaleReset);
                         }
                     }
 
@@ -214,10 +214,10 @@ function PinchToZoom({
                             Math.abs(translationY.value) > viewHeight.value / 2
                         ) {
                             if (onDismiss) {
-                                runOnJS(onDismiss)();
+                                scheduleOnRN(onDismiss);
                             }
                         } else {
-                            runOnJS(Haptics.impactAsync)(Haptics.ImpactFeedbackStyle.Light);
+                            scheduleOnRN(Haptics.impactAsync, Haptics.ImpactFeedbackStyle.Light);
                             translationX.value = withTiming(0);
                             translationY.value = withTiming(0);
                         }
@@ -268,12 +268,12 @@ function PinchToZoom({
                         translationY.value = withTiming(0);
                         scale.value = withTiming(minimumZoomScale);
                         if (onScaleReset) {
-                            runOnJS(onScaleReset)();
+                            scheduleOnRN(onScaleReset);
                         }
                     } else {
                         scale.value = withTiming(maximumZoomScale / 2);
                         if (onScaleChange) {
-                            runOnJS(onScaleChange)();
+                            scheduleOnRN(onScaleChange);
                         }
                     }
                 }),
@@ -305,7 +305,7 @@ function PinchToZoom({
         },
         (prepared) => {
             if (onStatusChange) {
-                runOnJS(onStatusChange)(prepared);
+                scheduleOnRN(onStatusChange, prepared);
             }
         },
         [onStatusChange]
