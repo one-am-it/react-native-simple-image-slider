@@ -5,6 +5,11 @@ import type { SliderAspectRatioState } from '../../types/slider-state';
 
 const DEFAULT_ASPECT_RATIO = 4 / 3;
 
+// 1x1 transparent PNG data URI used as placeholder when aspect ratio detection is not needed
+const PLACEHOLDER_SOURCE = {
+    uri: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=',
+} as const;
+
 function useImageAspectRatio(
     source: ImageSource | undefined,
     overrideAspectRatio?: number
@@ -13,8 +18,8 @@ function useImageAspectRatio(
     const shouldDetect = overrideAspectRatio === undefined && source !== undefined;
 
     // useImage returns null while loading, then ImageRef with width/height
-    // Use a minimal placeholder source when detection is not needed to satisfy the hook signature
-    const imageRef = useImage(shouldDetect ? source : ({ uri: '' } as ImageSource));
+    // Use a valid placeholder image when detection is not needed to satisfy the hook signature
+    const imageRef = useImage(shouldDetect ? source : PLACEHOLDER_SOURCE);
 
     const result = useMemo(() => {
         // If override provided, use it immediately
