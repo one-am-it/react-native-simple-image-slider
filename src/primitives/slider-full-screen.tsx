@@ -1,11 +1,12 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { Modal, StyleSheet, useWindowDimensions } from 'react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { setStatusBarStyle } from 'expo-status-bar';
-import { useSlider, SliderProvider } from '../context/slider-context';
+import { useSlider } from '../context/slider-context';
 import type { PinchToZoomStatus } from '../types/pinch-to-zoom';
+import { SliderFullScreenProvider } from '../context/slider-full-screen-context';
 
 type SliderFullScreenProps = {
     children?: React.ReactNode;
@@ -15,19 +16,17 @@ type SliderFullScreenProps = {
 
 function SliderFullScreen({ children, style }: SliderFullScreenProps) {
     const {
-        data,
-        imageAspectRatio,
         isFullScreenOpen,
-        currentIndex,
-        setCurrentIndex,
-        scrollToIndex,
         registerFullScreen,
-        unregisterFullScreen,
         closeFullScreen,
+        scrollToIndex,
+        registerOnIndexChange,
+        registerOnPinchStatusChange,
+        registerOnPinchDismiss,
+        registerOnFullScreenChange,
     } = useSlider();
-    const windowDimensions = useWindowDimensions();
 
-    const [fullScreenIndex, setFullScreenIndex] = useState(currentIndex);
+    const windowDimensions = useWindowDimensions();
 
     const styles = useMemo(
         () =>
@@ -51,27 +50,6 @@ function SliderFullScreen({ children, style }: SliderFullScreenProps) {
         [windowDimensions]
     );
 
-    useEffect(() => {
-        if (isFullScreenOpen) {
-            setFullScreenIndex(currentIndex);
-        }
-    }, [currentIndex, isFullScreenOpen]);
-
-    useEffect(() => {
-        if (isFullScreenOpen) {
-            setStatusBarStyle('light');
-        } else {
-            setStatusBarStyle('dark');
-        }
-    }, [isFullScreenOpen]);
-
-    useEffect(() => {
-        registerFullScreen();
-        return () => {
-            unregisterFullScreen();
-        };
-    }, [registerFullScreen, unregisterFullScreen]);
-
     const backgroundOpacity = useSharedValue(1);
 
     const modalContentStyle = useAnimatedStyle(() => {
@@ -81,19 +59,8 @@ function SliderFullScreen({ children, style }: SliderFullScreenProps) {
     }, []);
 
     const handleClose = useCallback(() => {
-        setCurrentIndex(fullScreenIndex);
-        scrollToIndex(fullScreenIndex, false);
         closeFullScreen();
-    }, [closeFullScreen, fullScreenIndex, scrollToIndex, setCurrentIndex]);
-
-    const handleIndexChange = useCallback(
-        (index: number) => {
-            setFullScreenIndex(index);
-            setCurrentIndex(index);
-            scrollToIndex(index, false);
-        },
-        [scrollToIndex, setCurrentIndex]
-    );
+    }, [closeFullScreen]);
 
     const handlePinchStatusChange = useCallback(
         (status: PinchToZoomStatus) => {
@@ -108,6 +75,41 @@ function SliderFullScreen({ children, style }: SliderFullScreenProps) {
         [windowDimensions.height, backgroundOpacity]
     );
 
+    const handleFullScreenChange = useCallback((isFullScreen: boolean) => {
+        if (isFullScreen) {
+            setStatusBarStyle('light');
+        } else {
+            setStatusBarStyle('dark');
+        }
+    }, []);
+
+    const handleIndexChange = useCallback(
+        (index: number) => {
+            scrollToIndex(index, false);
+        },
+        [scrollToIndex]
+    );
+
+    useEffect(() => {
+        return registerOnIndexChange(handleIndexChange);
+    }, [handleIndexChange, registerOnIndexChange]);
+
+    useEffect(() => {
+        return registerOnFullScreenChange(handleFullScreenChange);
+    }, [handleFullScreenChange, registerOnFullScreenChange]);
+
+    useEffect(() => {
+        return registerOnPinchStatusChange(handlePinchStatusChange);
+    }, [handlePinchStatusChange, registerOnPinchStatusChange]);
+
+    useEffect(() => {
+        return registerOnPinchDismiss(handleClose);
+    }, [handleClose, registerOnPinchDismiss]);
+
+    useEffect(() => {
+        return registerFullScreen();
+    }, [registerFullScreen]);
+
     return (
         <Modal
             animationType="fade"
@@ -116,19 +118,11 @@ function SliderFullScreen({ children, style }: SliderFullScreenProps) {
             visible={isFullScreenOpen}
         >
             <Animated.View style={[styles.modalContent, modalContentStyle, style]}>
-                <SliderProvider
-                    data={data}
-                    initialIndex={fullScreenIndex}
-                    imageAspectRatio={imageAspectRatio}
-                    onIndexChange={handleIndexChange}
-                    onFullScreenChange={closeFullScreen}
-                    onPinchStatusChange={handlePinchStatusChange}
-                    onPinchDismiss={handleClose}
-                >
-                    <GestureHandlerRootView style={styles.contentContainer}>
-                        {children}
-                    </GestureHandlerRootView>
-                </SliderProvider>
+                <GestureHandlerRootView style={styles.contentContainer}>
+                    <SliderFullScreenProvider>
+                        {isFullScreenOpen ? children : null}
+                    </SliderFullScreenProvider>
+                </GestureHandlerRootView>
             </Animated.View>
         </Modal>
     );

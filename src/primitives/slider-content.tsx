@@ -1,14 +1,15 @@
-import React, { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 import type { StyleProp, ViewStyle, ScrollViewProps } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
-import type { ListRenderItemInfo, ViewToken } from '@shopify/flash-list';
+import type { FlashListRef, ListRenderItemInfo, ViewToken } from '@shopify/flash-list';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Image } from 'expo-image';
 import type { ImageStyle } from 'expo-image';
 import { useSlider } from '../context/slider-context';
 import type { SliderItem } from '../types/context';
 import { PinchToZoom } from '../internal/pinch-to-zoom';
+import { useIsFullScreenSlider } from '../context/slider-full-screen-context';
 
 type SliderContentProps = {
     enablePinchToZoom?: boolean;
@@ -28,18 +29,19 @@ function SliderContent({
         currentIndex,
         setCurrentIndex,
         imageAspectRatio,
-        listRef,
+        registerScrollFn,
         onItemPress,
-        onLayout,
         hasFullScreen,
         openFullScreen,
         onPinchStatusChange,
         onPinchDismiss,
     } = useSlider();
+    const isFullScreenSlider = useIsFullScreenSlider();
 
     const [scrollEnabled, setScrollEnabled] = useState(true);
     const [itemWidth, setItemWidth] = useState(0);
 
+    const localListRef = useRef<FlashListRef<SliderItem>>(null);
     const scrollRef = useRef<ScrollView>(null);
 
     const slicedData = useMemo(
@@ -82,33 +84,36 @@ function SliderContent({
 
     const handleItemPress = useCallback(
         (item: SliderItem, index: number) => {
-            listRef.current?.recordInteraction();
+            localListRef.current?.recordInteraction();
             onItemPress?.(item, index);
             if (hasFullScreen) {
                 openFullScreen();
             }
         },
-        [listRef, onItemPress, hasFullScreen, openFullScreen]
+        [onItemPress, hasFullScreen, openFullScreen]
     );
 
     const renderItem = useCallback(
         ({ item, index }: ListRenderItemInfo<SliderItem>) => {
-            return (
+            const content = (
+                <Image
+                    placeholder={item.placeholder}
+                    placeholderContentFit={'cover'}
+                    recyclingKey={item.key}
+                    source={item.source}
+                    contentFit={'cover'}
+                    contentPosition={'center'}
+                    style={[styles.image, imageStyle]}
+                />
+            );
+            return isFullScreenSlider ? (
+                content
+            ) : (
                 // eslint-disable-next-line react/jsx-no-bind
-                <Pressable onPress={() => handleItemPress(item, index)}>
-                    <Image
-                        placeholder={item.placeholder}
-                        placeholderContentFit={'cover'}
-                        recyclingKey={item.key}
-                        source={item.source}
-                        contentFit={'cover'}
-                        contentPosition={'center'}
-                        style={[styles.image, imageStyle]}
-                    />
-                </Pressable>
+                <Pressable onPress={() => handleItemPress(item, index)}>{content}</Pressable>
             );
         },
-        [handleItemPress, imageStyle, styles.image]
+        [handleItemPress, imageStyle, isFullScreenSlider, styles.image]
     );
 
     const keyExtractor = useCallback((item: SliderItem) => item.key, []);
@@ -122,9 +127,9 @@ function SliderContent({
     }, []);
 
     const measureWindowSize = useCallback(() => {
-        const windowSize = listRef.current?.getWindowSize();
+        const windowSize = localListRef.current?.getWindowSize();
         setItemWidth(windowSize?.width ?? 0);
-    }, [listRef]);
+    }, []);
 
     const renderScrollComponent = useCallback(
         (props: ScrollViewProps) => <ScrollView {...props} ref={scrollRef} />,
@@ -135,13 +140,21 @@ function SliderContent({
         measureWindowSize();
     }, [measureWindowSize]);
 
+    useEffect(() => {
+        if (isFullScreenSlider) return;
+
+        return registerScrollFn((index, animated = true) => {
+            localListRef.current?.scrollToIndex({ index, animated });
+        });
+    }, [registerScrollFn, isFullScreenSlider]);
+
     const list = (
         <FlashList
             renderScrollComponent={renderScrollComponent}
             scrollEnabled={scrollEnabled}
             disableScrollViewPanResponder={enablePinchToZoom ? !scrollEnabled : false}
-            ref={listRef}
-            initialScrollIndex={currentIndex ?? 0}
+            ref={localListRef}
+            initialScrollIndex={currentIndex}
             onViewableItemsChanged={handleViewableItemsChanged}
             viewabilityConfig={{
                 itemVisiblePercentThreshold: 55,
@@ -155,7 +168,6 @@ function SliderContent({
             renderItem={renderItem}
             data={slicedData}
             contentContainerStyle={style}
-            onLayout={onLayout}
             style={styles.list}
         />
     );

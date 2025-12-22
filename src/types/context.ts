@@ -16,6 +16,7 @@ type SliderProviderProps = {
     onIndexChange?: (index: number) => void;
     onItemPress?: (item: SliderItem, index: number) => void;
     onFullScreenChange?: (isOpen: boolean) => void;
+    onSlideChange?: (index: number) => void;
     onPinchStatusChange?: (status: PinchToZoomStatus) => void;
     onPinchDismiss?: () => void;
 };

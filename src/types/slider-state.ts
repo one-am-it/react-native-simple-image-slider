@@ -1,9 +1,6 @@
-import type { RefObject } from 'react';
-import type { LayoutChangeEvent } from 'react-native';
-import type { FlashListRef } from '@shopify/flash-list';
 import type { SliderItem } from './context';
 import type { PinchToZoomStatus } from './pinch-to-zoom';
-import type { RegisteredCallbackConfiguration } from './common';
+import type { CallbacksFromEvents } from './common';
 
 type SliderDataState = {
     data: SliderItem[];
@@ -18,14 +15,8 @@ type SliderAspectRatioState = {
 type SliderNavigationState = {
     currentIndex: number;
     setCurrentIndex: (index: number) => void;
-    listRef: RefObject<FlashListRef<SliderItem> | null>;
+    registerScrollFn: (fn: (index: number, animated?: boolean) => void) => () => void;
     scrollToIndex: (index: number, animated?: boolean) => void;
-};
-
-type SliderLayoutState = {
-    containerWidth: number;
-    containerHeight: number;
-    onLayout: (event: LayoutChangeEvent) => void;
 };
 
 type SliderFullScreenState = {
@@ -33,14 +24,18 @@ type SliderFullScreenState = {
     openFullScreen: () => void;
     closeFullScreen: () => void;
     hasFullScreen: boolean;
-    registerFullScreen: () => void;
-    unregisterFullScreen: () => void;
+    registerFullScreen: () => () => void;
 };
 
-type SliderCallbacksState = RegisteredCallbackConfiguration<
-    (item: SliderItem, index: number) => void,
-    'itemPress'
->;
+type SliderEvents = {
+    itemPress: (item: SliderItem, index: number) => void;
+    fullScreenChange: (isFullScreen: boolean) => void;
+    indexChange: (index: number) => void;
+    pinchStatusChange: (status: PinchToZoomStatus) => void;
+    pinchDismiss: () => void;
+};
+
+type SliderCallbacksState = CallbacksFromEvents<SliderEvents>;
 
 type SliderPinchState = {
     onPinchStatusChange?: (status: PinchToZoomStatus) => void;
@@ -50,7 +45,6 @@ type SliderPinchState = {
 type SliderContextValue = SliderDataState &
     SliderAspectRatioState &
     SliderNavigationState &
-    SliderLayoutState &
     SliderFullScreenState &
     SliderCallbacksState &
     SliderPinchState;
@@ -59,8 +53,8 @@ export type {
     SliderDataState,
     SliderAspectRatioState,
     SliderNavigationState,
-    SliderLayoutState,
     SliderFullScreenState,
+    SliderEvents,
     SliderCallbacksState,
     SliderPinchState,
     SliderContextValue,

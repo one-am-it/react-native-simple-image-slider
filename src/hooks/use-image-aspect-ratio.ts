@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useImage } from 'expo-image';
 import type { ImageSource } from 'expo-image';
-import type { SliderAspectRatioState } from '../../types/slider-state';
+import type { SliderAspectRatioState } from '../types/slider-state';
 
 const DEFAULT_ASPECT_RATIO = 4 / 3;
 

@@ -11,4 +11,15 @@ type RegisteredCallbackConfiguration<
     [K in `registerOn${Capitalize<N>}`]: CallbackRegistrationFunction<NonNullable<F>>;
 };
 
-export type { RegisterableCallback, RegisteredCallbackConfiguration, CallbackRegistrationFunction };
+type CallbacksFromEvents<E extends Record<string, RegisterableCallback>> = {
+    [K in keyof E as `on${Capitalize<K & string>}`]: (...args: Parameters<E[K]>) => void;
+} & {
+    [K in keyof E as `registerOn${Capitalize<K & string>}`]: CallbackRegistrationFunction<E[K]>;
+};
+
+export type {
+    RegisterableCallback,
+    RegisteredCallbackConfiguration,
+    CallbackRegistrationFunction,
+    CallbacksFromEvents,
+};

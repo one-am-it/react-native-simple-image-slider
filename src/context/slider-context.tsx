@@ -9,7 +9,7 @@ function SliderProvider({ children, ...props }: SliderProviderProps) {
 
     const contextValue = useMemo(() => state, [state]);
 
-    return <SliderContext.Provider value={contextValue}>{children}</SliderContext.Provider>;
+    return <SliderContext value={contextValue}>{children}</SliderContext>;
 }
 
 function useSlider(): SliderContextValue {
