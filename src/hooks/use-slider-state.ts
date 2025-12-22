@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import type { SliderContextValue, SliderProviderProps } from '../types/context';
 import {
     useImageAspectRatio,
@@ -51,19 +51,36 @@ export function useSliderState({
 
     const totalItems = data?.length ?? 0;
 
-    return {
-        data,
-        totalItems,
-        ...aspectRatio,
-        currentIndex: navigation.currentIndex,
-        registerScrollFn: navigation.registerScrollFn,
-        scrollToIndex: navigation.scrollToIndex,
-        setCurrentIndex,
-        isFullScreenOpen: fullScreen.isFullScreenOpen,
-        hasFullScreen: fullScreen.hasFullScreen,
-        registerFullScreen: fullScreen.registerFullScreen,
-        openFullScreen,
-        closeFullScreen,
-        ...callbacks,
-    };
+    return useMemo(
+        () => ({
+            data,
+            totalItems,
+            ...aspectRatio,
+            currentIndex: navigation.currentIndex,
+            registerScrollFn: navigation.registerScrollFn,
+            scrollToIndex: navigation.scrollToIndex,
+            setCurrentIndex,
+            isFullScreenOpen: fullScreen.isFullScreenOpen,
+            hasFullScreen: fullScreen.hasFullScreen,
+            registerFullScreen: fullScreen.registerFullScreen,
+            openFullScreen,
+            closeFullScreen,
+            ...callbacks,
+        }),
+        [
+            data,
+            totalItems,
+            aspectRatio,
+            navigation.currentIndex,
+            navigation.registerScrollFn,
+            navigation.scrollToIndex,
+            setCurrentIndex,
+            fullScreen.isFullScreenOpen,
+            fullScreen.hasFullScreen,
+            fullScreen.registerFullScreen,
+            openFullScreen,
+            closeFullScreen,
+            callbacks,
+        ]
+    );
 }

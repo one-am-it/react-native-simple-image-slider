@@ -37,17 +37,11 @@ type SliderEvents = {
 
 type SliderCallbacksState = CallbacksFromEvents<SliderEvents>;
 
-type SliderPinchState = {
-    onPinchStatusChange?: (status: PinchToZoomStatus) => void;
-    onPinchDismiss?: () => void;
-};
-
 type SliderContextValue = SliderDataState &
     SliderAspectRatioState &
     SliderNavigationState &
     SliderFullScreenState &
-    SliderCallbacksState &
-    SliderPinchState;
+    SliderCallbacksState;
 
 export type {
     SliderDataState,
@@ -56,6 +50,5 @@ export type {
     SliderFullScreenState,
     SliderEvents,
     SliderCallbacksState,
-    SliderPinchState,
     SliderContextValue,
 };

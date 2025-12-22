@@ -16,6 +16,8 @@ type SliderContentProps = {
     imageStyle?: StyleProp<ImageStyle>;
     maxItems?: number;
     style?: StyleProp<ViewStyle>;
+    imageAccessibilityLabel?: string | ((imageNumber: number, totalItems: number) => string);
+    pressableAccessibilityHint?: string;
 };
 
 function SliderContent({
@@ -23,9 +25,12 @@ function SliderContent({
     imageStyle,
     maxItems,
     style,
+    imageAccessibilityLabel,
+    pressableAccessibilityHint = 'Double tap to open full screen',
 }: SliderContentProps) {
     const {
         data,
+        totalItems,
         currentIndex,
         setCurrentIndex,
         imageAspectRatio,
@@ -95,6 +100,12 @@ function SliderContent({
 
     const renderItem = useCallback(
         ({ item, index }: ListRenderItemInfo<SliderItem>) => {
+            const imageNumber = index + 1;
+            const label =
+                typeof imageAccessibilityLabel === 'function'
+                    ? imageAccessibilityLabel(imageNumber, totalItems)
+                    : (imageAccessibilityLabel ?? `Image ${imageNumber} of ${totalItems}`);
+
             const content = (
                 <Image
                     placeholder={item.placeholder}
@@ -104,16 +115,37 @@ function SliderContent({
                     contentFit={'cover'}
                     contentPosition={'center'}
                     style={[styles.image, imageStyle]}
+                    accessible={true}
+                    accessibilityRole="image"
+                    accessibilityLabel={label}
                 />
             );
-            return isFullScreenSlider ? (
-                content
-            ) : (
-                // eslint-disable-next-line react/jsx-no-bind
-                <Pressable onPress={() => handleItemPress(item, index)}>{content}</Pressable>
+            if (isFullScreenSlider) {
+                return content;
+            }
+
+            const handlePress = () => handleItemPress(item, index);
+
+            return (
+                <Pressable
+                    onPress={handlePress}
+                    accessibilityRole="imagebutton"
+                    accessibilityLabel={label}
+                    accessibilityHint={pressableAccessibilityHint}
+                >
+                    {content}
+                </Pressable>
             );
         },
-        [handleItemPress, imageStyle, isFullScreenSlider, styles.image]
+        [
+            handleItemPress,
+            imageStyle,
+            isFullScreenSlider,
+            styles.image,
+            totalItems,
+            imageAccessibilityLabel,
+            pressableAccessibilityHint,
+        ]
     );
 
     const keyExtractor = useCallback((item: SliderItem) => item.key, []);
@@ -141,7 +173,7 @@ function SliderContent({
     useEffect(() => {
         if (isFullScreenSlider) return;
 
-        registerScrollFn((index, animated = true) => {
+        return registerScrollFn((index, animated = true) => {
             localListRef.current?.scrollToIndex({ index, animated });
         });
     }, [registerScrollFn, isFullScreenSlider]);

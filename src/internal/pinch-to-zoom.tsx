@@ -159,7 +159,7 @@ function PinchToZoom({
                     }
                 }
 
-                prevScale.value = 0;
+                prevScale.value = scale.value;
                 prevTranslationX.value = translationX.value;
                 prevTranslationY.value = translationY.value;
             });
