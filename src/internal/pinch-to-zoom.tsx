@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import type { PropsWithChildren, RefObject } from 'react';
 import { useWindowDimensions } from 'react-native';
 import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
@@ -75,7 +75,6 @@ function PinchToZoom({
     onScaleReset,
     children,
     onDismiss,
-    scrollRef,
 }: PinchToZoomProps) {
     const { height: windowHeight } = useWindowDimensions();
 
@@ -93,18 +92,24 @@ function PinchToZoom({
     const prevTranslationX = useSharedValue(0);
     const prevTranslationY = useSharedValue(0);
 
+    const isZoomedValue = useSharedValue(false);
+    const [isZoomed, setIsZoomed] = useState(false);
+
     const pinchGesture = useMemo(() => {
         let gesture = Gesture.Pinch()
             .enabled(!disabled)
             .onStart(() => {
+                'worklet';
                 cancelAnimation(translationX);
                 cancelAnimation(translationY);
                 cancelAnimation(scale);
                 prevScale.value = scale.value;
                 offsetScale.value = scale.value;
+                isZoomedValue.value = true;
                 if (onScaleChange) scheduleOnRN(onScaleChange);
             })
             .onUpdate((e) => {
+                'worklet';
                 if (e.numberOfPointers === 2) {
                     scale.value = Math.min(prevScale.value * e.scale, maximumZoomScale);
 
@@ -141,6 +146,7 @@ function PinchToZoom({
                 }
             })
             .onEnd(() => {
+                'worklet';
                 isPinching.value = false;
 
                 if (scale.value < minimumZoomScale / 2 && prevScale.value <= minimumZoomScale) {
@@ -152,6 +158,7 @@ function PinchToZoom({
                     translationX.value = withTiming(0);
                     translationY.value = withTiming(0);
                     scale.value = withTiming(minimumZoomScale);
+                    isZoomedValue.value = false;
                     if (onScaleReset) {
                         scheduleOnRN(onScaleReset);
                     }
@@ -161,12 +168,6 @@ function PinchToZoom({
                 prevTranslationX.value = translationX.value;
                 prevTranslationY.value = translationY.value;
             });
-
-        if (scrollRef?.current) {
-            gesture = gesture.blocksExternalGesture(
-                scrollRef as RefObject<React.ComponentType<unknown>>
-            );
-        }
 
         return gesture;
     }, [
@@ -188,86 +189,90 @@ function PinchToZoom({
         minimumZoomScale,
         onDismiss,
         onScaleReset,
-        scrollRef,
+        isZoomedValue,
     ]);
 
-    const panGesture = useMemo(
-        () =>
-            Gesture.Pan()
-                .enabled(!disabled)
-                .onStart(() => {
-                    cancelAnimation(translationX);
-                    cancelAnimation(translationY);
+    const panGesture = useMemo(() => {
+        let gesture = Gesture.Pan().enabled(!disabled);
 
-                    prevTranslationX.value = translationX.value;
-                    prevTranslationY.value = translationY.value;
-                })
-                .onUpdate((e) => {
-                    if (prevScale.value <= minimumZoomScale) {
-                        translationX.value = prevTranslationX.value + e.translationX;
-                        translationY.value = prevTranslationY.value + e.translationY;
+        if (!isZoomed) {
+            gesture = gesture.activeOffsetY([-20, 20]);
+        }
+
+        return gesture
+            .onStart(() => {
+                'worklet';
+                cancelAnimation(translationX);
+                cancelAnimation(translationY);
+
+                prevTranslationX.value = translationX.value;
+                prevTranslationY.value = translationY.value;
+            })
+            .onUpdate((e) => {
+                'worklet';
+                if (prevScale.value <= minimumZoomScale) {
+                    translationX.value = prevTranslationX.value + e.translationX;
+                    translationY.value = prevTranslationY.value + e.translationY;
+                } else {
+                    translationX.value = clamp(
+                        prevTranslationX.value + e.translationX,
+                        (-viewWidth.value * (scale.value - minimumZoomScale)) / 2,
+                        (viewWidth.value * (scale.value - minimumZoomScale)) / 2
+                    );
+                    translationY.value = clamp(
+                        prevTranslationY.value + e.translationY,
+                        (-viewHeight.value * (scale.value - minimumZoomScale)) / 2,
+                        (viewHeight.value * (scale.value - minimumZoomScale)) / 2
+                    );
+                }
+            })
+            .onEnd(() => {
+                'worklet';
+                if (scale.value <= minimumZoomScale && prevScale.value <= minimumZoomScale) {
+                    if (
+                        Math.abs(translationX.value) > viewWidth.value / 2 ||
+                        Math.abs(translationY.value) > viewHeight.value / 2
+                    ) {
+                        if (onDismiss) {
+                            scheduleOnRN(onDismiss);
+                        }
                     } else {
-                        translationX.value = clamp(
-                            prevTranslationX.value + e.translationX,
+                        scheduleOnRN(Haptics.impactAsync, Haptics.ImpactFeedbackStyle.Light);
+                        translationX.value = withTiming(0);
+                        translationY.value = withTiming(0);
+                    }
+                } else if (viewHeight.value * (scale.value - minimumZoomScale) <= windowHeight) {
+                    translationX.value = withTiming(
+                        clamp(
+                            translationX.value,
                             (-viewWidth.value * (scale.value - minimumZoomScale)) / 2,
                             (viewWidth.value * (scale.value - minimumZoomScale)) / 2
-                        );
-                        translationY.value = clamp(
-                            prevTranslationY.value + e.translationY,
+                        )
+                    );
+                    translationY.value = withTiming(
+                        clamp(
+                            translationY.value,
                             (-viewHeight.value * (scale.value - minimumZoomScale)) / 2,
                             (viewHeight.value * (scale.value - minimumZoomScale)) / 2
-                        );
-                    }
-                })
-                .onEnd(() => {
-                    if (scale.value <= minimumZoomScale && prevScale.value <= minimumZoomScale) {
-                        if (
-                            Math.abs(translationX.value) > viewWidth.value / 2 ||
-                            Math.abs(translationY.value) > viewHeight.value / 2
-                        ) {
-                            if (onDismiss) {
-                                scheduleOnRN(onDismiss);
-                            }
-                        } else {
-                            scheduleOnRN(Haptics.impactAsync, Haptics.ImpactFeedbackStyle.Light);
-                            translationX.value = withTiming(0);
-                            translationY.value = withTiming(0);
-                        }
-                    } else if (
-                        viewHeight.value * (scale.value - minimumZoomScale) <=
-                        windowHeight
-                    ) {
-                        translationX.value = withTiming(
-                            clamp(
-                                translationX.value,
-                                (-viewWidth.value * (scale.value - minimumZoomScale)) / 2,
-                                (viewWidth.value * (scale.value - minimumZoomScale)) / 2
-                            )
-                        );
-                        translationY.value = withTiming(
-                            clamp(
-                                translationY.value,
-                                (-viewHeight.value * (scale.value - minimumZoomScale)) / 2,
-                                (viewHeight.value * (scale.value - minimumZoomScale)) / 2
-                            )
-                        );
-                    }
-                }),
-        [
-            disabled,
-            minimumZoomScale,
-            onDismiss,
-            prevScale,
-            prevTranslationX,
-            prevTranslationY,
-            scale,
-            windowHeight,
-            translationX,
-            translationY,
-            viewHeight,
-            viewWidth,
-        ]
-    );
+                        )
+                    );
+                }
+            });
+    }, [
+        disabled,
+        isZoomed,
+        minimumZoomScale,
+        onDismiss,
+        prevScale,
+        prevTranslationX,
+        prevTranslationY,
+        scale,
+        windowHeight,
+        translationX,
+        translationY,
+        viewHeight,
+        viewWidth,
+    ]);
 
     const tapGesture = useMemo(
         () =>
@@ -275,15 +280,18 @@ function PinchToZoom({
                 .enabled(!disabled)
                 .numberOfTaps(2)
                 .onStart(() => {
+                    'worklet';
                     if (scale.value > minimumZoomScale) {
                         translationX.value = withTiming(0);
                         translationY.value = withTiming(0);
                         scale.value = withTiming(minimumZoomScale);
+                        isZoomedValue.value = false;
                         if (onScaleReset) {
                             scheduleOnRN(onScaleReset);
                         }
                     } else {
                         scale.value = withTiming(maximumZoomScale / 2);
+                        isZoomedValue.value = true;
                         if (onScaleChange) {
                             scheduleOnRN(onScaleChange);
                         }
@@ -298,12 +306,21 @@ function PinchToZoom({
             scale,
             translationX,
             translationY,
+            isZoomedValue,
         ]
     );
 
     const compositeGesture = useMemo(() => {
         return Gesture.Exclusive(Gesture.Simultaneous(pinchGesture, panGesture), tapGesture);
     }, [panGesture, pinchGesture, tapGesture]);
+
+    useAnimatedReaction(
+        () => isZoomedValue.value,
+        (value) => {
+            scheduleOnRN(setIsZoomed, value);
+        },
+        []
+    );
 
     useAnimatedReaction(
         () => {
@@ -342,11 +359,9 @@ function PinchToZoom({
         [viewHeight, viewWidth, onLayout]
     );
 
-    const finalStyle = useMemo(() => [style, propStyle], [style, propStyle]);
-
     return (
         <GestureDetector gesture={compositeGesture}>
-            <Animated.View onLayout={internalOnLayout} style={finalStyle}>
+            <Animated.View onLayout={internalOnLayout} style={[style, propStyle]}>
                 {children}
             </Animated.View>
         </GestureDetector>
