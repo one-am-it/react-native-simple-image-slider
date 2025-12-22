@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, StyleSheet, useWindowDimensions } from 'react-native';
 import type { StyleProp, ViewStyle, ScrollViewProps } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
@@ -127,20 +127,16 @@ function SliderContent({
     }, []);
 
     const measureWindowSize = useCallback(() => {
-        const windowSize = localListRef.current?.getWindowSize();
-        setItemWidth(windowSize?.width ?? 0);
-    }, []);
+        if (!isFullScreenSlider) {
+            const windowSize = localListRef.current?.getWindowSize();
+            setItemWidth(windowSize?.width ?? 0);
+        }
+    }, [isFullScreenSlider]);
 
     const renderScrollComponent = useCallback(
         (props: ScrollViewProps) => <ScrollView {...props} />,
         []
     );
-
-    useLayoutEffect(() => {
-        if (!isFullScreenSlider) {
-            measureWindowSize();
-        }
-    }, [isFullScreenSlider, measureWindowSize]);
 
     useEffect(() => {
         if (isFullScreenSlider) return;
@@ -161,6 +157,7 @@ function SliderContent({
             viewabilityConfig={{
                 itemVisiblePercentThreshold: 55,
             }}
+            onCommitLayoutEffect={measureWindowSize}
             pagingEnabled={true}
             decelerationRate={'fast'}
             showsHorizontalScrollIndicator={false}
