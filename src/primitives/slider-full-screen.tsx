@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Modal, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { Modal, StyleSheet, useWindowDimensions } from 'react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { setStatusBarStyle } from 'expo-status-bar';
 import { useSlider, SliderProvider } from '../context/slider-context';
 import type { PinchToZoomStatus } from '../types/pinch-to-zoom';
@@ -117,7 +118,9 @@ function SliderFullScreen({ children, style }: SliderFullScreenProps) {
                     onPinchStatusChange={handlePinchStatusChange}
                     onPinchDismiss={handleClose}
                 >
-                    <View style={styles.contentContainer}>{children}</View>
+                    <GestureHandlerRootView style={styles.contentContainer}>
+                        {children}
+                    </GestureHandlerRootView>
                 </SliderProvider>
             </Animated.View>
         </Modal>

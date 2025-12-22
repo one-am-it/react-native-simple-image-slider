@@ -1,6 +1,6 @@
-import React, { useCallback, useLayoutEffect, useMemo, useState } from 'react';
+import React, { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
-import type { StyleProp, ViewStyle } from 'react-native';
+import type { StyleProp, ViewStyle, ScrollViewProps } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
 import type { ListRenderItemInfo, ViewToken } from '@shopify/flash-list';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -39,6 +39,8 @@ function SliderContent({
 
     const [scrollEnabled, setScrollEnabled] = useState(true);
     const [itemWidth, setItemWidth] = useState(0);
+
+    const scrollRef = useRef<ScrollView>(null);
 
     const slicedData = useMemo(
         () => (maxItems !== undefined ? (data?.slice(0, maxItems) ?? []) : (data ?? [])),
@@ -124,13 +126,18 @@ function SliderContent({
         setItemWidth(windowSize?.width ?? 0);
     }, [listRef]);
 
+    const renderScrollComponent = useCallback(
+        (props: ScrollViewProps) => <ScrollView {...props} ref={scrollRef} />,
+        []
+    );
+
     useLayoutEffect(() => {
         measureWindowSize();
     }, [measureWindowSize]);
 
     const list = (
         <FlashList
-            renderScrollComponent={ScrollView}
+            renderScrollComponent={renderScrollComponent}
             scrollEnabled={scrollEnabled}
             disableScrollViewPanResponder={enablePinchToZoom ? !scrollEnabled : false}
             ref={listRef}
@@ -163,6 +170,7 @@ function SliderContent({
                 onDismiss={onPinchDismiss}
                 maximumZoomScale={5}
                 minimumZoomScale={1}
+                scrollRef={scrollRef}
             >
                 {list}
             </PinchToZoom>

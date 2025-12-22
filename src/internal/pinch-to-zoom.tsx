@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import type { PropsWithChildren } from 'react';
+import type { PropsWithChildren, RefObject } from 'react';
 import { useWindowDimensions } from 'react-native';
 import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 import Animated, {
@@ -11,6 +11,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import type { ScrollView } from 'react-native-gesture-handler';
 import * as Haptics from 'expo-haptics';
 import { clamp } from '../utils/clamp';
 import type { PinchToZoomStatus } from '../types/pinch-to-zoom';
@@ -57,6 +58,10 @@ type PinchToZoomProps = PropsWithChildren<{
      * @description Callback that is called when gestures should lead to the item being dismissed.
      */
     onDismiss?: () => void;
+    /**
+     * @description Ref to external ScrollView to coordinate gestures with (fixes Android gesture conflicts).
+     */
+    scrollRef?: RefObject<ScrollView | null>;
 }>;
 
 function PinchToZoom({
@@ -70,6 +75,7 @@ function PinchToZoom({
     onScaleReset,
     children,
     onDismiss,
+    scrollRef,
 }: PinchToZoomProps) {
     const { height: windowHeight } = useWindowDimensions();
 
@@ -87,97 +93,103 @@ function PinchToZoom({
     const prevTranslationX = useSharedValue(0);
     const prevTranslationY = useSharedValue(0);
 
-    const pinchGesture = useMemo(
-        () =>
-            Gesture.Pinch()
-                .enabled(!disabled)
-                .onStart(() => {
-                    cancelAnimation(translationX);
-                    cancelAnimation(translationY);
-                    cancelAnimation(scale);
-                    prevScale.value = scale.value;
-                    offsetScale.value = scale.value;
-                    if (onScaleChange) scheduleOnRN(onScaleChange);
-                })
-                .onUpdate((e) => {
-                    if (e.numberOfPointers === 2) {
-                        scale.value = Math.min(prevScale.value * e.scale, maximumZoomScale);
+    const pinchGesture = useMemo(() => {
+        let gesture = Gesture.Pinch()
+            .enabled(!disabled)
+            .onStart(() => {
+                cancelAnimation(translationX);
+                cancelAnimation(translationY);
+                cancelAnimation(scale);
+                prevScale.value = scale.value;
+                offsetScale.value = scale.value;
+                if (onScaleChange) scheduleOnRN(onScaleChange);
+            })
+            .onUpdate((e) => {
+                if (e.numberOfPointers === 2) {
+                    scale.value = Math.min(prevScale.value * e.scale, maximumZoomScale);
 
-                        // reset the origin
-                        if (!isPinching.value) {
-                            isPinching.value = true;
-                            originX.value = e.focalX;
-                            originY.value = e.focalY;
-                            prevTranslationX.value = translationX.value;
-                            prevTranslationY.value = translationY.value;
-                            offsetScale.value = scale.value;
-                        }
-
-                        if (isPinching.value) {
-                            // translate the image to the focal point as we're zooming
-                            translationX.value = clamp(
-                                prevTranslationX.value +
-                                    -1 *
-                                        ((scale.value - offsetScale.value) *
-                                            (originX.value - viewWidth.value / 2)),
-                                (-viewWidth.value * (scale.value - minimumZoomScale)) / 2,
-                                (viewWidth.value * (scale.value - minimumZoomScale)) / 2
-                            );
-
-                            translationY.value = clamp(
-                                prevTranslationY.value +
-                                    -1 *
-                                        ((scale.value - offsetScale.value) *
-                                            (originY.value - viewHeight.value / 2)),
-                                (-viewHeight.value * (scale.value - minimumZoomScale)) / 2,
-                                (viewHeight.value * (scale.value - minimumZoomScale)) / 2
-                            );
-                        }
-                    }
-                })
-                .onEnd(() => {
-                    isPinching.value = false;
-
-                    if (scale.value < minimumZoomScale / 2 && prevScale.value <= minimumZoomScale) {
-                        if (onDismiss) {
-                            scheduleOnRN(onDismiss);
-                        }
-                    } else if (scale.value < minimumZoomScale) {
-                        scheduleOnRN(Haptics.impactAsync, Haptics.ImpactFeedbackStyle.Light);
-                        translationX.value = withTiming(0);
-                        translationY.value = withTiming(0);
-                        scale.value = withTiming(minimumZoomScale);
-                        if (onScaleReset) {
-                            scheduleOnRN(onScaleReset);
-                        }
+                    // reset the origin
+                    if (!isPinching.value) {
+                        isPinching.value = true;
+                        originX.value = e.focalX;
+                        originY.value = e.focalY;
+                        prevTranslationX.value = translationX.value;
+                        prevTranslationY.value = translationY.value;
+                        offsetScale.value = scale.value;
                     }
 
-                    prevScale.value = 0;
-                    prevTranslationX.value = translationX.value;
-                    prevTranslationY.value = translationY.value;
-                }),
+                    if (isPinching.value) {
+                        // translate the image to the focal point as we're zooming
+                        translationX.value = clamp(
+                            prevTranslationX.value +
+                                -1 *
+                                    ((scale.value - offsetScale.value) *
+                                        (originX.value - viewWidth.value / 2)),
+                            (-viewWidth.value * (scale.value - minimumZoomScale)) / 2,
+                            (viewWidth.value * (scale.value - minimumZoomScale)) / 2
+                        );
 
-        [
-            disabled,
-            translationX,
-            translationY,
-            scale,
-            prevScale,
-            offsetScale,
-            onScaleChange,
-            maximumZoomScale,
-            isPinching,
-            originX,
-            originY,
-            prevTranslationX,
-            prevTranslationY,
-            viewWidth,
-            viewHeight,
-            minimumZoomScale,
-            onDismiss,
-            onScaleReset,
-        ]
-    );
+                        translationY.value = clamp(
+                            prevTranslationY.value +
+                                -1 *
+                                    ((scale.value - offsetScale.value) *
+                                        (originY.value - viewHeight.value / 2)),
+                            (-viewHeight.value * (scale.value - minimumZoomScale)) / 2,
+                            (viewHeight.value * (scale.value - minimumZoomScale)) / 2
+                        );
+                    }
+                }
+            })
+            .onEnd(() => {
+                isPinching.value = false;
+
+                if (scale.value < minimumZoomScale / 2 && prevScale.value <= minimumZoomScale) {
+                    if (onDismiss) {
+                        scheduleOnRN(onDismiss);
+                    }
+                } else if (scale.value < minimumZoomScale) {
+                    scheduleOnRN(Haptics.impactAsync, Haptics.ImpactFeedbackStyle.Light);
+                    translationX.value = withTiming(0);
+                    translationY.value = withTiming(0);
+                    scale.value = withTiming(minimumZoomScale);
+                    if (onScaleReset) {
+                        scheduleOnRN(onScaleReset);
+                    }
+                }
+
+                prevScale.value = 0;
+                prevTranslationX.value = translationX.value;
+                prevTranslationY.value = translationY.value;
+            });
+
+        if (scrollRef?.current) {
+            gesture = gesture.blocksExternalGesture(
+                scrollRef as RefObject<React.ComponentType<unknown>>
+            );
+        }
+
+        return gesture;
+    }, [
+        disabled,
+        translationX,
+        translationY,
+        scale,
+        prevScale,
+        offsetScale,
+        onScaleChange,
+        maximumZoomScale,
+        isPinching,
+        originX,
+        originY,
+        prevTranslationX,
+        prevTranslationY,
+        viewWidth,
+        viewHeight,
+        minimumZoomScale,
+        onDismiss,
+        onScaleReset,
+        scrollRef,
+    ]);
 
     const panGesture = useMemo(
         () =>
