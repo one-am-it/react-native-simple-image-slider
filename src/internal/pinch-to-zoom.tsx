@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import type { PropsWithChildren, RefObject } from 'react';
+import type { PropsWithChildren } from 'react';
 import { useWindowDimensions } from 'react-native';
 import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 import Animated, {
@@ -11,7 +11,6 @@ import Animated, {
 } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import type { ScrollView } from 'react-native-gesture-handler';
 import * as Haptics from 'expo-haptics';
 import { clamp } from '../utils/clamp';
 import type { PinchToZoomStatus } from '../types/pinch-to-zoom';
@@ -58,10 +57,6 @@ type PinchToZoomProps = PropsWithChildren<{
      * @description Callback that is called when gestures should lead to the item being dismissed.
      */
     onDismiss?: () => void;
-    /**
-     * @description Ref to external ScrollView to coordinate gestures with (fixes Android gesture conflicts).
-     */
-    scrollRef?: RefObject<ScrollView | null>;
 }>;
 
 function PinchToZoom({

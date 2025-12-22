@@ -119,9 +119,7 @@ function SliderFullScreen({ children, style }: SliderFullScreenProps) {
         >
             <Animated.View style={[styles.modalContent, modalContentStyle, style]}>
                 <GestureHandlerRootView style={styles.contentContainer}>
-                    <SliderFullScreenProvider>
-                        {isFullScreenOpen ? children : null}
-                    </SliderFullScreenProvider>
+                    <SliderFullScreenProvider>{children}</SliderFullScreenProvider>
                 </GestureHandlerRootView>
             </Animated.View>
         </Modal>

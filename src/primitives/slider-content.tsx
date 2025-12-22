@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet, useWindowDimensions } from 'react-native';
 import type { StyleProp, ViewStyle, ScrollViewProps } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
 import type { FlashListRef, ListRenderItemInfo, ViewToken } from '@shopify/flash-list';
@@ -37,12 +37,12 @@ function SliderContent({
         onPinchDismiss,
     } = useSlider();
     const isFullScreenSlider = useIsFullScreenSlider();
+    const windowDimensions = useWindowDimensions();
 
     const [scrollEnabled, setScrollEnabled] = useState(true);
-    const [itemWidth, setItemWidth] = useState(0);
+    const [itemWidth, setItemWidth] = useState(isFullScreenSlider ? windowDimensions.width : 0);
 
     const localListRef = useRef<FlashListRef<SliderItem>>(null);
-    const scrollRef = useRef<ScrollView>(null);
 
     const slicedData = useMemo(
         () => (maxItems !== undefined ? (data?.slice(0, maxItems) ?? []) : (data ?? [])),
@@ -53,7 +53,7 @@ function SliderContent({
         () =>
             StyleSheet.create({
                 image: {
-                    width: itemWidth,
+                    width: isFullScreenSlider ? windowDimensions.width : itemWidth,
                     height: '100%',
                 },
                 pinchToZoom: {
@@ -64,7 +64,7 @@ function SliderContent({
                     aspectRatio: imageAspectRatio,
                 },
             }),
-        [imageAspectRatio, itemWidth]
+        [imageAspectRatio, isFullScreenSlider, itemWidth, windowDimensions.width]
     );
 
     const handleViewableItemsChanged = useCallback(
@@ -132,18 +132,20 @@ function SliderContent({
     }, []);
 
     const renderScrollComponent = useCallback(
-        (props: ScrollViewProps) => <ScrollView {...props} ref={scrollRef} />,
+        (props: ScrollViewProps) => <ScrollView {...props} />,
         []
     );
 
     useLayoutEffect(() => {
-        measureWindowSize();
-    }, [measureWindowSize]);
+        if (!isFullScreenSlider) {
+            measureWindowSize();
+        }
+    }, [isFullScreenSlider, measureWindowSize]);
 
     useEffect(() => {
         if (isFullScreenSlider) return;
 
-        return registerScrollFn((index, animated = true) => {
+        registerScrollFn((index, animated = true) => {
             localListRef.current?.scrollToIndex({ index, animated });
         });
     }, [registerScrollFn, isFullScreenSlider]);
@@ -182,7 +184,6 @@ function SliderContent({
                 onDismiss={onPinchDismiss}
                 maximumZoomScale={5}
                 minimumZoomScale={1}
-                scrollRef={scrollRef}
             >
                 {list}
             </PinchToZoom>
