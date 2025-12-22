@@ -1,25 +1,23 @@
-import { useCallback, useState } from 'react';
 import type { SliderItem } from '../../types/context';
 import type { SliderCallbacksState } from '../../types/slider-state';
+import { useRegisteredCallback } from '../use-registered-callback';
 
-export function useSliderCallbacks({
-    onItemPress: onItemPressProp,
-}: {
+type UseSliderCallbacksInput = {
     onItemPress?: (item: SliderItem, index: number) => void;
-}): SliderCallbacksState {
-    const [onItemPressCallback, setOnItemPressCallback] = useState<
-        ((item: SliderItem, index: number) => void) | undefined
-    >(() => onItemPressProp);
+};
 
-    const registerOnItemPress = useCallback(
-        (handler: (item: SliderItem, index: number) => void) => {
-            setOnItemPressCallback(() => handler);
-        },
-        []
-    );
+function useSliderCallbacks({
+    onItemPress: onItemPressProp,
+}: UseSliderCallbacksInput): SliderCallbacksState {
+    const { onItemPress, registerOnItemPress } = useRegisteredCallback({
+        handler: onItemPressProp,
+        name: 'itemPress',
+    });
 
     return {
-        onItemPress: onItemPressCallback,
+        onItemPress,
         registerOnItemPress,
     };
 }
+
+export { useSliderCallbacks };

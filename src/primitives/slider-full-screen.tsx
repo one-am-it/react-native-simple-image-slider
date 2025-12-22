@@ -14,10 +14,20 @@ type SliderFullScreenProps = {
 };
 
 function SliderFullScreen({ children, style }: SliderFullScreenProps) {
-    const parentContext = useSlider();
+    const {
+        data,
+        imageAspectRatio,
+        isFullScreenOpen,
+        currentIndex,
+        setCurrentIndex,
+        scrollToIndex,
+        registerFullScreen,
+        unregisterFullScreen,
+        closeFullScreen,
+    } = useSlider();
     const windowDimensions = useWindowDimensions();
 
-    const [fullScreenIndex, setFullScreenIndex] = useState(parentContext.currentIndex);
+    const [fullScreenIndex, setFullScreenIndex] = useState(currentIndex);
 
     const styles = useMemo(
         () =>
@@ -42,25 +52,25 @@ function SliderFullScreen({ children, style }: SliderFullScreenProps) {
     );
 
     useEffect(() => {
-        if (parentContext.isFullScreenOpen) {
-            setFullScreenIndex(parentContext.currentIndex);
+        if (isFullScreenOpen) {
+            setFullScreenIndex(currentIndex);
         }
-    }, [parentContext.isFullScreenOpen, parentContext.currentIndex]);
+    }, [currentIndex, isFullScreenOpen]);
 
     useEffect(() => {
-        if (parentContext.isFullScreenOpen) {
+        if (isFullScreenOpen) {
             setStatusBarStyle('light');
         } else {
             setStatusBarStyle('dark');
         }
-    }, [parentContext.isFullScreenOpen]);
+    }, [isFullScreenOpen]);
 
     useEffect(() => {
-        parentContext.registerFullScreen();
+        registerFullScreen();
         return () => {
-            parentContext.unregisterFullScreen();
+            unregisterFullScreen();
         };
-    }, [parentContext]);
+    }, [registerFullScreen, unregisterFullScreen]);
 
     const backgroundOpacity = useSharedValue(1);
 
@@ -71,17 +81,18 @@ function SliderFullScreen({ children, style }: SliderFullScreenProps) {
     }, []);
 
     const handleClose = useCallback(() => {
-        parentContext.setCurrentIndex(fullScreenIndex);
-        parentContext.closeFullScreen();
-    }, [fullScreenIndex, parentContext]);
+        setCurrentIndex(fullScreenIndex);
+        scrollToIndex(fullScreenIndex, false);
+        closeFullScreen();
+    }, [closeFullScreen, fullScreenIndex, scrollToIndex, setCurrentIndex]);
 
     const handleIndexChange = useCallback(
         (index: number) => {
             setFullScreenIndex(index);
-            parentContext.setCurrentIndex(index);
-            parentContext.scrollToIndex(index, false);
+            setCurrentIndex(index);
+            scrollToIndex(index, false);
         },
-        [parentContext]
+        [scrollToIndex, setCurrentIndex]
     );
 
     const handlePinchStatusChange = useCallback(
@@ -97,24 +108,20 @@ function SliderFullScreen({ children, style }: SliderFullScreenProps) {
         [windowDimensions.height, backgroundOpacity]
     );
 
-    if (!parentContext.isFullScreenOpen) {
-        return null;
-    }
-
     return (
         <Modal
             animationType="fade"
             onRequestClose={handleClose}
             transparent={true}
-            visible={parentContext.isFullScreenOpen}
+            visible={isFullScreenOpen}
         >
             <Animated.View style={[styles.modalContent, modalContentStyle, style]}>
                 <SliderProvider
-                    data={parentContext.data}
+                    data={data}
                     initialIndex={fullScreenIndex}
-                    imageAspectRatio={parentContext.imageAspectRatio}
+                    imageAspectRatio={imageAspectRatio}
                     onIndexChange={handleIndexChange}
-                    onFullScreenChange={parentContext.closeFullScreen}
+                    onFullScreenChange={closeFullScreen}
                     onPinchStatusChange={handlePinchStatusChange}
                     onPinchDismiss={handleClose}
                 >

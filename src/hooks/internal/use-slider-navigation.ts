@@ -28,7 +28,9 @@ export function useSliderNavigation({
     useEffect(() => {
         if (initialIndex !== undefined) {
             setCurrentIndex(initialIndex);
-            listRef.current?.scrollToIndex({ index: initialIndex, animated: false });
+            requestAnimationFrame(() => {
+                listRef.current?.scrollToIndex({ index: initialIndex, animated: false });
+            });
         }
     }, [initialIndex]);
 

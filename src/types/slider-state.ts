@@ -3,6 +3,7 @@ import type { LayoutChangeEvent } from 'react-native';
 import type { FlashListRef } from '@shopify/flash-list';
 import type { SliderItem } from './context';
 import type { PinchToZoomStatus } from './pinch-to-zoom';
+import type { RegisteredCallbackConfiguration } from './common';
 
 type SliderDataState = {
     data: SliderItem[];
@@ -36,10 +37,10 @@ type SliderFullScreenState = {
     unregisterFullScreen: () => void;
 };
 
-type SliderCallbacksState = {
-    onItemPress?: (item: SliderItem, index: number) => void;
-    registerOnItemPress: (handler: (item: SliderItem, index: number) => void) => void;
-};
+type SliderCallbacksState = RegisteredCallbackConfiguration<
+    (item: SliderItem, index: number) => void,
+    'itemPress'
+>;
 
 type SliderPinchState = {
     onPinchStatusChange?: (status: PinchToZoomStatus) => void;
