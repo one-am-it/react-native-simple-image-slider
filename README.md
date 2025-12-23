@@ -16,14 +16,14 @@ A modern, compositional image slider for React Native built with [`@shopify/flas
 
 ```shell
 npx expo install @shopify/flash-list expo-image expo-haptics expo-status-bar react-native-reanimated react-native-svg \
- react-native-gesture-handler react-native-safe-area-context @one-am/react-native-simple-image-slider
+ react-native-gesture-handler react-native-safe-area-context react-native-worklets @one-am/react-native-simple-image-slider
 ```
 
 ##### yarn
 
 ```shell
 yarn dlx expo install @shopify/flash-list expo-image expo-haptics expo-status-bar react-native-reanimated react-native-svg \
- react-native-gesture-handler react-native-safe-area-context @one-am/react-native-simple-image-slider
+ react-native-gesture-handler react-native-safe-area-context react-native-worklets @one-am/react-native-simple-image-slider
 ```
 
 #### Non-Expo
@@ -32,14 +32,14 @@ yarn dlx expo install @shopify/flash-list expo-image expo-haptics expo-status-ba
 
 ```shell
 npm install @shopify/flash-list expo-image expo-haptics expo-status-bar react-native-reanimated react-native-svg \
- react-native-gesture-handler react-native-safe-area-context @one-am/react-native-simple-image-slider
+ react-native-gesture-handler react-native-safe-area-context react-native-worklets @one-am/react-native-simple-image-slider
 ```
 
 ##### yarn
 
 ```shell
 yarn add @shopify/flash-list expo-image expo-haptics expo-status-bar react-native-reanimated react-native-svg \
- react-native-gesture-handler react-native-safe-area-context @one-am/react-native-simple-image-slider
+ react-native-gesture-handler react-native-safe-area-context react-native-worklets @one-am/react-native-simple-image-slider
 ```
 
 ## Quick Start
@@ -93,6 +93,7 @@ This library uses a **compositional API** where you build your slider by composi
 - **`SliderFullScreen`** - Modal full-screen gallery
 - **`SliderCloseButton`** - Close button for full-screen mode
 - **`SliderDescription`** - Description overlay for full-screen
+- **`SliderEmpty`** - Empty state component when no images are provided
 
 ## API Reference
 
@@ -102,16 +103,17 @@ Root component that wraps all slider functionality.
 
 #### Props
 
-| Prop                 | Type                        | Default      | Description                                               |
-| -------------------- | --------------------------- | ------------ | --------------------------------------------------------- |
-| `data`               | `SliderItem[]`              | **required** | Array of images with `key` and expo-image props           |
-| `children`           | `ReactNode`                 | **required** | Child components (SliderContent, SliderPageCounter, etc.) |
-| `imageAspectRatio`   | `number`                    | `4/3`        | Aspect ratio for images (width / height)                  |
-| `initialIndex`       | `number`                    | `0`          | Initial image index to display                            |
-| `style`              | `StyleProp<ViewStyle>`      | -            | Container style                                           |
-| `onIndexChange`      | `(index: number) => void`   | -            | Callback when current index changes                       |
-| `onItemPress`        | `(item, index) => void`     | -            | Callback when an image is pressed                         |
-| `onFullScreenChange` | `(isOpen: boolean) => void` | -            | Callback when full-screen state changes                   |
+| Prop                 | Type                          | Default                       | Description                                                             |
+| -------------------- | ----------------------------- | ----------------------------- | ----------------------------------------------------------------------- |
+| `data`               | `SliderItem[]`                | **required**                  | Array of images with `key` and expo-image props                         |
+| `children`           | `ReactNode`                   | **required**                  | Child components (SliderContent, SliderPageCounter, etc.)               |
+| `imageAspectRatio`   | `number`                      | auto-detect (fallback: `4/3`) | Aspect ratio for images. Auto-detected from first image if not provided |
+| `initialIndex`       | `number`                      | `0`                           | Initial image index to display                                          |
+| `statusBarStyle`     | `'light' \| 'dark' \| 'auto'` | `'auto'`                      | Status bar style to restore when closing full screen                    |
+| `style`              | `StyleProp<ViewStyle>`        | -                             | Container style                                                         |
+| `onIndexChange`      | `(index: number) => void`     | -                             | Callback when current index changes                                     |
+| `onItemPress`        | `(item, index) => void`       | -                             | Callback when an image is pressed                                       |
+| `onFullScreenChange` | `(isOpen: boolean) => void`   | -                             | Callback when full-screen state changes                                 |
 
 ---
 
@@ -121,12 +123,15 @@ Renders the FlashList with images. Must be a child of `Slider`.
 
 #### Props
 
-| Prop                | Type                            | Default | Description                               |
-| ------------------- | ------------------------------- | ------- | ----------------------------------------- |
-| `enablePinchToZoom` | `boolean`                       | `false` | Enable pinch-to-zoom gestures             |
-| `imageStyle`        | `StyleProp<ImageStyle>`         | -       | Style applied to all images               |
-| `maxItems`          | `number`                        | -       | Limit number of images displayed          |
-| `ref`               | `Ref<FlashListRef<SliderItem>>` | -       | Ref to FlashList for programmatic control |
+| Prop                         | Type                                                              | Default                            | Description                               |
+| ---------------------------- | ----------------------------------------------------------------- | ---------------------------------- | ----------------------------------------- |
+| `enablePinchToZoom`          | `boolean`                                                         | `false`                            | Enable pinch-to-zoom gestures             |
+| `imageStyle`                 | `StyleProp<ImageStyle>`                                           | -                                  | Style applied to all images               |
+| `maxItems`                   | `number`                                                          | -                                  | Limit number of images displayed          |
+| `style`                      | `StyleProp<ViewStyle>`                                            | -                                  | Content container style                   |
+| `imageAccessibilityLabel`    | `string \| ((imageNumber: number, totalItems: number) => string)` | `"Image X of Y"`                   | Accessibility label for images            |
+| `pressableAccessibilityHint` | `string`                                                          | `"Double tap to open full screen"` | Accessibility hint for image press        |
+| `ref`                        | `Ref<FlashListRef<SliderItem>>`                                   | -                                  | Ref to FlashList for programmatic control |
 
 ---
 
@@ -138,11 +143,14 @@ Page indicator showing current/total (e.g., "1 / 10").
 
 #### Props
 
-| Prop        | Type                                               | Default | Description              |
-| ----------- | -------------------------------------------------- | ------- | ------------------------ |
-| `style`     | `StyleProp<ViewStyle>`                             | -       | Container style override |
-| `textStyle` | `StyleProp<TextStyle>`                             | -       | Text style override      |
-| `render`    | `(current: number, total: number) => ReactElement` | -       | Custom render function   |
+| Prop                 | Type                                                     | Default          | Description                          |
+| -------------------- | -------------------------------------------------------- | ---------------- | ------------------------------------ |
+| `style`              | `StyleProp<ViewStyle>`                                   | -                | Container style override             |
+| `textStyle`          | `StyleProp<TextStyle>`                                   | -                | Text style override                  |
+| `accessibilityLabel` | `string \| ((current: number, total: number) => string)` | `"Image X of Y"` | Accessibility label for page counter |
+| `backgroundColor`    | `string`                                                 | `#D3D3D3`        | Background color                     |
+| `borderColor`        | `string`                                                 | `#000000`        | Border color                         |
+| `textColor`          | `string`                                                 | `#000000`        | Text color                           |
 
 ---
 
@@ -200,6 +208,30 @@ Description overlay for full-screen mode. Must be inside `SliderFullScreen`.
 
 ---
 
+### SliderEmpty
+
+Empty state component displayed when no images are provided. Must be a child of `Slider`.
+
+#### Props
+
+| Prop       | Type                   | Default      | Description                   |
+| ---------- | ---------------------- | ------------ | ----------------------------- |
+| `children` | `ReactNode`            | **required** | Content to display when empty |
+| `style`    | `StyleProp<ViewStyle>` | -            | Container style               |
+
+#### Usage
+
+```tsx
+<Slider data={images}>
+    <SliderContent />
+    <SliderEmpty>
+        <Text>No images available</Text>
+    </SliderEmpty>
+</Slider>
+```
+
+---
+
 ## Advanced Usage
 
 ### Custom Corner Components
@@ -221,13 +253,11 @@ Description overlay for full-screen mode. Must be inside `SliderFullScreen`.
 ```tsx
 <SliderCorner position="top-right">
     <SliderPageCounter
-        render={(current, total) => (
-            <View style={styles.customCounter}>
-                <Text style={styles.counterText}>
-                    Photo {current} of {total}
-                </Text>
-            </View>
-        )}
+        backgroundColor="#000000"
+        borderColor="#FFFFFF"
+        textColor="#FFFFFF"
+        textStyle={styles.customText}
+        accessibilityLabel={(current, total) => `Photo ${current} of ${total}`}
     />
 </SliderCorner>
 ```
@@ -337,15 +367,21 @@ function MyComponent() {
         currentIndex,
         setCurrentIndex,
         scrollToIndex,
+        imageAspectRatio,
+        isAspectRatioLoading,
         isFullScreenOpen,
         openFullScreen,
         closeFullScreen,
+        hasFullScreen,
     } = useSlider();
 
     return (
-        <Text>
-            Viewing {currentIndex + 1} / {totalItems}
-        </Text>
+        <View>
+            <Text>
+                Viewing {currentIndex + 1} / {totalItems}
+            </Text>
+            {hasFullScreen ? <Button title="Open Full Screen" onPress={openFullScreen} /> : null}
+        </View>
     );
 }
 ```
@@ -368,19 +404,37 @@ type SliderItem = ImageProps & {
 
 ```typescript
 type SliderContextValue = {
+    // Data
     data: SliderItem[];
     totalItems: number;
+
+    // Navigation
     currentIndex: number;
     setCurrentIndex: (index: number) => void;
-    imageAspectRatio: number;
-    containerWidth: number;
-    containerHeight: number;
-    listRef: RefObject<FlashListRef<SliderItem> | null>;
     scrollToIndex: (index: number, animated?: boolean) => void;
+
+    // Aspect Ratio
+    imageAspectRatio: number;
+    isAspectRatioLoading: boolean;
+
+    // Full Screen
     isFullScreenOpen: boolean;
     openFullScreen: () => void;
     closeFullScreen: () => void;
+    hasFullScreen: boolean;
+
+    // Status Bar
+    statusBarStyle: 'light' | 'dark' | 'auto';
+
+    // Registration functions (for internal use)
+    registerScrollFn: (fn: (index: number, animated?: boolean) => void) => () => void;
+    registerFullScreen: () => () => void;
+
+    // Event callbacks
     onItemPress?: (item: SliderItem, index: number) => void;
+    onPinchStatusChange?: (status: PinchToZoomStatus) => void;
+    onPinchDismiss?: () => void;
+    // ... and more
 };
 ```
 
