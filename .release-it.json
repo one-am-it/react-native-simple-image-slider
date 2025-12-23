@@ -3,11 +3,14 @@
         "commitMessage": "chore: release ${version}",
         "tagName": "v${version}"
     },
-    "npm": {
-        "publish": true
-    },
     "gitlab": {
-        "release": true
+        "release": false
+    },
+    "npm": {
+        "publish": false
+    },
+    "github": {
+        "release": false
     },
     "plugins": {
         "@release-it/conventional-changelog": {
