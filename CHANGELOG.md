@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.0-beta.5](https://git.oneam.it/one-am/libraries/react-native-simple-image-slider/compare/v1.0.0-beta.4...v1.0.0-beta.5) (2025-12-23)
+
+### ✨ Features
+
+* separate SliderProvider and Slider for maximum flexibility ([0f77652](https://git.oneam.it/one-am/libraries/react-native-simple-image-slider/commit/0f77652177d6130150f588c4029e3e36440dd3f8))
+
 ## [1.0.0-beta.4](https://git.oneam.it/one-am/libraries/react-native-simple-image-slider/compare/v1.0.0-beta.3...v1.0.0-beta.4) (2025-12-23)
 
 ### ⚙️ CI/CD
