@@ -351,6 +351,228 @@ function App() {
 
 ---
 
+## Migration from v0.x to v1.0
+
+Version 1.0 introduces a **compositional API** inspired by shadcn/ui, replacing the monolithic component approach. This provides greater flexibility and reduces bundle size by only including the components you use.
+
+### Dependency Updates
+
+First, update your dependencies to meet the new minimum versions:
+
+#### Expo
+
+```shell
+npx expo install @shopify/flash-list expo-image expo-haptics expo-status-bar react-native-reanimated react-native-svg \
+ react-native-gesture-handler react-native-safe-area-context react-native-worklets @one-am/react-native-simple-image-slider
+```
+
+#### Non-Expo
+
+```shell
+npm install @shopify/flash-list@latest react-native-reanimated@latest react@latest react-native-worklets \
+ @one-am/react-native-simple-image-slider@latest
+```
+
+**Key dependency changes:**
+
+- `react-native-worklets` - **NEW** peer dependency (required)
+- `@shopify/flash-list` - now requires `>=2` (was `<2.0.0`)
+- `react` - now requires `>=19`
+- `react-native-reanimated` - now requires `>=4`
+
+### Breaking Changes
+
+#### Removed Components
+
+| v0.x Component                   | v1.0 Replacement                             |
+| -------------------------------- | -------------------------------------------- |
+| `SimpleImageSlider`              | `Slider` + `SliderContent` + children        |
+| `SimpleImageSliderThemeProvider` | Removed (use component props for styling)    |
+| `BaseListImageSlider`            | `Slider` + `SliderContent`                   |
+| `FullScreenImageSlider`          | `SliderFullScreen`                           |
+| `PageCounter`                    | `SliderPageCounter` (wrap in `SliderCorner`) |
+| `PinchToZoom` (exported)         | `enablePinchToZoom` prop on `SliderContent`  |
+| `useSimpleImageSliderTheme` hook | Removed                                      |
+
+#### Renamed Types
+
+| v0.x Type               | v1.0 Type    |
+| ----------------------- | ------------ |
+| `SimpleImageSliderItem` | `SliderItem` |
+
+#### New Components
+
+- `Slider` - Root context provider
+- `SliderContent` - FlashList wrapper for rendering images
+- `SliderPageCounter` - Page counter component
+- `SliderCorner` - Absolute positioning utility
+- `SliderFullScreen` - Full-screen modal
+- `SliderCloseButton` - Close button for full-screen
+- `SliderDescription` - Description overlay for full-screen
+- `SliderEmpty` - Empty state component
+
+#### New Hook
+
+- `useSlider` - Access slider context from custom components
+
+### Code Migration Examples
+
+#### Basic Slider with Full-Screen
+
+**Before (v0.x):**
+
+```tsx
+import {
+    SimpleImageSliderThemeProvider,
+    SimpleImageSlider,
+} from '@one-am/react-native-simple-image-slider';
+
+<SimpleImageSliderThemeProvider>
+    <SimpleImageSlider
+        data={photos.map((photo, index) => ({
+            source: photo,
+            key: index.toString(),
+        }))}
+        imageWidth={width}
+        imageAspectRatio={16 / 9}
+        fullScreenEnabled={true}
+        pageCounterPosition="bottom-left"
+        renderFullScreenDescription={(_, index) => (
+            <Text style={{ color: '#ffffff' }}>Picture {index}</Text>
+        )}
+        FullScreenCloseButtonIcon={<CustomIcon />}
+    />
+</SimpleImageSliderThemeProvider>;
+```
+
+**After (v1.0):**
+
+```tsx
+import {
+    Slider,
+    SliderContent,
+    SliderCorner,
+    SliderPageCounter,
+    SliderFullScreen,
+    SliderCloseButton,
+    SliderDescription,
+} from '@one-am/react-native-simple-image-slider';
+
+<Slider
+    data={photos.map((photo, index) => ({
+        source: photo,
+        key: index.toString(),
+    }))}
+    imageAspectRatio={16 / 9}
+>
+    <SliderContent />
+    <SliderCorner position="bottom-left">
+        <SliderPageCounter />
+    </SliderCorner>
+    <SliderFullScreen>
+        <SliderContent enablePinchToZoom />
+        <SliderCloseButton>
+            <CustomIcon />
+        </SliderCloseButton>
+        <SliderDescription
+            render={(_, index) => <Text style={{ color: '#ffffff' }}>Picture {index}</Text>}
+        />
+    </SliderFullScreen>
+</Slider>;
+```
+
+#### Custom Overlays (Badges, Buttons)
+
+**Before (v0.x):**
+
+```tsx
+<SimpleImageSlider
+    data={photos}
+    TopRightComponent={<Badge text="NEW" />}
+    BottomRightComponent={<FavoriteButton />}
+/>
+```
+
+**After (v1.0):**
+
+```tsx
+<Slider data={photos}>
+    <SliderContent />
+    <SliderCorner position="top-right">
+        <Badge text="NEW" />
+    </SliderCorner>
+    <SliderCorner position="bottom-right">
+        <FavoriteButton />
+    </SliderCorner>
+</Slider>
+```
+
+#### Accessing Slider State
+
+**Before (v0.x):**
+
+Not directly supported. Required ref access and manual state management.
+
+**After (v1.0):**
+
+```tsx
+import { useSlider } from '@one-am/react-native-simple-image-slider';
+
+function NavigationButtons() {
+    const { currentIndex, totalItems, scrollToIndex } = useSlider();
+
+    return (
+        <View>
+            <Button
+                disabled={currentIndex === 0}
+                onPress={() => scrollToIndex(currentIndex - 1)}
+                title="Prev"
+            />
+            <Button
+                disabled={currentIndex === totalItems - 1}
+                onPress={() => scrollToIndex(currentIndex + 1)}
+                title="Next"
+            />
+        </View>
+    );
+}
+
+<Slider data={photos}>
+    <SliderContent />
+    <NavigationButtons />
+</Slider>;
+```
+
+### Removed Props
+
+The following props from `SimpleImageSlider` are removed or replaced:
+
+| v0.x Prop                     | v1.0 Alternative                                         |
+| ----------------------------- | -------------------------------------------------------- |
+| `imageWidth`                  | Automatically calculated (removed)                       |
+| `fullScreenEnabled`           | Use `<SliderFullScreen>` as a child                      |
+| `pageCounterPosition`         | Use `<SliderCorner position="..."><SliderPageCounter />` |
+| `renderFullScreenDescription` | Use `<SliderDescription render={...} />`                 |
+| `FullScreenCloseButtonIcon`   | Use `<SliderCloseButton>` with custom children           |
+| `TopLeftComponent`            | Use `<SliderCorner position="top-left">`                 |
+| `TopRightComponent`           | Use `<SliderCorner position="top-right">`                |
+| `BottomLeftComponent`         | Use `<SliderCorner position="bottom-left">`              |
+| `BottomRightComponent`        | Use `<SliderCorner position="bottom-right">`             |
+| `showPageCounter`             | Don't render `<SliderPageCounter>` component             |
+| `fullScreenImageAspectRatio`  | Use `imageAspectRatio` prop on `<SliderFullScreen>`      |
+
+### Why This Change?
+
+The new compositional API provides:
+
+- **Flexibility** - Compose only the features you need
+- **Smaller bundle size** - Tree-shaking removes unused components
+- **Better TypeScript support** - Explicit component props instead of a large union
+- **Easier customization** - Override individual components without prop drilling
+- **Familiar patterns** - Similar to shadcn/ui and other modern component libraries
+
+---
+
 ## Hooks
 
 ### useSlider
