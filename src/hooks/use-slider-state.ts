@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react';
-import type { SliderContextValue, SliderProviderProps } from '../types/context';
+import type { SliderProviderProps } from '../types/context';
+import type { SliderState } from '../types/slider-state';
 import {
     useImageAspectRatio,
     useSliderNavigation,
@@ -13,7 +14,7 @@ export function useSliderState({
     imageAspectRatio: aspectRatioOverride,
     statusBarStyle = 'auto',
     ...propCallbacks
-}: Omit<SliderProviderProps, 'children'>): SliderContextValue {
+}: Omit<SliderProviderProps, 'children'>): SliderState {
     // Get first image source for aspect ratio detection
     const firstImageSource = data?.[0]?.source;
 

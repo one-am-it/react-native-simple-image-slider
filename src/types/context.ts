@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import type { ImageProps } from 'expo-image';
 import type { PinchToZoomStatus } from './pinch-to-zoom';
+import type { SliderState } from './slider-state';
 
 type SliderItem = ImageProps & {
     key: string;
@@ -22,5 +23,6 @@ type SliderProviderProps = {
     onPinchDismiss?: () => void;
 };
 
-export type { SliderItem, SliderProviderProps };
-export type { SliderContextValue } from './slider-state';
+type SliderContextValue = SliderState;
+
+export type { SliderItem, SliderProviderProps, SliderContextValue };

@@ -1,6 +1,6 @@
 import type { SliderItem } from './context';
 import type { PinchToZoomStatus } from './pinch-to-zoom';
-import type { CallbacksFromEvents } from './common';
+import type { RegisteredCallbacksFromEvents } from './common';
 
 type SliderDataState = {
     data: SliderItem[];
@@ -35,13 +35,13 @@ type SliderEvents = {
     pinchDismiss: () => void;
 };
 
-type SliderCallbacksState = CallbacksFromEvents<SliderEvents>;
+type SliderCallbacksState = RegisteredCallbacksFromEvents<SliderEvents>;
 
 type SliderStatusBarState = {
     statusBarStyle: 'light' | 'dark' | 'auto';
 };
 
-type SliderContextValue = SliderDataState &
+type SliderState = SliderDataState &
     SliderAspectRatioState &
     SliderNavigationState &
     SliderFullScreenState &
@@ -56,5 +56,5 @@ export type {
     SliderEvents,
     SliderCallbacksState,
     SliderStatusBarState,
-    SliderContextValue,
+    SliderState,
 };

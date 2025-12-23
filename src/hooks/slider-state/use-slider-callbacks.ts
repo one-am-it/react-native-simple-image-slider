@@ -1,15 +1,8 @@
-import type { PinchToZoomStatus } from '../../types/pinch-to-zoom';
-import type { SliderItem } from '../../types/context';
-import type { SliderCallbacksState } from '../../types/slider-state';
+import type { SliderCallbacksState, SliderEvents } from '../../types/slider-state';
 import { useRegisteredCallback } from '../use-registered-callback';
+import type { CallbacksFromEvents } from '../../types/common';
 
-type UseSliderCallbacksInput = {
-    onItemPress?: (item: SliderItem, index: number) => void;
-    onFullScreenChange?: (isOpen: boolean) => void;
-    onIndexChange?: (index: number) => void;
-    onPinchStatusChange?: (status: PinchToZoomStatus) => void;
-    onPinchDismiss?: () => void;
-};
+type UseSliderCallbacksInput = Partial<CallbacksFromEvents<SliderEvents>>;
 
 function useSliderCallbacks({
     onItemPress: onItemPressProp,
