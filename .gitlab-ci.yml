@@ -35,11 +35,6 @@ check:
     script:
         - yarn typecheck
         - yarn lint
-    artifacts:
-        expire_in: 30 mins
-        paths:
-            - node_modules
-            - example/node_modules
     when: on_success
     only:
         - merge_requests
@@ -51,8 +46,6 @@ check:
     image: $[[ inputs.node-image ]]
     only:
         - tags
-    before_script:
-        - yarn prepare
 
 publish:
     extends: .publish-template
@@ -65,9 +58,9 @@ publish:
             if [ "$REGISTRY" = "gitlab" ]; then
                 echo "@one-am:registry=https://${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/" > .npmrc
                 echo "//${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=${CI_JOB_TOKEN}" >> .npmrc
-                npm publish
+                yarn release-it --no-increment --ci --npm.publish true --no-git --gitlab.release true --npm.skipChecks true
             else
                 echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
                 echo "@one-am:registry=https://registry.npmjs.org/" >> .npmrc
-                npm publish --access public
+                yarn release-it --no-increment --ci --npm.publish true --no-git --gitlab.release false --npm.skipChecks true
             fi
