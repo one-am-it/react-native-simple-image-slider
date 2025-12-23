@@ -40,3 +40,29 @@ check:
         - merge_requests
         - tags
         - main
+
+.publish-template:
+    stage: $[[ inputs.deploy-stage ]]
+    image: $[[ inputs.node-image ]]
+    only:
+        - tags
+    before_script:
+        - yarn prepare
+
+publish:
+    extends: .publish-template
+    parallel:
+        matrix:
+            - REGISTRY: gitlab
+            - REGISTRY: npm
+    script:
+        - |
+            if [ "$REGISTRY" = "gitlab" ]; then
+                echo "@one-am:registry=https://${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/" > .npmrc
+                echo "//${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=${CI_JOB_TOKEN}" >> .npmrc
+                npm publish
+            else
+                echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
+                echo "@one-am:registry=https://registry.npmjs.org/" >> .npmrc
+                npm publish --access public
+            fi
