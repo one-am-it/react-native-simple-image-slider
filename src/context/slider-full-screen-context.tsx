@@ -1,5 +1,5 @@
-import React, { createContext, useContext } from 'react';
 import type { PropsWithChildren } from 'react';
+import React, { createContext, useContext } from 'react';
 
 const SliderFullScreenContext = createContext<boolean | null>(null);
 

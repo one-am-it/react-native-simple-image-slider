@@ -46,6 +46,7 @@ yarn add @shopify/flash-list expo-image expo-haptics expo-status-bar react-nativ
 
 ```tsx
 import {
+    SliderProvider,
     Slider,
     SliderContent,
     SliderCorner,
@@ -63,21 +64,23 @@ function Gallery() {
     ];
 
     return (
-        <Slider data={images} imageAspectRatio={16 / 9}>
-            <SliderContent />
-            <SliderCorner position="bottom-left">
-                <SliderPageCounter />
-            </SliderCorner>
-            <SliderFullScreen>
-                <SliderContent enablePinchToZoom />
-                <SliderCloseButton />
-                <SliderDescription
-                    render={(item, index) => (
-                        <Text style={{ color: '#fff' }}>Photo {index + 1}</Text>
-                    )}
-                />
-            </SliderFullScreen>
-        </Slider>
+        <SliderProvider data={images} imageAspectRatio={16 / 9}>
+            <Slider>
+                <SliderContent />
+                <SliderCorner position="bottom-left">
+                    <SliderPageCounter />
+                </SliderCorner>
+                <SliderFullScreen>
+                    <SliderContent enablePinchToZoom />
+                    <SliderCloseButton />
+                    <SliderDescription
+                        render={(item, index) => (
+                            <Text style={{ color: '#fff' }}>Photo {index + 1}</Text>
+                        )}
+                    />
+                </SliderFullScreen>
+            </Slider>
+        </SliderProvider>
     );
 }
 ```
@@ -86,7 +89,8 @@ function Gallery() {
 
 This library uses a **compositional API** where you build your slider by composing primitive components:
 
-- **`Slider`** - Root component that provides context and manages state
+- **`SliderProvider`** - Root context provider that manages state (required wrapper)
+- **`Slider`** - Container component with gesture handling
 - **`SliderContent`** - Renders the FlashList with images
 - **`SliderPageCounter`** - Page indicator (e.g., "1 / 10")
 - **`SliderCorner`** - Positioned container for custom overlays
@@ -97,23 +101,35 @@ This library uses a **compositional API** where you build your slider by composi
 
 ## API Reference
 
-### Slider
+### SliderProvider
 
-Root component that wraps all slider functionality.
+Root context provider that manages state. **Required wrapper** for all slider functionality.
 
 #### Props
 
 | Prop                 | Type                          | Default                       | Description                                                             |
 | -------------------- | ----------------------------- | ----------------------------- | ----------------------------------------------------------------------- |
 | `data`               | `SliderItem[]`                | **required**                  | Array of images with `key` and expo-image props                         |
-| `children`           | `ReactNode`                   | **required**                  | Child components (SliderContent, SliderPageCounter, etc.)               |
+| `children`           | `ReactNode`                   | **required**                  | Child components (Slider, custom components with useSlider, etc.)       |
 | `imageAspectRatio`   | `number`                      | auto-detect (fallback: `4/3`) | Aspect ratio for images. Auto-detected from first image if not provided |
 | `initialIndex`       | `number`                      | `0`                           | Initial image index to display                                          |
 | `statusBarStyle`     | `'light' \| 'dark' \| 'auto'` | `'auto'`                      | Status bar style to restore when closing full screen                    |
-| `style`              | `StyleProp<ViewStyle>`        | -                             | Container style                                                         |
 | `onIndexChange`      | `(index: number) => void`     | -                             | Callback when current index changes                                     |
 | `onItemPress`        | `(item, index) => void`       | -                             | Callback when an image is pressed                                       |
 | `onFullScreenChange` | `(isOpen: boolean) => void`   | -                             | Callback when full-screen state changes                                 |
+
+---
+
+### Slider
+
+Container component with gesture handling. Must be inside `SliderProvider`.
+
+#### Props
+
+| Prop       | Type                   | Default      | Description                                               |
+| ---------- | ---------------------- | ------------ | --------------------------------------------------------- |
+| `children` | `ReactNode`            | **required** | Child components (SliderContent, SliderPageCounter, etc.) |
+| `style`    | `StyleProp<ViewStyle>` | -            | Container style                                           |
 
 ---
 
@@ -237,29 +253,36 @@ Empty state component displayed when no images are provided. Must be a child of 
 ### Custom Corner Components
 
 ```tsx
-<Slider data={images}>
-    <SliderContent />
-    <SliderCorner position="top-right">
-        <Badge text="NEW" />
-    </SliderCorner>
-    <SliderCorner position="bottom-right">
-        <FavoriteButton />
-    </SliderCorner>
-</Slider>
+<SliderProvider data={images}>
+    <Slider>
+        <SliderContent />
+        <SliderCorner position="top-right">
+            <Badge text="NEW" />
+        </SliderCorner>
+        <SliderCorner position="bottom-right">
+            <FavoriteButton />
+        </SliderCorner>
+    </Slider>
+</SliderProvider>
 ```
 
 ### Custom Page Counter
 
 ```tsx
-<SliderCorner position="top-right">
-    <SliderPageCounter
-        backgroundColor="#000000"
-        borderColor="#FFFFFF"
-        textColor="#FFFFFF"
-        textStyle={styles.customText}
-        accessibilityLabel={(current, total) => `Photo ${current} of ${total}`}
-    />
-</SliderCorner>
+<SliderProvider data={images}>
+    <Slider>
+        <SliderContent />
+        <SliderCorner position="top-right">
+            <SliderPageCounter
+                backgroundColor="#000000"
+                borderColor="#FFFFFF"
+                textColor="#FFFFFF"
+                textStyle={styles.customText}
+                accessibilityLabel={(current, total) => `Photo ${current} of ${total}`}
+            />
+        </SliderCorner>
+    </Slider>
+</SliderProvider>
 ```
 
 ### Programmatic Scrolling
@@ -277,10 +300,12 @@ function MyGallery() {
     };
 
     return (
-        <Slider data={images}>
-            <SliderContent ref={sliderRef} />
-            <Button title="Go to Image 3" onPress={() => goToImage(2)} />
-        </Slider>
+        <SliderProvider data={images}>
+            <Slider>
+                <SliderContent ref={sliderRef} />
+                <Button title="Go to Image 3" onPress={() => goToImage(2)} />
+            </Slider>
+        </SliderProvider>
     );
 }
 ```
@@ -310,41 +335,71 @@ function NavigationButtons() {
 }
 
 // Usage
-<Slider data={images}>
-    <SliderContent />
-    <NavigationButtons />
-</Slider>;
+<SliderProvider data={images}>
+    <Slider>
+        <SliderContent />
+        <NavigationButtons />
+    </Slider>
+</SliderProvider>;
 ```
 
 ### Minimal Gallery (No Full-Screen)
 
 ```tsx
-<Slider data={images}>
-    <SliderContent />
-    <SliderCorner position="bottom-left">
-        <SliderPageCounter />
-    </SliderCorner>
-</Slider>
+<SliderProvider data={images}>
+    <Slider>
+        <SliderContent />
+        <SliderCorner position="bottom-left">
+            <SliderPageCounter />
+        </SliderCorner>
+    </Slider>
+</SliderProvider>
 ```
 
-### Full-Screen Only (No Inline Slider)
+### External Control with Custom Components
+
+Use `useSlider()` from any component inside `SliderProvider` to control the slider externally:
 
 ```tsx
+import {
+    SliderProvider,
+    Slider,
+    SliderFullScreen,
+    SliderContent,
+    useSlider,
+} from '@one-am/react-native-simple-image-slider';
+
+function ImageGrid() {
+    const { openFullScreen, scrollToIndex } = useSlider();
+
+    return (
+        <View style={styles.grid}>
+            {images.map((image, index) => (
+                <Pressable
+                    key={image.key}
+                    onPress={() => {
+                        scrollToIndex(index);
+                        openFullScreen();
+                    }}
+                >
+                    <Image source={image.source} style={styles.thumbnail} />
+                </Pressable>
+            ))}
+        </View>
+    );
+}
+
 function App() {
     return (
-        <Slider data={images}>
-            <Button
-                onPress={() => {
-                    /* trigger full-screen via context */
-                }}
-            >
-                View Gallery
-            </Button>
-            <SliderFullScreen>
-                <SliderContent enablePinchToZoom />
-                <SliderCloseButton />
-            </SliderFullScreen>
-        </Slider>
+        <SliderProvider data={images} imageAspectRatio={16 / 9}>
+            <ImageGrid />
+            <Slider>
+                <SliderFullScreen>
+                    <SliderContent enablePinchToZoom />
+                    <SliderCloseButton />
+                </SliderFullScreen>
+            </Slider>
+        </SliderProvider>
     );
 }
 ```
@@ -449,6 +504,7 @@ import {
 
 ```tsx
 import {
+    SliderProvider,
     Slider,
     SliderContent,
     SliderCorner,
@@ -458,27 +514,29 @@ import {
     SliderDescription,
 } from '@one-am/react-native-simple-image-slider';
 
-<Slider
+<SliderProvider
     data={photos.map((photo, index) => ({
         source: photo,
         key: index.toString(),
     }))}
     imageAspectRatio={16 / 9}
 >
-    <SliderContent />
-    <SliderCorner position="bottom-left">
-        <SliderPageCounter />
-    </SliderCorner>
-    <SliderFullScreen>
-        <SliderContent enablePinchToZoom />
-        <SliderCloseButton>
-            <CustomIcon />
-        </SliderCloseButton>
-        <SliderDescription
-            render={(_, index) => <Text style={{ color: '#ffffff' }}>Picture {index}</Text>}
-        />
-    </SliderFullScreen>
-</Slider>;
+    <Slider>
+        <SliderContent />
+        <SliderCorner position="bottom-left">
+            <SliderPageCounter />
+        </SliderCorner>
+        <SliderFullScreen>
+            <SliderContent enablePinchToZoom />
+            <SliderCloseButton>
+                <CustomIcon />
+            </SliderCloseButton>
+            <SliderDescription
+                render={(_, index) => <Text style={{ color: '#ffffff' }}>Picture {index}</Text>}
+            />
+        </SliderFullScreen>
+    </Slider>
+</SliderProvider>;
 ```
 
 #### Custom Overlays (Badges, Buttons)
@@ -496,15 +554,17 @@ import {
 **After (v1.0):**
 
 ```tsx
-<Slider data={photos}>
-    <SliderContent />
-    <SliderCorner position="top-right">
-        <Badge text="NEW" />
-    </SliderCorner>
-    <SliderCorner position="bottom-right">
-        <FavoriteButton />
-    </SliderCorner>
-</Slider>
+<SliderProvider data={photos}>
+    <Slider>
+        <SliderContent />
+        <SliderCorner position="top-right">
+            <Badge text="NEW" />
+        </SliderCorner>
+        <SliderCorner position="bottom-right">
+            <FavoriteButton />
+        </SliderCorner>
+    </Slider>
+</SliderProvider>
 ```
 
 #### Accessing Slider State
@@ -537,10 +597,12 @@ function NavigationButtons() {
     );
 }
 
-<Slider data={photos}>
-    <SliderContent />
-    <NavigationButtons />
-</Slider>;
+<SliderProvider data={photos}>
+    <Slider>
+        <SliderContent />
+        <NavigationButtons />
+    </Slider>
+</SliderProvider>;
 ```
 
 ### Removed Props
@@ -550,6 +612,13 @@ The following props from `SimpleImageSlider` are removed or replaced:
 | v0.x Prop                     | v1.0 Alternative                                         |
 | ----------------------------- | -------------------------------------------------------- |
 | `imageWidth`                  | Automatically calculated (removed)                       |
+| `data`                        | Now on `<SliderProvider>` instead of `<Slider>`          |
+| `imageAspectRatio`            | Now on `<SliderProvider>`                                |
+| `initialIndex`                | Now on `<SliderProvider>`                                |
+| `statusBarStyle`              | Now on `<SliderProvider>`                                |
+| `onIndexChange`               | Now on `<SliderProvider>`                                |
+| `onItemPress`                 | Now on `<SliderProvider>`                                |
+| `onFullScreenChange`          | Now on `<SliderProvider>`                                |
 | `fullScreenEnabled`           | Use `<SliderFullScreen>` as a child                      |
 | `pageCounterPosition`         | Use `<SliderCorner position="..."><SliderPageCounter />` |
 | `renderFullScreenDescription` | Use `<SliderDescription render={...} />`                 |

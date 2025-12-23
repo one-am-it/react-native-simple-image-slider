@@ -1,3 +1,4 @@
+export { SliderProvider } from './slider-provider';
 export { Slider } from './slider';
 export { SliderContent } from './slider-content';
 export { SliderPageCounter } from './slider-page-counter';

@@ -1,11 +1,10 @@
 import { useCallback, useMemo } from 'react';
-import type { SliderProviderProps } from '../types/context';
-import type { SliderState } from '../types/slider-state';
+import type { SliderProviderProps, SliderState } from '../types';
 import {
     useImageAspectRatio,
-    useSliderNavigation,
-    useSliderFullScreen,
     useSliderCallbacks,
+    useSliderFullScreen,
+    useSliderNavigation,
 } from './slider-state';
 
 export function useSliderState({

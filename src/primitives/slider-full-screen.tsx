@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
-import { Modal, StyleSheet, useColorScheme, useWindowDimensions } from 'react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
+import { Modal, StyleSheet, useColorScheme, useWindowDimensions } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { setStatusBarStyle } from 'expo-status-bar';
 import { useSliderContext } from '../context/slider-context';
-import type { PinchToZoomStatus } from '../types/pinch-to-zoom';
+import type { PinchToZoomStatus } from '../types';
 import { SliderFullScreenProvider } from '../context/slider-full-screen-context';
 
 type SliderFullScreenProps = {

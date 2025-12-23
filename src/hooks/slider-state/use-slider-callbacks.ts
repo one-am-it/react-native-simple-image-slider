@@ -1,6 +1,5 @@
-import type { SliderCallbacksState, SliderEvents } from '../../types/slider-state';
+import type { SliderCallbacksState, SliderEvents, CallbacksFromEvents } from '../../types';
 import { useRegisteredCallback } from '../use-registered-callback';
-import type { CallbacksFromEvents } from '../../types/common';
 
 type UseSliderCallbacksInput = Partial<CallbacksFromEvents<SliderEvents>>;
 

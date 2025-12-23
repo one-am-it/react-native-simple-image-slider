@@ -46,65 +46,76 @@ yarn sync:deps           # Sync peer dependencies to dev dependencies
 The library uses a **flat exports** pattern (like shadcn/ui) where users compose primitive components:
 
 ```tsx
-<Slider data={images}>
-    <SliderContent />
-    <SliderCorner position="bottom-left">
-        <SliderPageCounter />
-    </SliderCorner>
-    <SliderFullScreen>
-        <SliderContent enablePinchToZoom />
-        <SliderCloseButton />
-    </SliderFullScreen>
-</Slider>
+<SliderProvider data={images} imageAspectRatio={16 / 9}>
+    <Slider>
+        <SliderContent />
+        <SliderCorner position="bottom-left">
+            <SliderPageCounter />
+        </SliderCorner>
+        <SliderFullScreen>
+            <SliderContent enablePinchToZoom />
+            <SliderCloseButton />
+        </SliderFullScreen>
+    </Slider>
+</SliderProvider>
 ```
 
 ### Component Hierarchy
 
-The library exports 8 main primitives:
+The library exports 9 main primitives:
 
-1. **Slider** (`src/primitives/slider.tsx`) - Root component with Context provider
-    - Wraps children in `SliderProvider` for state sharing
+1. **SliderProvider** (`src/primitives/slider-provider.tsx`) - Root context provider
+    - **Required wrapper** for all slider functionality
+    - Manages state via `SliderContextProvider` from context
+    - Accepts data, callbacks, and configuration props
+    - Makes `useSlider()` hook available to all children
+
+2. **Slider** (`src/primitives/slider.tsx`) - Container component with gesture handling
     - Uses `GestureHandlerRootView` for gesture support
-    - Provides state via React Context to all children
+    - Must be inside `SliderProvider`
+    - Only accepts `children` and `style` props
 
-2. **SliderContent** (`src/primitives/slider-content.tsx`) - FlashList wrapper
+3. **SliderContent** (`src/primitives/slider-content.tsx`) - FlashList wrapper
     - Uses `@shopify/flash-list` for horizontal scrolling performance
     - Handles image rendering with `expo-image`
     - Supports ref forwarding to FlashList for imperative control (`.scrollToIndex()`)
     - Optionally wraps in `PinchToZoom` for gesture support
 
-3. **SliderPageCounter** (`src/primitives/slider-page-counter.tsx`) - Page indicator
+4. **SliderPageCounter** (`src/primitives/slider-page-counter.tsx`) - Page indicator
     - Displays current page and total count
     - Reads `currentIndex` and `totalItems` from context
     - Supports custom render prop for full customization
     - Must be wrapped in `SliderCorner` for positioning
 
-4. **SliderCorner** (`src/primitives/slider-corner.tsx`) - Positioned container
+5. **SliderCorner** (`src/primitives/slider-corner.tsx`) - Positioned container
     - Absolute positioning utility for custom overlays
     - Configurable offset from edges (default: 16px)
 
-5. **SliderFullScreen** (`src/primitives/slider-full-screen.tsx`) - Modal full-screen gallery
+6. **SliderFullScreen** (`src/primitives/slider-full-screen.tsx`) - Modal full-screen gallery
     - Uses React Native Modal component
     - Creates **nested context** with its own index state
     - Includes fade in/out animations with Reanimated
     - Syncs index with parent on open/close
 
-6. **SliderCloseButton** (`src/primitives/slider-close-button.tsx`) - Close button
+7. **SliderCloseButton** (`src/primitives/slider-close-button.tsx`) - Close button
     - Positioned in safe area (top-right by default)
     - Calls `closeFullScreen()` from context
     - Supports custom icon children
 
-7. **SliderDescription** (`src/primitives/slider-description.tsx`) - Description container
+8. **SliderDescription** (`src/primitives/slider-description.tsx`) - Description container
     - Positioned at bottom with safe area insets
     - Receives current item and index via render prop
 
-8. **SliderEmpty** (`src/primitives/slider-empty.tsx`) - Empty state component
+9. **SliderEmpty** (`src/primitives/slider-empty.tsx`) - Empty state component
     - Displayed when no images are provided
-    - Uses same aspect ratio as configured in Slider
+    - Uses same aspect ratio as configured in SliderProvider
 
 ### Context Architecture
 
-**File**: `src/context/slider-context.tsx`
+**Files**:
+
+- `src/primitives/slider-provider.tsx` - Public SliderProvider component
+- `src/context/slider-context.tsx` - Internal SliderContextProvider and hooks
 
 The context provides shared state to all primitives:
 
@@ -154,6 +165,8 @@ This allows full-screen gallery to scroll independently while maintaining sync w
 
 ### Key Design Patterns
 
+**Mandatory Provider Pattern**: `SliderProvider` is required to wrap all slider functionality. This enables `useSlider()` hook access from any component in the tree, not just slider children.
+
 **Context Hook Pattern**: All primitives use `useSlider()` to access shared state:
 
 ```typescript
@@ -161,6 +174,17 @@ function SliderPageCounter() {
     const { currentIndex, totalItems } = useSlider();
     // ...
 }
+```
+
+**External Control**: Custom components outside `Slider` can control it via `useSlider()`:
+
+```typescript
+<SliderProvider data={images}>
+    <MyCustomGrid /> {/* can use useSlider() to openFullScreen() */}
+    <Slider>
+        <SliderFullScreen>...</SliderFullScreen>
+    </Slider>
+</SliderProvider>
 ```
 
 **Ref Forwarding**: All components use `forwardRef` to expose FlashList refs for programmatic scrolling:
@@ -274,7 +298,8 @@ All these are peer dependencies and must be installed:
 src/
 ├── index.ts                    # Main entry point (exports all primitives)
 ├── primitives/
-│   ├── slider.tsx               # Root component with Context
+│   ├── slider-provider.tsx       # Public SliderProvider component
+│   ├── slider.tsx               # Container component with gesture handling
 │   ├── slider-content.tsx        # FlashList wrapper
 │   ├── slider-page-counter.tsx    # Page indicator
 │   ├── slider-corner.tsx         # Positioned container
@@ -284,7 +309,7 @@ src/
 │   ├── slider-empty.tsx          # Empty state component
 │   └── index.ts                 # Barrel export
 ├── context/
-│   ├── slider-context.tsx        # Context provider + useSlider hook
+│   ├── slider-context.tsx        # Internal SliderContextProvider + useSlider hook
 │   └── slider-full-screen-context.tsx # Full-screen context utilities
 ├── hooks/
 │   ├── use-slider-state.ts        # Internal state management
@@ -366,9 +391,9 @@ Current version: 1.0.0-beta.1
 
 ### New Exports
 
-- `Slider`, `SliderContent`, `SliderPageCounter`, `SliderCorner`, `SliderFullScreen`, `SliderCloseButton`, `SliderDescription`
+- `SliderProvider`, `Slider`, `SliderContent`, `SliderPageCounter`, `SliderCorner`, `SliderFullScreen`, `SliderCloseButton`, `SliderDescription`, `SliderEmpty`
 - `useSlider` hook
-- `SliderContextValue` type
+- `SliderProviderProps`, `SliderContextValue` types
 
 ### Migration Example
 
@@ -388,19 +413,21 @@ Current version: 1.0.0-beta.1
 **After (v1.0)**:
 
 ```tsx
-<Slider data={images}>
-    <SliderContent />
-    <SliderCorner position="bottom-left">
-        <SliderPageCounter />
-    </SliderCorner>
-    <SliderCorner position="top-right">
-        <Badge />
-    </SliderCorner>
-    <SliderFullScreen>
-        <SliderContent enablePinchToZoom />
-        <SliderCloseButton />
-    </SliderFullScreen>
-</Slider>
+<SliderProvider data={images}>
+    <Slider>
+        <SliderContent />
+        <SliderCorner position="bottom-left">
+            <SliderPageCounter />
+        </SliderCorner>
+        <SliderCorner position="top-right">
+            <Badge />
+        </SliderCorner>
+        <SliderFullScreen>
+            <SliderContent enablePinchToZoom />
+            <SliderCloseButton />
+        </SliderFullScreen>
+    </Slider>
+</SliderProvider>
 ```
 
 ## Workspace Setup

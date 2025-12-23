@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from 'react';
-import type { SliderNavigationState } from '../../types/slider-state';
+import type { SliderNavigationState } from '../../types';
 
 type ScrollToIndexFn = (index: number, animated?: boolean) => void;
 

@@ -1,11 +1,10 @@
 import React, { createContext, useContext } from 'react';
-import type { SliderContextValue, SliderProviderProps } from '../types/context';
-import type { SliderPublicState } from '../types/slider-state';
+import type { SliderContextValue, SliderProviderProps, SliderPublicState } from '../types';
 import { useSliderState } from '../hooks';
 
 const SliderContext = createContext<SliderContextValue | null>(null);
 
-function SliderProvider({ children, ...props }: SliderProviderProps) {
+function SliderContextProvider({ children, ...props }: SliderProviderProps) {
     const contextValue = useSliderState(props);
 
     return <SliderContext value={contextValue}>{children}</SliderContext>;
@@ -15,7 +14,7 @@ function useSliderContext(): SliderContextValue {
     const context = useContext(SliderContext);
 
     if (!context) {
-        throw new Error('useSliderContext must be used within a Slider component');
+        throw new Error('useSliderContext must be used within a SliderProvider component');
     }
 
     return context;
@@ -38,4 +37,4 @@ function useSlider(): SliderPublicState {
     };
 }
 
-export { SliderProvider, useSliderContext, useSlider };
+export { SliderContextProvider, useSliderContext, useSlider };

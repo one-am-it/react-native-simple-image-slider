@@ -1,16 +1,16 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { ScrollViewProps, StyleProp, ViewStyle } from 'react-native';
 import { Pressable, StyleSheet, useWindowDimensions } from 'react-native';
-import type { StyleProp, ViewStyle, ScrollViewProps } from 'react-native';
-import { FlashList } from '@shopify/flash-list';
 import type { FlashListRef, ListRenderItemInfo, ViewToken } from '@shopify/flash-list';
+import { FlashList } from '@shopify/flash-list';
 import { ScrollView } from 'react-native-gesture-handler';
-import { Image } from 'expo-image';
 import type { ImageStyle } from 'expo-image';
+import { Image } from 'expo-image';
 import { useSliderContext } from '../context/slider-context';
-import type { SliderItem } from '../types/context';
+import type { SliderItem } from '../types';
 import { PinchToZoom } from '../internal/pinch-to-zoom';
 import { useIsFullScreenSlider } from '../context/slider-full-screen-context';
-import { Z_INDEX_OVERLAY, VIEWABILITY_THRESHOLD } from '../constants/layout';
+import { VIEWABILITY_THRESHOLD, Z_INDEX_OVERLAY } from '../constants/layout';
 
 type SliderContentProps = {
     enablePinchToZoom?: boolean;

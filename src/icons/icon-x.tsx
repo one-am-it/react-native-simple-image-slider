@@ -1,6 +1,6 @@
 import React from 'react';
 import Svg, { Path } from 'react-native-svg';
-import type { IconsProps } from '../types/icons';
+import type { IconsProps } from '../types';
 
 function IconX({ size = 24, color = '#1f2937', stroke = 2, ...props }: IconsProps) {
     return (

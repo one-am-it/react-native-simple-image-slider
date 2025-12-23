@@ -1,7 +1,7 @@
-import React, { useCallback, useMemo } from 'react';
 import type { PropsWithChildren } from 'react';
-import { useWindowDimensions } from 'react-native';
+import React, { useCallback, useMemo } from 'react';
 import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
+import { useWindowDimensions } from 'react-native';
 import Animated, {
     cancelAnimation,
     useAnimatedReaction,
@@ -13,7 +13,7 @@ import { scheduleOnRN } from 'react-native-worklets';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import * as Haptics from 'expo-haptics';
 import { clamp } from '../utils/clamp';
-import type { PinchToZoomStatus } from '../types/pinch-to-zoom';
+import type { PinchToZoomStatus } from '../types';
 
 const THROTTLE_MS = 50; // ~3 frames at 60fps
 

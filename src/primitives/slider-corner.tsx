@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
-import { StyleSheet, View } from 'react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Z_INDEX_OVERLAY } from '../constants/layout';
 
 type SliderCornerProps = {
