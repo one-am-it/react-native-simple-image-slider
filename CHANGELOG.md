@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.0-beta.4](https://git.oneam.it/one-am/libraries/react-native-simple-image-slider/compare/v1.0.0-beta.3...v1.0.0-beta.4) (2025-12-23)
+
+### ⚙️ CI/CD
+
+* upgrade release-it ([065efc3](https://git.oneam.it/one-am/libraries/react-native-simple-image-slider/commit/065efc3b5b0264d5861f8d9159632906af83a1fd))
+
 * ci: update pipeline (596b89e)
 
 ## [1.0.0-beta.3](https://git.oneam.it/one-am/libraries/react-native-simple-image-slider/compare/v1.0.0-beta.2...v1.0.0-beta.3) (2025-12-23)
