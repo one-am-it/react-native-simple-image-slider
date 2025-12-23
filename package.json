@@ -109,7 +109,7 @@
         "react-native-svg": "15.12.1",
         "react-native-web": "^0.21.0",
         "react-native-worklets": "0.5.1",
-        "release-it": "^17.3.0",
+        "release-it": "^19.1.0",
         "typescript": "^5.2.2",
         "typescript-eslint": "^8.46.4",
         "typescript-plugin-styled-components": "^3.0.0"
