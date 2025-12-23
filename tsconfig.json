@@ -1,32 +1,37 @@
 {
-  "compilerOptions": {
-    "rootDir": ".",
-    "paths": {
-      "@one-am/react-native-simple-image-slider": [
-        "./src/index"
-      ]
+    "compilerOptions": {
+        "rootDir": ".",
+        "baseUrl": "./",
+        "outDir": "lib",
+        "paths": {
+            "@one-am/react-native-simple-image-slider": ["./src/index"]
+        },
+        "allowUnreachableCode": false,
+        "allowUnusedLabels": false,
+        "declaration": true,
+        "declarationMap": true,
+        "emitDeclarationOnly": true,
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "jsx": "react",
+        "lib": ["esnext"],
+        "module": "esnext",
+        "moduleResolution": "bundler",
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitReturns": true,
+        "noImplicitUseStrict": false,
+        "noStrictGenericChecks": false,
+        "noUncheckedIndexedAccess": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "resolveJsonModule": true,
+        "skipLibCheck": true,
+        "strict": true,
+        "target": "esnext",
+        "verbatimModuleSyntax": true,
+        "moduleSuffixes": [".ios", ".android", ".native", ""]
     },
-    "allowUnreachableCode": false,
-    "allowUnusedLabels": false,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "jsx": "react",
-    "lib": [
-      "esnext"
-    ],
-    "module": "esnext",
-    "moduleResolution": "node",
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitReturns": true,
-    "noImplicitUseStrict": false,
-    "noStrictGenericChecks": false,
-    "noUncheckedIndexedAccess": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "target": "esnext",
-    "verbatimModuleSyntax": true
-  }
+    "types": ["node", "react"],
+    "lib": ["dom", "esnext"],
+    "exclude": ["node_modules/**/*", "dist/**/*", "types/**/*", "lib/**/*", "example/**/*"]
 }

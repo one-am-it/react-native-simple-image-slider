@@ -1,0 +1,25 @@
+{
+    "permissions": {
+        "allow": [
+            "Read(//Users/dvolta/Projects/OneAM/one-ui/**)",
+            "Bash(yarn lint)",
+            "Bash(yarn list:*)",
+            "Bash(yarn typecheck:*)",
+            "WebFetch(domain:shopify.github.io)",
+            "Bash(yarn lint:*)",
+            "Bash(cat:*)",
+            "WebSearch",
+            "WebFetch(domain:ui.shadcn.com)",
+            "WebFetch(domain:vercel.com)",
+            "WebFetch(domain:www.patterns.dev)",
+            "WebFetch(domain:gluestack.io)",
+            "mcp__shadcn__view_items_in_registries",
+            "WebFetch(domain:docs.expo.dev)",
+            "Bash(yarn prepare)",
+            "WebFetch(domain:docs.swmansion.com)",
+            "Bash(yarn sync:deps)"
+        ],
+        "deny": [],
+        "ask": []
+    }
+}

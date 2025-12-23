@@ -16,10 +16,7 @@ const devDeps = rootPkg.devDependencies || {};
 
 let updated = false;
 
-const allDeps = new Set([
-    ...Object.keys(peerDeps),
-    ...Object.keys(exampleDeps),
-]);
+const allDeps = new Set([...Object.keys(peerDeps), ...Object.keys(exampleDeps)]);
 
 for (const dep of allDeps) {
     const version = exampleDeps[dep];
