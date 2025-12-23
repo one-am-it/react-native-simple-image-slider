@@ -7,9 +7,19 @@ type SliderPageCounterProps = {
     style?: StyleProp<ViewStyle>;
     textStyle?: StyleProp<TextStyle>;
     accessibilityLabel?: string | ((current: number, total: number) => string);
+    backgroundColor?: string;
+    borderColor?: string;
+    textColor?: string;
 };
 
-function SliderPageCounter({ style, textStyle, accessibilityLabel }: SliderPageCounterProps) {
+const SliderPageCounter = React.memo<SliderPageCounterProps>(function SliderPageCounter({
+    style,
+    textStyle,
+    accessibilityLabel,
+    backgroundColor = '#D3D3D3',
+    borderColor = '#000000',
+    textColor = '#000000',
+}) {
     const { currentIndex, totalItems } = useSlider();
 
     const currentPage = currentIndex + 1;
@@ -21,18 +31,18 @@ function SliderPageCounter({ style, textStyle, accessibilityLabel }: SliderPageC
 
     return (
         <View
-            style={[styles.container, style]}
+            style={[styles.container, { backgroundColor, borderColor }, style]}
             accessible={true}
             accessibilityRole="text"
             accessibilityLabel={label}
             accessibilityLiveRegion="polite"
         >
-            <Text style={[styles.text, textStyle]}>
+            <Text style={[styles.text, { color: textColor }, textStyle]}>
                 {currentPage} / {totalItems}
             </Text>
         </View>
     );
-}
+});
 
 const styles = StyleSheet.create({
     container: {

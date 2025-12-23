@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import type { PropsWithChildren } from 'react';
 import { useWindowDimensions } from 'react-native';
 import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
@@ -14,6 +14,8 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import * as Haptics from 'expo-haptics';
 import { clamp } from '../utils/clamp';
 import type { PinchToZoomStatus } from '../types/pinch-to-zoom';
+
+const THROTTLE_MS = 50; // ~3 frames at 60fps
 
 type PinchToZoomProps = PropsWithChildren<{
     /**
@@ -88,7 +90,7 @@ function PinchToZoom({
     const prevTranslationY = useSharedValue(0);
 
     const isZoomedValue = useSharedValue(false);
-    const [isZoomed, setIsZoomed] = useState(false);
+    const lastStatusUpdateTime = useSharedValue(0);
 
     const pinchGesture = useMemo(() => {
         let gesture = Gesture.Pinch()
@@ -188,13 +190,8 @@ function PinchToZoom({
     ]);
 
     const panGesture = useMemo(() => {
-        let gesture = Gesture.Pan().enabled(!disabled);
-
-        if (!isZoomed) {
-            gesture = gesture.activeOffsetY([-20, 20]);
-        }
-
-        return gesture
+        return Gesture.Pan()
+            .enabled(!disabled)
             .onStart(() => {
                 'worklet';
                 cancelAnimation(translationX);
@@ -255,7 +252,6 @@ function PinchToZoom({
             });
     }, [
         disabled,
-        isZoomed,
         minimumZoomScale,
         onDismiss,
         prevScale,
@@ -310,26 +306,20 @@ function PinchToZoom({
     }, [panGesture, pinchGesture, tapGesture]);
 
     useAnimatedReaction(
-        () => isZoomedValue.value,
-        (value) => {
-            scheduleOnRN(setIsZoomed, value);
-        },
-        []
-    );
-
-    useAnimatedReaction(
-        () => {
-            return {
-                scale: scale.value,
-                translation: {
-                    x: translationX.value,
-                    y: translationY.value,
-                },
-            };
-        },
-        (prepared) => {
-            if (onStatusChange) {
-                scheduleOnRN(onStatusChange, prepared);
+        () => ({
+            scale: scale.value,
+            translationX: translationX.value,
+            translationY: translationY.value,
+        }),
+        (current) => {
+            'worklet';
+            const now = Date.now();
+            if (onStatusChange && now - lastStatusUpdateTime.value >= THROTTLE_MS) {
+                lastStatusUpdateTime.value = now;
+                scheduleOnRN(onStatusChange, {
+                    scale: current.scale,
+                    translation: { x: current.translationX, y: current.translationY },
+                });
             }
         },
         [onStatusChange]

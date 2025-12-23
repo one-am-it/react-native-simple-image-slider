@@ -15,6 +15,15 @@ type SliderProps = {
      */
     imageAspectRatio?: number;
     style?: StyleProp<ViewStyle>;
+    /**
+     * Status bar style to restore when closing full screen.
+     * - 'dark': for light mode apps (default)
+     * - 'light': for dark mode apps
+     * - 'auto': automatically detect from device color scheme
+     *
+     * @default 'auto'
+     */
+    statusBarStyle?: 'light' | 'dark' | 'auto';
     onIndexChange?: (index: number) => void;
     onItemPress?: (item: SliderItem, index: number) => void;
     onFullScreenChange?: (isOpen: boolean) => void;

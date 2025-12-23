@@ -19,4 +19,6 @@ function IconX({ size = 24, color = '#1f2937', stroke = 2, ...props }: IconsProp
         </Svg>
     );
 }
-export default IconX;
+
+export type { IconsProps };
+export { IconX };

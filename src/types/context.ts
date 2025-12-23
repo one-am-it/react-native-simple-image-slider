@@ -13,6 +13,7 @@ type SliderProviderProps = {
     initialIndex?: number;
     imageAspectRatio?: number;
     style?: StyleProp<ViewStyle>;
+    statusBarStyle?: 'light' | 'dark' | 'auto';
     onIndexChange?: (index: number) => void;
     onItemPress?: (item: SliderItem, index: number) => void;
     onFullScreenChange?: (isOpen: boolean) => void;

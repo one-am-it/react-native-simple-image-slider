@@ -11,6 +11,7 @@ export function useSliderState({
     data,
     initialIndex,
     imageAspectRatio: aspectRatioOverride,
+    statusBarStyle = 'auto',
     ...propCallbacks
 }: Omit<SliderProviderProps, 'children'>): SliderContextValue {
     // Get first image source for aspect ratio detection
@@ -30,13 +31,17 @@ export function useSliderState({
         onFullScreenChange: onFullScreenChangeDispatcher,
     } = callbacks;
 
+    const totalItems = data?.length ?? 0;
+
     // Create wrappers that update state AND dispatch callbacks
     const setCurrentIndex = useCallback(
         (index: number) => {
-            setCurrentIndexRaw(index);
-            onIndexChangeDispatcher(index);
+            if (totalItems === 0) return;
+            const clampedIndex = Math.max(0, Math.min(index, totalItems - 1));
+            setCurrentIndexRaw(clampedIndex);
+            onIndexChangeDispatcher(clampedIndex);
         },
-        [setCurrentIndexRaw, onIndexChangeDispatcher]
+        [setCurrentIndexRaw, onIndexChangeDispatcher, totalItems]
     );
 
     const openFullScreen = useCallback(() => {
@@ -48,8 +53,6 @@ export function useSliderState({
         setIsFullScreenOpen(false);
         onFullScreenChangeDispatcher(false);
     }, [setIsFullScreenOpen, onFullScreenChangeDispatcher]);
-
-    const totalItems = data?.length ?? 0;
 
     return useMemo(
         () => ({
@@ -65,6 +68,7 @@ export function useSliderState({
             registerFullScreen: fullScreen.registerFullScreen,
             openFullScreen,
             closeFullScreen,
+            statusBarStyle,
             ...callbacks,
         }),
         [
@@ -80,6 +84,7 @@ export function useSliderState({
             fullScreen.registerFullScreen,
             openFullScreen,
             closeFullScreen,
+            statusBarStyle,
             callbacks,
         ]
     );

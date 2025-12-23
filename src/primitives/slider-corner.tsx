@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
+import { Z_INDEX_OVERLAY } from '../constants/layout';
 
 type SliderCornerProps = {
     position: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
@@ -9,12 +10,17 @@ type SliderCornerProps = {
     offset?: number;
 };
 
-function SliderCorner({ position, children, style, offset = 16 }: SliderCornerProps) {
+const SliderCorner = React.memo<SliderCornerProps>(function SliderCorner({
+    position,
+    children,
+    style,
+    offset = 16,
+}) {
     const positionStyles = useMemo(
         () =>
             StyleSheet.create({
                 absolute: {
-                    zIndex: 1000,
+                    zIndex: Z_INDEX_OVERLAY,
                     position: 'absolute',
                     bottom:
                         position === 'bottom-left' || position === 'bottom-right' ? offset : 'auto',
@@ -28,7 +34,7 @@ function SliderCorner({ position, children, style, offset = 16 }: SliderCornerPr
     );
 
     return <View style={[positionStyles.absolute, style]}>{children}</View>;
-}
+});
 
 export type { SliderCornerProps };
 export { SliderCorner };

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
-import { Modal, StyleSheet, useWindowDimensions } from 'react-native';
+import { Modal, StyleSheet, useColorScheme, useWindowDimensions } from 'react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -10,7 +10,6 @@ import { SliderFullScreenProvider } from '../context/slider-full-screen-context'
 
 type SliderFullScreenProps = {
     children?: React.ReactNode;
-    enablePinchToZoom?: boolean;
     style?: StyleProp<ViewStyle>;
 };
 
@@ -24,9 +23,11 @@ function SliderFullScreen({ children, style }: SliderFullScreenProps) {
         registerOnPinchStatusChange,
         registerOnPinchDismiss,
         registerOnFullScreenChange,
+        statusBarStyle,
     } = useSlider();
 
     const windowDimensions = useWindowDimensions();
+    const colorScheme = useColorScheme();
 
     const styles = useMemo(
         () =>
@@ -75,13 +76,20 @@ function SliderFullScreen({ children, style }: SliderFullScreenProps) {
         [windowDimensions.height, backgroundOpacity]
     );
 
-    const handleFullScreenChange = useCallback((isFullScreen: boolean) => {
-        if (isFullScreen) {
-            setStatusBarStyle('light');
-        } else {
-            setStatusBarStyle('dark');
-        }
-    }, []);
+    const handleFullScreenChange = useCallback(
+        (isFullScreen: boolean) => {
+            if (isFullScreen) {
+                setStatusBarStyle('light');
+            } else {
+                if (statusBarStyle === 'auto') {
+                    setStatusBarStyle(colorScheme === 'dark' ? 'light' : 'dark');
+                } else {
+                    setStatusBarStyle(statusBarStyle);
+                }
+            }
+        },
+        [colorScheme, statusBarStyle]
+    );
 
     const handleIndexChange = useCallback(
         (index: number) => {

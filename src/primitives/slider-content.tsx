@@ -10,6 +10,7 @@ import { useSlider } from '../context/slider-context';
 import type { SliderItem } from '../types/context';
 import { PinchToZoom } from '../internal/pinch-to-zoom';
 import { useIsFullScreenSlider } from '../context/slider-full-screen-context';
+import { Z_INDEX_OVERLAY, VIEWABILITY_THRESHOLD } from '../constants/layout';
 
 type SliderContentProps = {
     enablePinchToZoom?: boolean;
@@ -62,7 +63,7 @@ function SliderContent({
                     height: '100%',
                 },
                 pinchToZoom: {
-                    zIndex: 1000,
+                    zIndex: Z_INDEX_OVERLAY,
                 },
                 list: {
                     width: '100%',
@@ -128,6 +129,7 @@ function SliderContent({
 
             return (
                 <Pressable
+                    // eslint-disable-next-line react/jsx-no-bind
                     onPress={handlePress}
                     accessibilityRole="imagebutton"
                     accessibilityLabel={label}
@@ -187,7 +189,7 @@ function SliderContent({
             initialScrollIndex={currentIndex}
             onViewableItemsChanged={handleViewableItemsChanged}
             viewabilityConfig={{
-                itemVisiblePercentThreshold: 55,
+                itemVisiblePercentThreshold: VIEWABILITY_THRESHOLD,
             }}
             onCommitLayoutEffect={measureWindowSize}
             pagingEnabled={true}

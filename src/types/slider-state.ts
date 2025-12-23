@@ -37,11 +37,16 @@ type SliderEvents = {
 
 type SliderCallbacksState = CallbacksFromEvents<SliderEvents>;
 
+type SliderStatusBarState = {
+    statusBarStyle: 'light' | 'dark' | 'auto';
+};
+
 type SliderContextValue = SliderDataState &
     SliderAspectRatioState &
     SliderNavigationState &
     SliderFullScreenState &
-    SliderCallbacksState;
+    SliderCallbacksState &
+    SliderStatusBarState;
 
 export type {
     SliderDataState,
@@ -50,5 +55,6 @@ export type {
     SliderFullScreenState,
     SliderEvents,
     SliderCallbacksState,
+    SliderStatusBarState,
     SliderContextValue,
 };

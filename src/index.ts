@@ -6,6 +6,7 @@ export {
     SliderFullScreen,
     SliderCloseButton,
     SliderDescription,
+    SliderEmpty,
 } from './primitives';
 
 export type {
@@ -16,6 +17,7 @@ export type {
     SliderFullScreenProps,
     SliderCloseButtonProps,
     SliderDescriptionProps,
+    SliderEmptyProps,
 } from './primitives';
 
 export { useSlider } from './context/slider-context';

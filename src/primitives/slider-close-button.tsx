@@ -3,7 +3,8 @@ import { StyleSheet, TouchableOpacity } from 'react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSlider } from '../context/slider-context';
-import IconX from '../icons/icon-x';
+import { IconX } from '../icons/icon-x';
+import { Z_INDEX_OVERLAY, SAFE_AREA_OFFSET } from '../constants/layout';
 
 type SliderCloseButtonProps = {
     children?: React.ReactNode;
@@ -26,9 +27,9 @@ function SliderCloseButton({
             StyleSheet.create({
                 closeButton: {
                     position: 'absolute',
-                    zIndex: 1000,
+                    zIndex: Z_INDEX_OVERLAY,
                     top: safeAreaInsets.top,
-                    right: safeAreaInsets.right + 20,
+                    right: safeAreaInsets.right + SAFE_AREA_OFFSET,
                 },
             }),
         [safeAreaInsets.right, safeAreaInsets.top]
