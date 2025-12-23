@@ -180,6 +180,10 @@ function SliderContent({
         });
     }, [registerScrollFn, isFullScreenSlider]);
 
+    if (totalItems === 0) {
+        return null;
+    }
+
     const list = (
         <FlashList
             renderScrollComponent={renderScrollComponent}

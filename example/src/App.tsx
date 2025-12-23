@@ -8,11 +8,12 @@ import {
     SliderFullScreen,
     SliderCloseButton,
     SliderDescription,
+    SliderEmpty,
     useSlider,
 } from '@one-am/react-native-simple-image-slider';
 
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { Text } from 'react-native';
+import { Pressable, StyleSheet, Text } from 'react-native';
 import pictureOne from '../assets/photos/1.jpg';
 import pictureTwo from '../assets/photos/2.jpg';
 import pictureThree from '../assets/photos/3.jpg';
@@ -51,6 +52,12 @@ function PictureDescription() {
 }
 
 export default function App() {
+    const [showEmpty, setShowEmpty] = React.useState(false);
+
+    const handleToggle = React.useCallback(() => {
+        setShowEmpty((prev) => !prev);
+    }, []);
+
     return (
         <SafeAreaProvider>
             <SafeAreaView
@@ -60,13 +67,25 @@ export default function App() {
                     justifyContent: 'center',
                 }}
             >
+                <Pressable onPress={handleToggle} style={styles.toggleButton}>
+                    <Text style={styles.toggleButtonText}>
+                        {showEmpty ? 'Show Photos' : 'Show Empty'}
+                    </Text>
+                </Pressable>
                 <Slider
-                    data={photos.map((photo, index) => ({
-                        source: photo,
-                        key: index.toString(),
-                    }))}
+                    data={
+                        showEmpty
+                            ? []
+                            : photos.map((photo, index) => ({
+                                  source: photo,
+                                  key: index.toString(),
+                              }))
+                    }
                 >
                     <SliderContent />
+                    <SliderEmpty style={styles.emptyContainer}>
+                        <Text style={styles.emptyText}>No photos available</Text>
+                    </SliderEmpty>
                     <SliderCorner position="bottom-left">
                         <SliderPageCounter />
                     </SliderCorner>
@@ -82,3 +101,28 @@ export default function App() {
         </SafeAreaProvider>
     );
 }
+
+const styles = StyleSheet.create({
+    toggleButton: {
+        backgroundColor: '#007AFF',
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        borderRadius: 8,
+        marginHorizontal: 20,
+        marginBottom: 20,
+        alignItems: 'center',
+    },
+    toggleButtonText: {
+        color: '#ffffff',
+        fontSize: 16,
+        fontWeight: '600',
+    },
+    emptyContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    emptyText: {
+        fontSize: 18,
+        color: '#666666',
+    },
+});

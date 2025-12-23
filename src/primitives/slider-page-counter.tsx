@@ -22,6 +22,10 @@ const SliderPageCounter = React.memo<SliderPageCounterProps>(function SliderPage
 }) {
     const { currentIndex, totalItems } = useSlider();
 
+    if (totalItems === 0) {
+        return null;
+    }
+
     const currentPage = currentIndex + 1;
 
     const label =
