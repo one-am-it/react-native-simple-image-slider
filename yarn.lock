@@ -3985,14 +3985,14 @@ __metadata:
     typescript-eslint: ^8.46.4
     typescript-plugin-styled-components: ^3.0.0
   peerDependencies:
-    "@shopify/flash-list": ">2.0.0"
+    "@shopify/flash-list": ">=2"
     expo-haptics: "*"
     expo-image: "*"
     expo-status-bar: "*"
-    react: "*"
+    react: ">=19"
     react-native: "*"
     react-native-gesture-handler: "*"
-    react-native-reanimated: "*"
+    react-native-reanimated: ">=4"
     react-native-safe-area-context: "*"
     react-native-svg: "*"
     react-native-worklets: "*"
