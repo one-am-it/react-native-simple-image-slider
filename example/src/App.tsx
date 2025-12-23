@@ -10,6 +10,7 @@ import {
     SliderDescription,
     SliderEmpty,
     useSlider,
+    SliderProvider,
 } from '@one-am/react-native-simple-image-slider';
 
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
@@ -72,7 +73,7 @@ export default function App() {
                         {showEmpty ? 'Show Photos' : 'Show Empty'}
                     </Text>
                 </Pressable>
-                <Slider
+                <SliderProvider
                     data={
                         showEmpty
                             ? []
@@ -82,13 +83,15 @@ export default function App() {
                               }))
                     }
                 >
-                    <SliderContent />
-                    <SliderEmpty style={styles.emptyContainer}>
-                        <Text style={styles.emptyText}>No photos available</Text>
-                    </SliderEmpty>
-                    <SliderCorner position="bottom-left">
-                        <SliderPageCounter />
-                    </SliderCorner>
+                    <Slider>
+                        <SliderContent />
+                        <SliderEmpty style={styles.emptyContainer}>
+                            <Text style={styles.emptyText}>No photos available</Text>
+                        </SliderEmpty>
+                        <SliderCorner position="bottom-left">
+                            <SliderPageCounter />
+                        </SliderCorner>
+                    </Slider>
                     <SliderFullScreen>
                         <SliderContent enablePinchToZoom />
                         <SliderCloseButton />
@@ -96,7 +99,7 @@ export default function App() {
                             <PictureDescription />
                         </SliderDescription>
                     </SliderFullScreen>
-                </Slider>
+                </SliderProvider>
             </SafeAreaView>
         </SafeAreaProvider>
     );

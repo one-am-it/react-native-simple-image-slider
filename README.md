@@ -54,7 +54,13 @@ import {
     SliderFullScreen,
     SliderCloseButton,
     SliderDescription,
+    useSlider,
 } from '@one-am/react-native-simple-image-slider';
+
+function PhotoDescription() {
+    const { currentIndex } = useSlider();
+    return <Text style={{ color: '#fff' }}>Photo {currentIndex + 1}</Text>;
+}
 
 function Gallery() {
     const images = [
@@ -70,16 +76,14 @@ function Gallery() {
                 <SliderCorner position="bottom-left">
                     <SliderPageCounter />
                 </SliderCorner>
-                <SliderFullScreen>
-                    <SliderContent enablePinchToZoom />
-                    <SliderCloseButton />
-                    <SliderDescription
-                        render={(item, index) => (
-                            <Text style={{ color: '#fff' }}>Photo {index + 1}</Text>
-                        )}
-                    />
-                </SliderFullScreen>
             </Slider>
+            <SliderFullScreen>
+                <SliderContent enablePinchToZoom />
+                <SliderCloseButton />
+                <SliderDescription>
+                    <PhotoDescription />
+                </SliderDescription>
+            </SliderFullScreen>
         </SliderProvider>
     );
 }
@@ -217,10 +221,10 @@ Description overlay for full-screen mode. Must be inside `SliderFullScreen`.
 
 #### Props
 
-| Prop     | Type                                             | Default      | Description                     |
-| -------- | ------------------------------------------------ | ------------ | ------------------------------- |
-| `render` | `(item: SliderItem, index: number) => ReactNode` | **required** | Render function for description |
-| `style`  | `StyleProp<ViewStyle>`                           | -            | Container style                 |
+| Prop       | Type                   | Default      | Description                                              |
+| ---------- | ---------------------- | ------------ | -------------------------------------------------------- |
+| `children` | `ReactNode`            | **required** | Content to display (use useSlider() for dynamic content) |
+| `style`    | `StyleProp<ViewStyle>` | -            | Container style                                          |
 
 ---
 
@@ -393,12 +397,10 @@ function App() {
     return (
         <SliderProvider data={images} imageAspectRatio={16 / 9}>
             <ImageGrid />
-            <Slider>
-                <SliderFullScreen>
-                    <SliderContent enablePinchToZoom />
-                    <SliderCloseButton />
-                </SliderFullScreen>
-            </Slider>
+            <SliderFullScreen>
+                <SliderContent enablePinchToZoom />
+                <SliderCloseButton />
+            </SliderFullScreen>
         </SliderProvider>
     );
 }
@@ -512,7 +514,13 @@ import {
     SliderFullScreen,
     SliderCloseButton,
     SliderDescription,
+    useSlider,
 } from '@one-am/react-native-simple-image-slider';
+
+function PictureDescription() {
+    const { currentIndex } = useSlider();
+    return <Text style={{ color: '#ffffff' }}>Picture {currentIndex + 1}</Text>;
+}
 
 <SliderProvider
     data={photos.map((photo, index) => ({
@@ -526,16 +534,16 @@ import {
         <SliderCorner position="bottom-left">
             <SliderPageCounter />
         </SliderCorner>
-        <SliderFullScreen>
-            <SliderContent enablePinchToZoom />
-            <SliderCloseButton>
-                <CustomIcon />
-            </SliderCloseButton>
-            <SliderDescription
-                render={(_, index) => <Text style={{ color: '#ffffff' }}>Picture {index}</Text>}
-            />
-        </SliderFullScreen>
     </Slider>
+    <SliderFullScreen>
+        <SliderContent enablePinchToZoom />
+        <SliderCloseButton>
+            <CustomIcon />
+        </SliderCloseButton>
+        <SliderDescription>
+            <PictureDescription />
+        </SliderDescription>
+    </SliderFullScreen>
 </SliderProvider>;
 ```
 
@@ -621,7 +629,7 @@ The following props from `SimpleImageSlider` are removed or replaced:
 | `onFullScreenChange`          | Now on `<SliderProvider>`                                |
 | `fullScreenEnabled`           | Use `<SliderFullScreen>` as a child                      |
 | `pageCounterPosition`         | Use `<SliderCorner position="..."><SliderPageCounter />` |
-| `renderFullScreenDescription` | Use `<SliderDescription render={...} />`                 |
+| `renderFullScreenDescription` | Use `<SliderDescription>` with children + useSlider()    |
 | `FullScreenCloseButtonIcon`   | Use `<SliderCloseButton>` with custom children           |
 | `TopLeftComponent`            | Use `<SliderCorner position="top-left">`                 |
 | `TopRightComponent`           | Use `<SliderCorner position="top-right">`                |

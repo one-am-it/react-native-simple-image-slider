@@ -52,11 +52,11 @@ The library uses a **flat exports** pattern (like shadcn/ui) where users compose
         <SliderCorner position="bottom-left">
             <SliderPageCounter />
         </SliderCorner>
-        <SliderFullScreen>
-            <SliderContent enablePinchToZoom />
-            <SliderCloseButton />
-        </SliderFullScreen>
     </Slider>
+    <SliderFullScreen>
+        <SliderContent enablePinchToZoom />
+        <SliderCloseButton />
+    </SliderFullScreen>
 </SliderProvider>
 ```
 
@@ -104,7 +104,7 @@ The library exports 9 main primitives:
 
 8. **SliderDescription** (`src/primitives/slider-description.tsx`) - Description container
     - Positioned at bottom with safe area insets
-    - Receives current item and index via render prop
+    - Accepts children (use `useSlider()` hook for dynamic content based on current index)
 
 9. **SliderEmpty** (`src/primitives/slider-empty.tsx`) - Empty state component
     - Displayed when no images are provided
@@ -181,9 +181,7 @@ function SliderPageCounter() {
 ```typescript
 <SliderProvider data={images}>
     <MyCustomGrid /> {/* can use useSlider() to openFullScreen() */}
-    <Slider>
-        <SliderFullScreen>...</SliderFullScreen>
-    </Slider>
+    <SliderFullScreen>...</SliderFullScreen>
 </SliderProvider>
 ```
 
@@ -422,11 +420,11 @@ Current version: 1.0.0-beta.1
         <SliderCorner position="top-right">
             <Badge />
         </SliderCorner>
-        <SliderFullScreen>
-            <SliderContent enablePinchToZoom />
-            <SliderCloseButton />
-        </SliderFullScreen>
     </Slider>
+    <SliderFullScreen>
+        <SliderContent enablePinchToZoom />
+        <SliderCloseButton />
+    </SliderFullScreen>
 </SliderProvider>
 ```
 
