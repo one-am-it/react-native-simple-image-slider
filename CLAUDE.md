@@ -60,7 +60,7 @@ The library uses a **flat exports** pattern (like shadcn/ui) where users compose
 
 ### Component Hierarchy
 
-The library exports 7 main primitives:
+The library exports 8 main primitives:
 
 1. **Slider** (`src/primitives/slider.tsx`) - Root component with Context provider
     - Wraps children in `SliderProvider` for state sharing
@@ -97,6 +97,10 @@ The library exports 7 main primitives:
 7. **SliderDescription** (`src/primitives/slider-description.tsx`) - Description container
     - Positioned at bottom with safe area insets
     - Receives current item and index via render prop
+
+8. **SliderEmpty** (`src/primitives/slider-empty.tsx`) - Empty state component
+    - Displayed when no images are provided
+    - Uses same aspect ratio as configured in Slider
 
 ### Context Architecture
 
@@ -184,9 +188,15 @@ sliderRef.current?.scrollToIndex({ index: 2, animated: true });
 
 **Key TypeScript Settings**:
 
-- Strict mode enabled with `noUnusedLocals`, `noUnusedParameters`, `noImplicitReturns`
+- Strict mode enabled with:
+    - `noUnusedLocals`, `noUnusedParameters`, `noImplicitReturns`
+    - `noUncheckedIndexedAccess`: true (stricter array/object access)
+    - `noFallthroughCasesInSwitch`: true
+- `verbatimModuleSyntax`: true (explicit type imports)
+- Module resolution: bundler
 - Target: ESNext
 - JSX: react
+- Platform-specific module suffixes: `.ios`, `.android`, `.native`
 
 ## Testing
 
@@ -210,8 +220,9 @@ When writing tests:
 
 **Pre-commit Hooks** (via lefthook):
 
-- Runs `yarn lint` on JS/TS changes
-- Runs `yarn typecheck` on type definition changes
+- Runs `yarn lint` on staged JS/TS/JSON files
+- Runs prettier check on staged files (JS/TS/JSON/YML/MD)
+- Runs `yarn typecheck` on staged JS/TS/JSON files
 - Validates commit messages with commitlint (conventional commits)
 
 **Commit Message Format**: Uses conventional commits (Angular preset)
@@ -223,25 +234,39 @@ docs: documentation changes
 chore: maintenance tasks
 ```
 
-**ESLint Rules**:
+**ESLint Configuration**:
 
-- Max complexity: 10 (warning)
+Uses ESLint flat config (eslint.config.js) with:
+
+- Expo config preset (`eslint-config-expo/flat`)
+- TypeScript parser with project service
+- Prettier integration via `eslint-plugin-prettier`
+
+Key rules:
+
+- `@typescript-eslint/consistent-type-imports`: error (enforce `import type`)
 - `@typescript-eslint/no-shadow`: error
-- `react-hooks/exhaustive-deps`: error (level 2)
+- `complexity`: warn at 10
+- `eqeqeq`: error (strict equality)
+- `react-hooks/exhaustive-deps`: error
+- Import ordering and consistency enforced
+- No default exports (except in example workspace)
 
-**Prettier**: 4-space tabs, single quotes, 100 char line width, no semicolons
+**Prettier**: 4-space tabs, single quotes, 100 char line width, semicolons enabled
 
 ## Important Dependencies
 
 All these are peer dependencies and must be installed:
 
-- `@shopify/flash-list` <2.0.0 - High-performance list component
+- `@shopify/flash-list` >=2 - High-performance list component
 - `expo-image` - Optimized image rendering
 - `expo-haptics` - Haptic feedback
+- `react` >=19 - React framework (minimum version 19)
 - `react-native-gesture-handler` - Gesture detection
-- `react-native-reanimated` - Smooth animations
+- `react-native-reanimated` >=4 - Smooth animations (minimum version 4)
 - `react-native-safe-area-context` - Safe area support
 - `react-native-svg` - SVG support for icons
+- `react-native-worklets` - Worklets support for Reanimated
 
 ## Project Structure
 
@@ -256,19 +281,33 @@ src/
 │   ├── slider-full-screen.tsx     # Modal full-screen
 │   ├── slider-close-button.tsx    # Close button
 │   ├── slider-description.tsx    # Description overlay
+│   ├── slider-empty.tsx          # Empty state component
 │   └── index.ts                 # Barrel export
 ├── context/
-│   └── slider-context.tsx        # Context provider + useSlider hook
+│   ├── slider-context.tsx        # Context provider + useSlider hook
+│   └── slider-full-screen-context.tsx # Full-screen context utilities
 ├── hooks/
-│   └── use-slider-state.ts        # Internal state management
-├── @types/
+│   ├── use-slider-state.ts        # Internal state management
+│   ├── use-image-aspect-ratio.ts  # Image aspect ratio hook
+│   ├── use-registered-callback.ts # Callback registration hook
+│   └── slider-state/             # State management hooks
+│       ├── use-slider-full-screen.ts
+│       ├── use-slider-navigation.ts
+│       └── use-slider-callbacks.ts
+├── types/
 │   ├── context.ts               # Context and SliderItem types
+│   ├── slider-state.ts          # Slider state types
+│   ├── common.ts                # Common shared types
 │   ├── icons.ts                 # IconsProps (extends SvgProps)
-│   └── pinch-to-zoom.ts         # PinchToZoomStatus type
+│   ├── pinch-to-zoom.ts         # PinchToZoomStatus type
+│   └── index.ts                 # Type exports
 ├── utils/
-│   └── clamp.ts                 # Worklet-compatible value clamping
+│   ├── clamp.ts                 # Worklet-compatible value clamping
+│   └── capitalize.ts            # String capitalization utility
 ├── icons/
 │   └── icon-x.tsx                # Close button icon
+├── constants/
+│   └── layout.ts                # Layout constants (z-index, thresholds)
 └── internal/
     └── pinch-to-zoom.tsx          # Internal gesture wrapper
 
@@ -279,16 +318,25 @@ example/                         # Expo example app
 lib/                             # Built output (generated, git-ignored)
 ```
 
-## iOS Scrolling Quirk
+## Important Implementation Details
 
-SliderContent includes a platform-specific workaround for iOS scroll behavior:
+### FlashList Scrolling
 
-```typescript
-// iOS has a bug where snapToInterval causes scroll overshoot
-snapToInterval={Platform.OS === 'ios' ? imageWidth - 1 : imageWidth}
-```
+SliderContent uses FlashList with:
 
-Keep this in mind when modifying scroll behavior.
+- `pagingEnabled={true}` for snap-to-page behavior
+- `viewabilityConfig` with threshold to track current visible item
+- Dynamic item width measurement via `onCommitLayoutEffect`
+- Custom `renderScrollComponent` using `react-native-gesture-handler` ScrollView for pinch-to-zoom compatibility
+
+### Pinch-to-Zoom Integration
+
+When `enablePinchToZoom` is enabled:
+
+- Wraps FlashList in internal `PinchToZoom` component
+- Temporarily disables scroll when gesture is active
+- Uses `disableScrollViewPanResponder` to coordinate gestures
+- Provides callbacks for scale changes and dismissal
 
 ## Release Process
 
@@ -300,7 +348,7 @@ Releases are managed with `release-it`:
 4. Publishes to npm: `@one-am/react-native-simple-image-slider`
 5. Creates GitLab release
 
-Current version: 0.17.0+ (compositional API)
+Current version: 1.0.0-beta.1
 
 ## Breaking Changes (v1.0.0)
 
@@ -364,4 +412,46 @@ This is a Yarn 3 workspace with:
 
 Use `yarn example <command>` to run commands in the example workspace.
 
-- tutti gli export alla fine, usare sempre export type per i tipi. niente export di default.
+## Coding Conventions
+
+**Export Style**:
+
+- All exports at the end of files
+- Always use `export type` for types (enforced by ESLint)
+- No default exports (except in example workspace)
+- Use named exports for all components and utilities
+
+**React Patterns**:
+
+- Each file contains maximum one component
+- Prefer destructuring in function signature over destructuring in body
+- Never use `&&` for conditional rendering, always use ternary operator
+- Components use `forwardRef` when exposing refs
+
+**Import Style**:
+
+- Use `import type` for type-only imports (enforced by `verbatimModuleSyntax`)
+- Imports ordered automatically by ESLint
+
+**Example**:
+
+```typescript
+// ✅ Good
+import type { FC } from 'react';
+import { useCallback } from 'react';
+
+function MyComponent({ value, onPress }: Props) {
+    return value ? <Text>{value}</Text> : null;
+}
+
+export type { Props };
+export { MyComponent };
+
+// ❌ Bad
+import { FC, useCallback } from 'react'; // missing 'type' for FC
+export default MyComponent; // no default exports
+function MyComponent(props: Props) {
+    const { value, onPress } = props; // destructure in signature instead
+    return value && <Text>{value}</Text>; // use ternary, not &&
+}
+```
