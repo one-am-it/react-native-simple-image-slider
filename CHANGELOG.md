@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.0.0-beta.6](https://git.oneam.it/one-am/libraries/react-native-simple-image-slider/compare/v1.0.0-beta.5...v1.0.0-beta.6) (2025-12-23)
+
+### 🐛 Fixes
+
+* add missing source field in package.json ([56a1cb9](https://git.oneam.it/one-am/libraries/react-native-simple-image-slider/commit/56a1cb911d271bdf857bf4fcad1af4504570ad48))
+
+### 📝 Documentation
+
+* move FullScreenSlider outside of Slider ([21206f9](https://git.oneam.it/one-am/libraries/react-native-simple-image-slider/commit/21206f9fad51667320c91e11c3d8e77182467748))
+
 ## [1.0.0-beta.5](https://git.oneam.it/one-am/libraries/react-native-simple-image-slider/compare/v1.0.0-beta.4...v1.0.0-beta.5) (2025-12-23)
 
 ### ✨ Features
