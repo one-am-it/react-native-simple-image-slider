@@ -400,17 +400,18 @@ type SliderItem = ImageProps & {
 };
 ```
 
-### SliderContextValue
+### SliderPublicState
+
+The `useSlider` hook returns `SliderPublicState`, which exposes only the public API:
 
 ```typescript
-type SliderContextValue = {
+type SliderPublicState = {
     // Data
     data: SliderItem[];
     totalItems: number;
 
     // Navigation
     currentIndex: number;
-    setCurrentIndex: (index: number) => void;
     scrollToIndex: (index: number, animated?: boolean) => void;
 
     // Aspect Ratio
@@ -422,19 +423,6 @@ type SliderContextValue = {
     openFullScreen: () => void;
     closeFullScreen: () => void;
     hasFullScreen: boolean;
-
-    // Status Bar
-    statusBarStyle: 'light' | 'dark' | 'auto';
-
-    // Registration functions (for internal use)
-    registerScrollFn: (fn: (index: number, animated?: boolean) => void) => () => void;
-    registerFullScreen: () => () => void;
-
-    // Event callbacks
-    onItemPress?: (item: SliderItem, index: number) => void;
-    onPinchStatusChange?: (status: PinchToZoomStatus) => void;
-    onPinchDismiss?: () => void;
-    // ... and more
 };
 ```
 

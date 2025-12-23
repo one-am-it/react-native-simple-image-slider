@@ -4,7 +4,7 @@ import type { StyleProp, ViewStyle } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { setStatusBarStyle } from 'expo-status-bar';
-import { useSlider } from '../context/slider-context';
+import { useSliderContext } from '../context/slider-context';
 import type { PinchToZoomStatus } from '../types/pinch-to-zoom';
 import { SliderFullScreenProvider } from '../context/slider-full-screen-context';
 
@@ -24,7 +24,7 @@ function SliderFullScreen({ children, style }: SliderFullScreenProps) {
         registerOnPinchDismiss,
         registerOnFullScreenChange,
         statusBarStyle,
-    } = useSlider();
+    } = useSliderContext();
 
     const windowDimensions = useWindowDimensions();
     const colorScheme = useColorScheme();

@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useSlider } from '../context/slider-context';
+import { useSliderContext } from '../context/slider-context';
 import { IconX } from '../icons/icon-x';
 import { Z_INDEX_OVERLAY, SAFE_AREA_OFFSET } from '../constants/layout';
 
@@ -19,7 +19,7 @@ function SliderCloseButton({
     accessibilityLabel = 'Close full screen',
     accessibilityHint = 'Closes the full screen view',
 }: SliderCloseButtonProps) {
-    const { closeFullScreen } = useSlider();
+    const { closeFullScreen } = useSliderContext();
     const safeAreaInsets = useSafeAreaInsets();
 
     const positionStyles = useMemo(

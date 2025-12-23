@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
-import { useSlider } from '../context/slider-context';
+import { useSliderContext } from '../context/slider-context';
 
 type SliderPageCounterProps = {
     style?: StyleProp<ViewStyle>;
@@ -20,7 +20,7 @@ const SliderPageCounter = React.memo<SliderPageCounterProps>(function SliderPage
     borderColor = '#000000',
     textColor = '#000000',
 }) {
-    const { currentIndex, totalItems } = useSlider();
+    const { currentIndex, totalItems } = useSliderContext();
 
     if (totalItems === 0) {
         return null;

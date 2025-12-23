@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
-import { useSlider } from '../context/slider-context';
+import { useSliderContext } from '../context/slider-context';
 
 type SliderEmptyProps = {
     children: React.ReactNode;
@@ -9,7 +9,7 @@ type SliderEmptyProps = {
 };
 
 const SliderEmpty = React.memo<SliderEmptyProps>(function SliderEmpty({ children, style }) {
-    const { totalItems, imageAspectRatio } = useSlider();
+    const { totalItems, imageAspectRatio } = useSliderContext();
 
     return totalItems === 0 ? (
         <View style={[styles.container, { aspectRatio: imageAspectRatio }, style]}>{children}</View>

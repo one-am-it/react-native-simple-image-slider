@@ -48,6 +48,20 @@ type SliderState = SliderDataState &
     SliderCallbacksState &
     SliderStatusBarState;
 
+type SliderPublicState = Pick<
+    SliderState,
+    | 'data'
+    | 'totalItems'
+    | 'imageAspectRatio'
+    | 'isAspectRatioLoading'
+    | 'currentIndex'
+    | 'scrollToIndex'
+    | 'isFullScreenOpen'
+    | 'openFullScreen'
+    | 'closeFullScreen'
+    | 'hasFullScreen'
+>;
+
 export type {
     SliderDataState,
     SliderAspectRatioState,
@@ -57,4 +71,5 @@ export type {
     SliderCallbacksState,
     SliderStatusBarState,
     SliderState,
+    SliderPublicState,
 };

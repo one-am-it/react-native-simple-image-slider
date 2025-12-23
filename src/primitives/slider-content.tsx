@@ -6,7 +6,7 @@ import type { FlashListRef, ListRenderItemInfo, ViewToken } from '@shopify/flash
 import { ScrollView } from 'react-native-gesture-handler';
 import { Image } from 'expo-image';
 import type { ImageStyle } from 'expo-image';
-import { useSlider } from '../context/slider-context';
+import { useSliderContext } from '../context/slider-context';
 import type { SliderItem } from '../types/context';
 import { PinchToZoom } from '../internal/pinch-to-zoom';
 import { useIsFullScreenSlider } from '../context/slider-full-screen-context';
@@ -41,7 +41,7 @@ function SliderContent({
         openFullScreen,
         onPinchStatusChange,
         onPinchDismiss,
-    } = useSlider();
+    } = useSliderContext();
     const isFullScreenSlider = useIsFullScreenSlider();
     const windowDimensions = useWindowDimensions();
 
