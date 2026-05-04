@@ -4,9 +4,10 @@ pre-commit:
         lint:
             glob: '*.{js,ts,jsx,tsx,json}'
             run: yarn lint
-        prettier:
+        format:
             glob: '*.{js,ts,jsx,tsx,json,yml,yaml,md}'
-            run: yarn dlx prettier --check {staged_files}
+            run: yarn dlx prettier --write {staged_files}
+            stage_fixed: true
         typecheck:
             glob: '*.{js,ts,jsx,tsx,json}'
             run: yarn typecheck

@@ -36,7 +36,7 @@
         "typecheck": "tsc --noEmit",
         "lint": "eslint \"**/*.{js,ts,tsx}\"",
         "clean": "del-cli lib",
-        "prepare": "bob build",
+        "prepare": "lefthook install && bob build",
         "release": "release-it",
         "sync:deps": "node bin/sync-peer-to-dev.js"
     },
