@@ -41,6 +41,17 @@ check:
         - tags
         - main
 
+test:
+    image: $[[ inputs.node-image ]]
+    stage: $[[ inputs.check-stage ]]
+    script:
+        - yarn test --ci --coverage=false
+    when: on_success
+    only:
+        - merge_requests
+        - tags
+        - main
+
 .publish-template:
     stage: $[[ inputs.deploy-stage ]]
     image: $[[ inputs.node-image ]]
