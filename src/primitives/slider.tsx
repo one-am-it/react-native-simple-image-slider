@@ -2,6 +2,7 @@ import React from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { useSliderContext } from '../context/slider-context';
 
 type SliderProps = {
     children: React.ReactNode;
@@ -9,9 +10,11 @@ type SliderProps = {
 };
 
 function Slider({ style, children }: SliderProps) {
+    const { containerWidth, handleLayout } = useSliderContext();
+
     return (
-        <GestureHandlerRootView style={[styles.container, style]}>
-            {children}
+        <GestureHandlerRootView style={[styles.container, style]} onLayout={handleLayout}>
+            {containerWidth > 0 ? children : null}
         </GestureHandlerRootView>
     );
 }

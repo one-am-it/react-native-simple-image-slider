@@ -35,6 +35,7 @@ function SliderContent({
         currentIndex,
         setCurrentIndex,
         imageAspectRatio,
+        containerWidth,
         registerScrollFn,
         onItemPress,
         hasFullScreen,
@@ -46,7 +47,9 @@ function SliderContent({
     const windowDimensions = useWindowDimensions();
 
     const [scrollEnabled, setScrollEnabled] = useState(true);
-    const [itemWidth, setItemWidth] = useState(isFullScreenSlider ? windowDimensions.width : 0);
+    const [itemWidth, setItemWidth] = useState(
+        isFullScreenSlider ? windowDimensions.width : containerWidth
+    );
 
     const localListRef = useRef<FlashListRef<SliderItem>>(null);
 

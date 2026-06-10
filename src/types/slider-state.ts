@@ -1,3 +1,4 @@
+import type { LayoutChangeEvent } from 'react-native';
 import type { SliderItem } from './context';
 import type { PinchToZoomStatus } from './pinch-to-zoom';
 import type { RegisteredCallbacksFromEvents } from './common';
@@ -41,12 +42,18 @@ type SliderStatusBarState = {
     statusBarStyle: 'light' | 'dark' | 'auto';
 };
 
+type SliderLayoutState = {
+    containerWidth: number;
+    handleLayout: (event: LayoutChangeEvent) => void;
+};
+
 type SliderState = SliderDataState &
     SliderAspectRatioState &
     SliderNavigationState &
     SliderFullScreenState &
     SliderCallbacksState &
-    SliderStatusBarState;
+    SliderStatusBarState &
+    SliderLayoutState;
 
 type SliderPublicState = Pick<
     SliderState,
@@ -70,6 +77,7 @@ export type {
     SliderEvents,
     SliderCallbacksState,
     SliderStatusBarState,
+    SliderLayoutState,
     SliderState,
     SliderPublicState,
 };
