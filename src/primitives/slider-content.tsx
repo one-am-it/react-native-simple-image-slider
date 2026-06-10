@@ -166,9 +166,9 @@ function SliderContent({
     const measureWindowSize = useCallback(() => {
         if (!isFullScreenSlider) {
             const windowSize = localListRef.current?.getWindowSize();
-            setItemWidth(windowSize?.width ?? 0);
+            setItemWidth(windowSize?.width ?? containerWidth);
         }
-    }, [isFullScreenSlider]);
+    }, [isFullScreenSlider, containerWidth]);
 
     const renderScrollComponent = useCallback(
         (props: ScrollViewProps) => <ScrollView {...props} />,
@@ -184,6 +184,10 @@ function SliderContent({
     }, [registerScrollFn, isFullScreenSlider]);
 
     if (totalItems === 0) {
+        return null;
+    }
+
+    if (!isFullScreenSlider && containerWidth === 0) {
         return null;
     }
 

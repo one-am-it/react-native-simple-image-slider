@@ -18,7 +18,7 @@ export function useSliderState({
     // Get first image source for aspect ratio detection
     const firstImageSource = data?.[0]?.source;
 
-    // State for slider container size, used to ensure images all images has always width when rendering non-fullscreen sliders
+    // State for slider container size, used to ensure images always have a non-zero width when rendering non-fullscreen sliders
     const [containerWidth, setContainerWidth] = useState(0);
     const handleLayout = useCallback((e: LayoutChangeEvent) => {
         setContainerWidth(e.nativeEvent.layout.width);

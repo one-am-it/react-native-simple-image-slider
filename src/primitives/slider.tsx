@@ -10,11 +10,11 @@ type SliderProps = {
 };
 
 function Slider({ style, children }: SliderProps) {
-    const { containerWidth, handleLayout } = useSliderContext();
+    const { handleLayout } = useSliderContext();
 
     return (
         <GestureHandlerRootView style={[styles.container, style]} onLayout={handleLayout}>
-            {containerWidth > 0 ? children : null}
+            {children}
         </GestureHandlerRootView>
     );
 }
