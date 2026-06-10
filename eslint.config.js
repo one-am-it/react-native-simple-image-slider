@@ -71,10 +71,10 @@ module.exports = defineConfig([
             'import/no-mutable-exports': 'error',
         },
     },
-    // Disable import/no-extraneous-dependencies for example workspace
-    // (it's test/development code only, uses workspace-linked packages)
+    // Disable import/no-extraneous-dependencies for test files and example workspace
+    // (development/test code only — uses dev and workspace-linked packages)
     {
-        files: ['example/**/*'],
+        files: ['**/__tests__/**/*', '**/*.test.ts', '**/*.test.tsx', 'example/**/*'],
         languageOptions: {
             parser: typescriptParser,
             parserOptions: {

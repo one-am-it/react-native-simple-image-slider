@@ -29,9 +29,9 @@
         "strict": true,
         "target": "esnext",
         "verbatimModuleSyntax": true,
-        "moduleSuffixes": [".ios", ".android", ".native", ""]
+        "moduleSuffixes": [".ios", ".android", ".native", ""],
+        "types": ["node", "react", "jest"]
     },
-    "types": ["node", "react"],
     "lib": ["dom", "esnext"],
     "exclude": ["node_modules/**/*", "dist/**/*", "types/**/*", "lib/**/*", "example/**/*"]
 }

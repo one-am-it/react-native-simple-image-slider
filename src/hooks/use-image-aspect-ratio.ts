@@ -61,4 +61,4 @@ function useImageAspectRatio(
     return result;
 }
 
-export { useImageAspectRatio, DEFAULT_ASPECT_RATIO };
+export { useImageAspectRatio, toUseImageSource, DEFAULT_ASPECT_RATIO };

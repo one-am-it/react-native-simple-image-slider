@@ -141,6 +141,8 @@ Container component with gesture handling. Must be inside `SliderProvider`.
 
 Renders the FlashList with images. Must be a child of `Slider`.
 
+> **Note:** `SliderContent` must be wrapped in `Slider` to prevent burst-loading all images on first render. If used directly inside `SliderProvider` without `Slider`, the layout gate never fires and all images will load simultaneously.
+
 #### Props
 
 | Prop                         | Type                                                              | Default                            | Description                               |
