@@ -1,5 +1,34 @@
 # Changelog
 
+## [1.0.0-beta.7](https://git.oneam.it/one-am/libraries/react-native-simple-image-slider/compare/v1.0.0-beta.6...v1.0.0-beta.7) (2026-06-11)
+
+### ⚙️ CI/CD
+
+* fix lefthook ([e1cb3a6](https://git.oneam.it/one-am/libraries/react-native-simple-image-slider/commit/e1cb3a69b62fc537a9b85a213f49847fe83913a7))
+* fix tests ([ca7d52b](https://git.oneam.it/one-am/libraries/react-native-simple-image-slider/commit/ca7d52b417593ebe0983d212bae10d64e91b6e56))
+
+### ✨ Features
+
+* upgrade example project to expo 56 and require react-native >=0.83 ([91305b9](https://git.oneam.it/one-am/libraries/react-native-simple-image-slider/commit/91305b962c706605b198b15d705ed8d7c3a93862))
+
+### 🐛 Fixes
+
+* add test stage to CI pipeline for running unit tests ([a896a84](https://git.oneam.it/one-am/libraries/react-native-simple-image-slider/commit/a896a840d0f4afc28d517b5b851bbbd714e7e80a))
+* avoid rendering all images on non fullscreen sliders ([7f92c7b](https://git.oneam.it/one-am/libraries/react-native-simple-image-slider/commit/7f92c7b83a5fc48b19d1a8017f63cd14f64ad7f6))
+* ensure images width fallback to container width if not strictly positive ([d9cd89c](https://git.oneam.it/one-am/libraries/react-native-simple-image-slider/commit/d9cd89cbea7a33f81db2a9e13737918ff5cd4132))
+* improve image source handling in useImageAspectRatio hook to handle all expo-image sources ([6afeb53](https://git.oneam.it/one-am/libraries/react-native-simple-image-slider/commit/6afeb5370041123cdd08c84de5d438603e48bfcc))
+* move image render gate to SliderContent and guard measureWindowSize fallback ([81f9c2c](https://git.oneam.it/one-am/libraries/react-native-simple-image-slider/commit/81f9c2c55dfa4200ca9ba081ae4c4666b1bc29f2))
+* use useEffectLayout effect to measure slider width ([2514808](https://git.oneam.it/one-am/libraries/react-native-simple-image-slider/commit/2514808227140dcfa02970f568f05f7868faa672))
+
+### 🧪 Tests
+
+* add unit tests for burst-load fix and set up test infrastructure ([7ea15aa](https://git.oneam.it/one-am/libraries/react-native-simple-image-slider/commit/7ea15aae697a88f053504c33bf247b293b9c37bb))
+* add unit tests for SliderContent component to validate rendering logic ([e0f357f](https://git.oneam.it/one-am/libraries/react-native-simple-image-slider/commit/e0f357fbd306bc1683ff26dccf1200ebe45324e2))
+
+### 🧹 Chores
+
+* setup demo app with remote images ([f78ea2b](https://git.oneam.it/one-am/libraries/react-native-simple-image-slider/commit/f78ea2b298c0e99358a9cdd3e46cf8fabddc957c))
+
 ## [1.0.0-beta.6](https://git.oneam.it/one-am/libraries/react-native-simple-image-slider/compare/v1.0.0-beta.5...v1.0.0-beta.6) (2025-12-23)
 
 ### 🐛 Fixes
