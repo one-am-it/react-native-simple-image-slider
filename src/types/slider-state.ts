@@ -1,4 +1,3 @@
-import type { LayoutChangeEvent } from 'react-native';
 import type { SliderItem } from './context';
 import type { PinchToZoomStatus } from './pinch-to-zoom';
 import type { RegisteredCallbacksFromEvents } from './common';
@@ -44,7 +43,7 @@ type SliderStatusBarState = {
 
 type SliderLayoutState = {
     containerWidth: number;
-    handleLayout: (event: LayoutChangeEvent) => void;
+    setContainerWidth: (width: number) => void;
 };
 
 type SliderState = SliderDataState &

@@ -1,40 +1,33 @@
 import { renderHook, act } from '@testing-library/react-native';
-import type { LayoutChangeEvent } from 'react-native';
 import { useSliderState } from '../hooks/use-slider-state';
 
 jest.mock('expo-image', () => ({ useImage: jest.fn(() => null) }));
 
-describe('useSliderState — handleLayout', () => {
+describe('useSliderState — containerWidth', () => {
     it('initialises containerWidth to 0', async () => {
         const { result } = await renderHook(() => useSliderState({ data: [] }));
         expect(result.current.containerWidth).toBe(0);
     });
 
-    it('updates containerWidth when handleLayout fires', async () => {
+    it('updates containerWidth when setContainerWidth is called', async () => {
         const { result } = await renderHook(() => useSliderState({ data: [] }));
 
         await act(async () => {
-            result.current.handleLayout({
-                nativeEvent: { layout: { width: 375, height: 200, x: 0, y: 0 } },
-            } as LayoutChangeEvent);
+            result.current.setContainerWidth(375);
         });
 
         expect(result.current.containerWidth).toBe(375);
     });
 
-    it('reflects the last layout width when handleLayout fires multiple times', async () => {
+    it('reflects the last width when setContainerWidth is called multiple times', async () => {
         const { result } = await renderHook(() => useSliderState({ data: [] }));
 
         await act(async () => {
-            result.current.handleLayout({
-                nativeEvent: { layout: { width: 375, height: 200, x: 0, y: 0 } },
-            } as LayoutChangeEvent);
+            result.current.setContainerWidth(375);
         });
 
         await act(async () => {
-            result.current.handleLayout({
-                nativeEvent: { layout: { width: 768, height: 200, x: 0, y: 0 } },
-            } as LayoutChangeEvent);
+            result.current.setContainerWidth(768);
         });
 
         expect(result.current.containerWidth).toBe(768);

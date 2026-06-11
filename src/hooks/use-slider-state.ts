@@ -1,5 +1,4 @@
 import { useCallback, useMemo, useState } from 'react';
-import type { LayoutChangeEvent } from 'react-native';
 import type { SliderProviderProps, SliderState } from '../types';
 import {
     useImageAspectRatio,
@@ -20,9 +19,6 @@ export function useSliderState({
 
     // State for slider container size, used to ensure images always have a non-zero width when rendering non-fullscreen sliders
     const [containerWidth, setContainerWidth] = useState(0);
-    const handleLayout = useCallback((e: LayoutChangeEvent) => {
-        setContainerWidth(e.nativeEvent.layout.width);
-    }, []);
 
     // Compose specialized hooks (callbacks first since it has no dependencies)
     const callbacks = useSliderCallbacks(propCallbacks);
@@ -77,7 +73,7 @@ export function useSliderState({
             closeFullScreen,
             statusBarStyle,
             containerWidth,
-            handleLayout,
+            setContainerWidth,
             ...callbacks,
         }),
         [
@@ -95,7 +91,7 @@ export function useSliderState({
             closeFullScreen,
             statusBarStyle,
             containerWidth,
-            handleLayout,
+            setContainerWidth,
             callbacks,
         ]
     );
