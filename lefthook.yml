@@ -11,6 +11,11 @@ pre-commit:
         typecheck:
             glob: '*.{js,ts,jsx,tsx,json}'
             run: yarn typecheck
+pre-push:
+    commands:
+        test:
+            glob: '*.{js,ts,jsx,tsx}'
+            run: yarn test --ci
 commit-msg:
     parallel: true
     commands:
