@@ -58,11 +58,13 @@ function SliderContent({
         [data, maxItems]
     );
 
+    const resolvedItemWidth = itemWidth > 0 ? itemWidth : containerWidth;
+
     const styles = useMemo(
         () =>
             StyleSheet.create({
                 image: {
-                    width: isFullScreenSlider ? windowDimensions.width : itemWidth,
+                    width: isFullScreenSlider ? windowDimensions.width : resolvedItemWidth,
                     height: '100%',
                 },
                 pinchToZoom: {
@@ -73,7 +75,7 @@ function SliderContent({
                     aspectRatio: imageAspectRatio,
                 },
             }),
-        [imageAspectRatio, isFullScreenSlider, itemWidth, windowDimensions.width]
+        [imageAspectRatio, isFullScreenSlider, resolvedItemWidth, windowDimensions.width]
     );
 
     const handleViewableItemsChanged = useCallback(
