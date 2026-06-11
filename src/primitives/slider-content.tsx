@@ -35,6 +35,7 @@ function SliderContent({
         currentIndex,
         setCurrentIndex,
         imageAspectRatio,
+        containerWidth,
         registerScrollFn,
         onItemPress,
         hasFullScreen,
@@ -46,7 +47,9 @@ function SliderContent({
     const windowDimensions = useWindowDimensions();
 
     const [scrollEnabled, setScrollEnabled] = useState(true);
-    const [itemWidth, setItemWidth] = useState(isFullScreenSlider ? windowDimensions.width : 0);
+    const [itemWidth, setItemWidth] = useState(
+        isFullScreenSlider ? windowDimensions.width : containerWidth
+    );
 
     const localListRef = useRef<FlashListRef<SliderItem>>(null);
 
@@ -55,11 +58,13 @@ function SliderContent({
         [data, maxItems]
     );
 
+    const resolvedItemWidth = itemWidth > 0 ? itemWidth : containerWidth;
+
     const styles = useMemo(
         () =>
             StyleSheet.create({
                 image: {
-                    width: isFullScreenSlider ? windowDimensions.width : itemWidth,
+                    width: isFullScreenSlider ? windowDimensions.width : resolvedItemWidth,
                     height: '100%',
                 },
                 pinchToZoom: {
@@ -70,7 +75,7 @@ function SliderContent({
                     aspectRatio: imageAspectRatio,
                 },
             }),
-        [imageAspectRatio, isFullScreenSlider, itemWidth, windowDimensions.width]
+        [imageAspectRatio, isFullScreenSlider, resolvedItemWidth, windowDimensions.width]
     );
 
     const handleViewableItemsChanged = useCallback(
@@ -163,9 +168,9 @@ function SliderContent({
     const measureWindowSize = useCallback(() => {
         if (!isFullScreenSlider) {
             const windowSize = localListRef.current?.getWindowSize();
-            setItemWidth(windowSize?.width ?? 0);
+            setItemWidth(windowSize?.width ?? containerWidth);
         }
-    }, [isFullScreenSlider]);
+    }, [isFullScreenSlider, containerWidth]);
 
     const renderScrollComponent = useCallback(
         (props: ScrollViewProps) => <ScrollView {...props} />,
@@ -181,6 +186,10 @@ function SliderContent({
     }, [registerScrollFn, isFullScreenSlider]);
 
     if (totalItems === 0) {
+        return null;
+    }
+
+    if (!isFullScreenSlider && containerWidth === 0) {
         return null;
     }
 

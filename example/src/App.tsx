@@ -14,38 +14,33 @@ import {
 } from '@one-am/react-native-simple-image-slider';
 
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { Pressable, StyleSheet, Text } from 'react-native';
-import pictureOne from '../assets/photos/1.jpg';
-import pictureTwo from '../assets/photos/2.jpg';
-import pictureThree from '../assets/photos/3.jpg';
-import pictureFour from '../assets/photos/4.jpg';
-import pictureFive from '../assets/photos/5.jpg';
-import pictureSix from '../assets/photos/6.jpg';
-import pictureSeven from '../assets/photos/7.jpg';
-import pictureEight from '../assets/photos/8.jpg';
-import pictureNine from '../assets/photos/9.jpg';
-import pictureTen from '../assets/photos/10.jpg';
-import pictureEleven from '../assets/photos/11.jpg';
-import pictureTwelve from '../assets/photos/12.jpg';
-import pictureThirteen from '../assets/photos/13.jpg';
-import pictureFourteen from '../assets/photos/14.jpg';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-const photos = [
-    pictureOne,
-    pictureTwo,
-    pictureThree,
-    pictureFour,
-    pictureFive,
-    pictureSix,
-    pictureSeven,
-    pictureEight,
-    pictureNine,
-    pictureTen,
-    pictureEleven,
-    pictureTwelve,
-    pictureThirteen,
-    pictureFourteen,
-];
+const REMOTE_PHOTO_COUNT = 30;
+
+const remotePhotos = Array.from({ length: REMOTE_PHOTO_COUNT }, (_, i) => ({
+    key: `remote-${i + 1}`,
+    source: { uri: `https://picsum.photos/seed/${i + 1}/800/600` },
+}));
+
+const localPhotos = [
+    require('../assets/photos/1.jpg'),
+    require('../assets/photos/2.jpg'),
+    require('../assets/photos/3.jpg'),
+    require('../assets/photos/4.jpg'),
+    require('../assets/photos/5.jpg'),
+    require('../assets/photos/6.jpg'),
+    require('../assets/photos/7.jpg'),
+    require('../assets/photos/8.jpg'),
+    require('../assets/photos/9.jpg'),
+    require('../assets/photos/10.jpg'),
+    require('../assets/photos/11.jpg'),
+    require('../assets/photos/12.jpg'),
+    require('../assets/photos/13.jpg'),
+    require('../assets/photos/14.jpg'),
+].map((source, i) => ({ key: `local-${i + 1}`, source }));
+
+type ImageSource = 'remote' | 'local';
 
 function PictureDescription() {
     const { currentIndex } = useSlider();
@@ -54,35 +49,37 @@ function PictureDescription() {
 
 export default function App() {
     const [showEmpty, setShowEmpty] = React.useState(false);
+    const [imageSource, setImageSource] = React.useState<ImageSource>('remote');
 
-    const handleToggle = React.useCallback(() => {
+    const photos = imageSource === 'remote' ? remotePhotos : localPhotos;
+
+    const handleToggleEmpty = React.useCallback(() => {
         setShowEmpty((prev) => !prev);
     }, []);
 
+    const handleSelectSource = React.useCallback((source: ImageSource) => {
+        setImageSource(source);
+    }, []);
+
+    const handleSelectRemote = React.useCallback(
+        () => handleSelectSource('remote'),
+        [handleSelectSource]
+    );
+
+    const handleSelectLocal = React.useCallback(
+        () => handleSelectSource('local'),
+        [handleSelectSource]
+    );
+
     return (
         <SafeAreaProvider>
-            <SafeAreaView
-                style={{
-                    flex: 1,
-                    alignItems: 'stretch',
-                    justifyContent: 'center',
-                }}
-            >
-                <Pressable onPress={handleToggle} style={styles.toggleButton}>
+            <SafeAreaView style={styles.container}>
+                <Pressable onPress={handleToggleEmpty} style={styles.toggleButton}>
                     <Text style={styles.toggleButtonText}>
                         {showEmpty ? 'Show Photos' : 'Show Empty'}
                     </Text>
                 </Pressable>
-                <SliderProvider
-                    data={
-                        showEmpty
-                            ? []
-                            : photos.map((photo, index) => ({
-                                  source: photo,
-                                  key: index.toString(),
-                              }))
-                    }
-                >
+                <SliderProvider data={showEmpty ? [] : photos} imageAspectRatio={4 / 3}>
                     <Slider>
                         <SliderContent />
                         <SliderEmpty style={styles.emptyContainer}>
@@ -100,12 +97,83 @@ export default function App() {
                         </SliderDescription>
                     </SliderFullScreen>
                 </SliderProvider>
+                <View style={styles.controls}>
+                    <View style={styles.segmentedControl}>
+                        <Pressable
+                            onPress={handleSelectRemote}
+                            style={[
+                                styles.segment,
+                                imageSource === 'remote' && styles.segmentActive,
+                            ]}
+                        >
+                            <Text
+                                style={[
+                                    styles.segmentText,
+                                    imageSource === 'remote' && styles.segmentTextActive,
+                                ]}
+                            >
+                                Remote
+                            </Text>
+                        </Pressable>
+                        <Pressable
+                            onPress={handleSelectLocal}
+                            style={[
+                                styles.segment,
+                                imageSource === 'local' && styles.segmentActive,
+                            ]}
+                        >
+                            <Text
+                                style={[
+                                    styles.segmentText,
+                                    imageSource === 'local' && styles.segmentTextActive,
+                                ]}
+                            >
+                                Local
+                            </Text>
+                        </Pressable>
+                    </View>
+                </View>
             </SafeAreaView>
         </SafeAreaProvider>
     );
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        alignItems: 'stretch',
+        justifyContent: 'center',
+    },
+    controls: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginHorizontal: 20,
+        marginTop: 20,
+    },
+    segmentedControl: {
+        flex: 1,
+        flexDirection: 'row',
+        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: '#007AFF',
+        overflow: 'hidden',
+    },
+    segment: {
+        flex: 1,
+        paddingVertical: 10,
+        alignItems: 'center',
+    },
+    segmentActive: {
+        backgroundColor: '#007AFF',
+    },
+    segmentText: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: '#007AFF',
+    },
+    segmentTextActive: {
+        color: '#ffffff',
+    },
     toggleButton: {
         backgroundColor: '#007AFF',
         paddingVertical: 12,
@@ -117,7 +185,7 @@ const styles = StyleSheet.create({
     },
     toggleButtonText: {
         color: '#ffffff',
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: '600',
     },
     emptyContainer: {

@@ -41,12 +41,18 @@ type SliderStatusBarState = {
     statusBarStyle: 'light' | 'dark' | 'auto';
 };
 
+type SliderLayoutState = {
+    containerWidth: number;
+    setContainerWidth: (width: number) => void;
+};
+
 type SliderState = SliderDataState &
     SliderAspectRatioState &
     SliderNavigationState &
     SliderFullScreenState &
     SliderCallbacksState &
-    SliderStatusBarState;
+    SliderStatusBarState &
+    SliderLayoutState;
 
 type SliderPublicState = Pick<
     SliderState,
@@ -70,6 +76,7 @@ export type {
     SliderEvents,
     SliderCallbacksState,
     SliderStatusBarState,
+    SliderLayoutState,
     SliderState,
     SliderPublicState,
 };

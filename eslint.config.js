@@ -71,10 +71,24 @@ module.exports = defineConfig([
             'import/no-mutable-exports': 'error',
         },
     },
+    // Test files — relax rules that conflict with jest.mock patterns and dev-only imports
+    {
+        files: ['**/__tests__/**/*', '**/*.test.ts', '**/*.test.tsx'],
+        languageOptions: {
+            parser: typescriptParser,
+            parserOptions: {
+                projectService: false,
+            },
+        },
+        rules: {
+            'import/no-extraneous-dependencies': ['error', { devDependencies: false }],
+            '@typescript-eslint/no-require-imports': 'off',
+        },
+    },
     // Disable import/no-extraneous-dependencies for example workspace
     // (it's test/development code only, uses workspace-linked packages)
     {
-        files: ['example/**/*'],
+        files: ['**/__tests__/**/*', '**/*.test.ts', '**/*.test.tsx', 'example/**/*'],
         languageOptions: {
             parser: typescriptParser,
             parserOptions: {

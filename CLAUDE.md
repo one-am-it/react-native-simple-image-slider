@@ -65,44 +65,52 @@ The library uses a **flat exports** pattern (like shadcn/ui) where users compose
 The library exports 9 main primitives:
 
 1. **SliderProvider** (`src/primitives/slider-provider.tsx`) - Root context provider
+
     - **Required wrapper** for all slider functionality
     - Manages state via `SliderContextProvider` from context
     - Accepts data, callbacks, and configuration props
     - Makes `useSlider()` hook available to all children
 
 2. **Slider** (`src/primitives/slider.tsx`) - Container component with gesture handling
+
     - Uses `GestureHandlerRootView` for gesture support
     - Must be inside `SliderProvider`
     - Only accepts `children` and `style` props
 
 3. **SliderContent** (`src/primitives/slider-content.tsx`) - FlashList wrapper
+
     - Uses `@shopify/flash-list` for horizontal scrolling performance
     - Handles image rendering with `expo-image`
     - Supports ref forwarding to FlashList for imperative control (`.scrollToIndex()`)
     - Optionally wraps in `PinchToZoom` for gesture support
 
 4. **SliderPageCounter** (`src/primitives/slider-page-counter.tsx`) - Page indicator
+
     - Displays current page and total count
     - Reads `currentIndex` and `totalItems` from context
     - Supports custom render prop for full customization
     - Must be wrapped in `SliderCorner` for positioning
 
 5. **SliderCorner** (`src/primitives/slider-corner.tsx`) - Positioned container
+
     - Absolute positioning utility for custom overlays
     - Configurable offset from edges (default: 16px)
 
 6. **SliderFullScreen** (`src/primitives/slider-full-screen.tsx`) - Modal full-screen gallery
+
     - Uses React Native Modal component
     - Creates **nested context** with its own index state
     - Includes fade in/out animations with Reanimated
     - Syncs index with parent on open/close
 
 7. **SliderCloseButton** (`src/primitives/slider-close-button.tsx`) - Close button
+
     - Positioned in safe area (top-right by default)
     - Calls `closeFullScreen()` from context
     - Supports custom icon children
 
 8. **SliderDescription** (`src/primitives/slider-description.tsx`) - Description container
+
     - Positioned at bottom with safe area insets
     - Accepts children (use `useSlider()` hook for dynamic content based on current index)
 

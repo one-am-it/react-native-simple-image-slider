@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import type { SliderProviderProps, SliderState } from '../types';
 import {
     useImageAspectRatio,
@@ -16,6 +16,9 @@ export function useSliderState({
 }: Omit<SliderProviderProps, 'children'>): SliderState {
     // Get first image source for aspect ratio detection
     const firstImageSource = data?.[0]?.source;
+
+    // State for slider container size, used to ensure images always have a non-zero width when rendering non-fullscreen sliders
+    const [containerWidth, setContainerWidth] = useState(0);
 
     // Compose specialized hooks (callbacks first since it has no dependencies)
     const callbacks = useSliderCallbacks(propCallbacks);
@@ -69,6 +72,8 @@ export function useSliderState({
             openFullScreen,
             closeFullScreen,
             statusBarStyle,
+            containerWidth,
+            setContainerWidth,
             ...callbacks,
         }),
         [
@@ -85,6 +90,8 @@ export function useSliderState({
             openFullScreen,
             closeFullScreen,
             statusBarStyle,
+            containerWidth,
+            setContainerWidth,
             callbacks,
         ]
     );
