@@ -33,6 +33,7 @@ check:
     image: $[[ inputs.node-image ]]
     stage: $[[ inputs.check-stage ]]
     script:
+        - yarn format:check
         - yarn typecheck
         - yarn lint
     when: on_success

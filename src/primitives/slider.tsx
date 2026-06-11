@@ -9,13 +9,6 @@ type SliderProps = {
     style?: StyleProp<ViewStyle>;
 };
 
-// Fabric refs expose DOM-like synchronous measurement (ReactNativeElement). The public
-// View types only include getBoundingClientRect from RN 0.83 — drop this cast once the
-// minimum supported RN version is >=0.83 (https://github.com/facebook/react-native/issues/50684)
-type MeasurableView = View & {
-    getBoundingClientRect?: () => { width: number; height: number };
-};
-
 function Slider({ style, children }: SliderProps) {
     const { setContainerWidth } = useSliderContext();
     const ref = useRef<View>(null);
@@ -24,7 +17,7 @@ function Slider({ style, children }: SliderProps) {
     // readable here synchronously — before the first paint, like in the browser.
     // onLayout below stays as the source of truth for later resizes.
     useLayoutEffect(() => {
-        const rect = (ref.current as MeasurableView | null)?.getBoundingClientRect?.();
+        const rect = ref.current?.getBoundingClientRect?.();
         if (rect && rect.width > 0) {
             setContainerWidth(rect.width);
         }
