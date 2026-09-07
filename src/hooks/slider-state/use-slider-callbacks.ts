@@ -37,6 +37,9 @@ function useSliderCallbacks({
 
     return {
         onItemPress,
+        // The dispatcher above is returned whether or not a consumer passed a handler, so it cannot
+        // be tested for one. This says whether there is anything behind it.
+        hasItemPress: Boolean(onItemPressProp),
         registerOnItemPress,
         onFullScreenChange,
         registerOnFullScreenChange,

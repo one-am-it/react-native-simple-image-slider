@@ -91,6 +91,9 @@ function PinchToZoom({
 
     const isZoomedValue = useSharedValue(false);
     const lastStatusUpdateTime = useSharedValue(0);
+    // Whether the previous reported frame was already at rest, so the frame that lands back on rest
+    // can be told apart from the stream of frames that were there all along.
+    const wasAtRest = useSharedValue(true);
 
     const pinchGesture = useMemo(() => {
         let gesture = Gesture.Pinch()
@@ -314,8 +317,21 @@ function PinchToZoom({
         (current) => {
             'worklet';
             const now = Date.now();
-            if (onStatusChange && now - lastStatusUpdateTime.value >= THROTTLE_MS) {
+            // The frame that settles back to rest is always reported, throttled or not. Dropping it
+            // leaves a consumer believing the photo is still in hand, because nothing follows it —
+            // which is how chrome hidden during a pinch stayed hidden after the zoom out.
+            const atRest =
+                current.scale === minimumZoomScale &&
+                current.translationX === 0 &&
+                current.translationY === 0;
+            const settledAtRest = atRest && !wasAtRest.value;
+
+            if (
+                onStatusChange &&
+                (settledAtRest || now - lastStatusUpdateTime.value >= THROTTLE_MS)
+            ) {
                 lastStatusUpdateTime.value = now;
+                wasAtRest.value = atRest;
                 scheduleOnRN(onStatusChange, {
                     scale: current.scale,
                     translation: { x: current.translationX, y: current.translationY },
