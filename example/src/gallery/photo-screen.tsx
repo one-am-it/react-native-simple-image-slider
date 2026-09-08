@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import Svg, { Path } from 'react-native-svg';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import type { RouteProp } from '@react-navigation/native';
@@ -9,16 +10,21 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import {
     Slider,
     SliderContent,
+    SliderDescription,
     SliderProvider,
     useSlider,
 } from '@one-am/react-native-simple-image-slider';
+import type { PinchToZoomStatus } from '@one-am/react-native-simple-image-slider';
 
 import { photoSet } from '../photos';
 import { usePalette } from '../theme';
 import type { RootStackParamList } from '../navigation-types';
 
-/** The library places its own close button here, and this screen is its own, so it matches. */
+/** Where the library places its own close button, so this screen's sits in the same spot. */
 const SAFE_AREA_OFFSET = 20;
+
+/** How far the black behind the photo fades as it is dragged away, as the library's own does. */
+const SCRIM_FADE = 0.8;
 
 function CloseIcon({ color }: { color: string }) {
     return (
@@ -43,28 +49,57 @@ function Caption() {
 /**
  * A photo opened from the grid, on its own screen.
  *
- * The pager is mounted at `initialIndex` rather than opened through `SliderFullScreen`, because
- * that is the only way in: the full screen opens on whatever photo the provider is already showing,
- * and nothing public moves it there without an inline slider to scroll.
+ * The pager is mounted at `initialIndex` rather than opened through `SliderFullScreen`, because a
+ * grid has no other way in: the full screen opens on whatever photo the provider already shows, and
+ * nothing public moves it there without an inline slider to scroll. Everything else is the library's
+ * own — the close button's position, the bordered footer, the swipe-down dismiss and the scrim that
+ * fades with it — so both tabs present a photo identically.
  */
 function PhotoScreen() {
     const palette = usePalette();
     const insets = useSafeAreaInsets();
+    const { height } = useWindowDimensions();
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
     const { index, count, source } = useRoute<RouteProp<RootStackParamList, 'Photo'>>().params;
 
     const photos = React.useMemo(() => photoSet(count, source), [count, source]);
     const close = React.useCallback(() => navigation.goBack(), [navigation]);
 
+    const scrimOpacity = useSharedValue(1);
+    const scrimStyle = useAnimatedStyle(
+        () => ({ backgroundColor: `rgba(0, 0, 0, ${scrimOpacity.value})` }),
+        []
+    );
+
+    // Only while the photo is at rest or being dragged away — a zoomed photo keeps its backdrop.
+    const trackDrag = React.useCallback(
+        ({ scale, translation }: PinchToZoomStatus) => {
+            if (scale > 1) {
+                scrimOpacity.value = 1;
+                return;
+            }
+
+            const progress = Math.min(Math.abs(translation.y) / (height / 2), 1);
+            scrimOpacity.value = 1 - progress * SCRIM_FADE;
+        },
+        [height, scrimOpacity]
+    );
+
     return (
-        <View style={styles.screen}>
-            <SliderProvider data={photos} initialIndex={index} imageAspectRatio={4 / 3}>
+        <Animated.View style={[styles.screen, scrimStyle]}>
+            <SliderProvider
+                data={photos}
+                initialIndex={index}
+                imageAspectRatio={4 / 3}
+                onPinchStatusChange={trackDrag}
+                onPinchDismiss={close}
+            >
                 <Slider>
                     <SliderContent enablePinchToZoom />
                 </Slider>
-                <View style={styles.chrome}>
+                <SliderDescription>
                     <Caption />
-                </View>
+                </SliderDescription>
             </SliderProvider>
             <Pressable
                 onPress={close}
@@ -74,19 +109,15 @@ function PhotoScreen() {
             >
                 <CloseIcon color={palette.onPhoto} />
             </Pressable>
-        </View>
+        </Animated.View>
     );
 }
 
 const styles = StyleSheet.create({
     screen: {
         flex: 1,
-        justifyContent: 'center',
-        backgroundColor: '#000000',
-    },
-    chrome: {
         alignItems: 'center',
-        paddingTop: 16,
+        justifyContent: 'center',
     },
     caption: {
         fontSize: 14,
