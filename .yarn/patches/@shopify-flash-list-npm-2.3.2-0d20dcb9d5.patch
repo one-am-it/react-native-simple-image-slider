@@ -1,0 +1,13 @@
+diff --git a/dist/recyclerview/RecyclerViewManager.js b/dist/recyclerview/RecyclerViewManager.js
+index 1aa651d9d985a36d3c6ef69f20407f51ca0e3e6f..390ff3a19274ecd412a6613cceabf860fbc1f4bd 100644
+--- a/dist/recyclerview/RecyclerViewManager.js
++++ b/dist/recyclerview/RecyclerViewManager.js
+@@ -293,7 +293,7 @@ export class RecyclerViewManager {
+             // re-estimate unmeasured items with an updated average height, changing
+             // the target item's position. Reading before recompute would capture a
+             // stale offset, causing the wrong items to be rendered.
+-            this.layoutManager.recomputeLayouts(0, initialScrollIndex);
++            this.layoutManager.recomputeLayouts(0, this.getDataLength() - 1);
+             const initialItemLayout = this.layoutManager.getLayout(initialScrollIndex);
+             const initialItemOffset = this.propsRef.horizontal
+                 ? initialItemLayout.x
