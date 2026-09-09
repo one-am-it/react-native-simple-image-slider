@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.0.0](https://git.oneam.it/one-am/libraries/react-native-simple-image-slider/compare/v1.0.0-beta.7...v1.0.0) (2026-09-09)
+
+### ♻️ Refactors
+
+* one component per file in the example, keep the inline slide tree stable ([e275ff8](https://git.oneam.it/one-am/libraries/react-native-simple-image-slider/commit/e275ff878c89836f522b38316c41d515bef7aa4f))
+
+### 📝 Documentation
+
+* the two pinch callbacks, and the FlashList versions that mispark ([b10f1bc](https://git.oneam.it/one-am/libraries/react-native-simple-image-slider/commit/b10f1bcab0a4776523fc88a8df1375433beb7ee1))
+
+### 🐛 Fixes
+
+* report the frame that settles back on rest ([de364ec](https://git.oneam.it/one-am/libraries/react-native-simple-image-slider/commit/de364ec2b98578c0c5b6821d2d7a690f51da954d))
+* wrap a slide in a Pressable only when a tap has somewhere to go ([da16f82](https://git.oneam.it/one-am/libraries/react-native-simple-image-slider/commit/da16f82605d4a25658e93011891761cfa7710da0))
+
+### 🧪 Tests
+
+* **example:** a Carousel and a Gallery that both open a photo full screen ([9992680](https://git.oneam.it/one-am/libraries/react-native-simple-image-slider/commit/9992680a672d73ddcfda00e22e3f63fcf3347a7a)), closes [Shopify/flash-list#2307](https://git.oneam.it/Shopify/flash-list/issues/2307)
+
 ## [1.0.0-beta.7](https://git.oneam.it/one-am/libraries/react-native-simple-image-slider/compare/v1.0.0-beta.6...v1.0.0-beta.7) (2026-06-11)
 
 ### ⚙️ CI/CD
