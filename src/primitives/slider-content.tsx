@@ -38,6 +38,7 @@ function SliderContent({
         containerWidth,
         registerScrollFn,
         onItemPress,
+        hasItemPress,
         hasFullScreen,
         openFullScreen,
         onPinchStatusChange,
@@ -126,7 +127,9 @@ function SliderContent({
                     accessibilityLabel={label}
                 />
             );
-            if (isFullScreenSlider) {
+            // A slide only becomes a control when a tap has somewhere to go. Wrapping it regardless
+            // announced every photo to a screen reader as a button that does nothing.
+            if (isFullScreenSlider || (!hasItemPress && !hasFullScreen)) {
                 return content;
             }
 
@@ -152,6 +155,8 @@ function SliderContent({
             totalItems,
             imageAccessibilityLabel,
             pressableAccessibilityHint,
+            hasItemPress,
+            hasFullScreen,
         ]
     );
 

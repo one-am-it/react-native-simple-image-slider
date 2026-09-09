@@ -35,7 +35,13 @@ type SliderEvents = {
     pinchDismiss: () => void;
 };
 
-type SliderCallbacksState = RegisteredCallbacksFromEvents<SliderEvents>;
+type SliderCallbacksState = RegisteredCallbacksFromEvents<SliderEvents> & {
+    /**
+     * Whether a consumer passed an `onItemPress`. The `onItemPress` above is the dispatcher the
+     * registration hook always returns, so it is truthy either way and cannot answer this.
+     */
+    hasItemPress: boolean;
+};
 
 type SliderStatusBarState = {
     statusBarStyle: 'light' | 'dark' | 'auto';
