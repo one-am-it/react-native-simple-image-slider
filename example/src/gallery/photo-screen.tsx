@@ -1,8 +1,7 @@
 import * as React from 'react';
-import { Pressable, StyleSheet, Text, useWindowDimensions } from 'react-native';
+import { Pressable, StyleSheet, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
-import Svg, { Path } from 'react-native-svg';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import type { RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -12,13 +11,14 @@ import {
     SliderContent,
     SliderDescription,
     SliderProvider,
-    useSlider,
 } from '@one-am/react-native-simple-image-slider';
 import type { PinchToZoomStatus } from '@one-am/react-native-simple-image-slider';
 
+import { Caption } from '../caption';
 import { photoSet } from '../photos';
 import { usePalette } from '../theme';
 import type { RootStackParamList } from '../navigation-types';
+import { CloseIcon } from './close-icon';
 
 /** Where the library places its own close button, so this screen's sits in the same spot. */
 const SAFE_AREA_OFFSET = 20;
@@ -28,26 +28,6 @@ const SCRIM_FADE = 0.8;
 
 /** A pinch counts as over once the scale is back within this of 1. */
 const REST_TOLERANCE = 0.01;
-
-function CloseIcon({ color }: { color: string }) {
-    return (
-        <Svg width={24} height={24} viewBox="0 0 24 24" strokeWidth={2} stroke={color} fill="none">
-            <Path d="M18 6l-12 12" />
-            <Path d="M6 6l12 12" />
-        </Svg>
-    );
-}
-
-function Caption() {
-    const { currentIndex, totalItems } = useSlider();
-    const palette = usePalette();
-
-    return (
-        <Text style={[styles.caption, { color: palette.onPhoto }]}>
-            Photo {currentIndex + 1} of {totalItems}
-        </Text>
-    );
-}
 
 /**
  * A photo opened from the grid, on its own screen.
@@ -110,18 +90,19 @@ function PhotoScreen() {
                     <Caption />
                 </SliderDescription>
             </SliderProvider>
-            <Pressable
-                onPress={close}
-                accessibilityRole="button"
-                accessibilityLabel="Close"
-                style={[
-                    styles.close,
-                    { top: insets.top, right: insets.right + SAFE_AREA_OFFSET },
-                    zoomed ? styles.hidden : undefined,
-                ]}
-            >
-                <CloseIcon color={palette.onPhoto} />
-            </Pressable>
+            {zoomed ? null : (
+                <Pressable
+                    onPress={close}
+                    accessibilityRole="button"
+                    accessibilityLabel="Close"
+                    style={[
+                        styles.close,
+                        { top: insets.top, right: insets.right + SAFE_AREA_OFFSET },
+                    ]}
+                >
+                    <CloseIcon color={palette.onPhoto} />
+                </Pressable>
+            )}
         </Animated.View>
     );
 }
@@ -131,10 +112,6 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-    },
-    caption: {
-        fontSize: 14,
-        fontWeight: '500',
     },
     close: {
         position: 'absolute',

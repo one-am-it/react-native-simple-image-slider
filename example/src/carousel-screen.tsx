@@ -11,9 +11,9 @@ import {
     SliderFullScreen,
     SliderPageCounter,
     SliderProvider,
-    useSlider,
 } from '@one-am/react-native-simple-image-slider';
 
+import { Caption } from './caption';
 import type { PhotoSource } from './photos';
 import { bundledPhotos, remotePhotos } from './photos';
 import { SegmentedControl } from './segmented-control';
@@ -23,17 +23,6 @@ const SOURCES = [
     { value: 'bundled', label: 'Bundled' },
     { value: 'remote', label: 'Remote' },
 ] as const;
-
-function Caption() {
-    const { currentIndex, totalItems } = useSlider();
-    const palette = usePalette();
-
-    return (
-        <Text style={[styles.caption, { color: palette.onPhoto }]}>
-            Photo {currentIndex + 1} of {totalItems}
-        </Text>
-    );
-}
 
 function CarouselScreen() {
     const palette = usePalette();
@@ -130,10 +119,6 @@ const styles = StyleSheet.create({
     buttonText: {
         fontSize: 15,
         fontWeight: '600',
-    },
-    caption: {
-        fontSize: 14,
-        fontWeight: '500',
     },
 });
 
