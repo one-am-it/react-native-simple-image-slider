@@ -38,6 +38,7 @@ function SliderContent({
         containerWidth,
         registerScrollFn,
         onItemPress,
+        hasItemPress,
         hasFullScreen,
         openFullScreen,
         onPinchStatusChange,
@@ -130,15 +131,21 @@ function SliderContent({
                 return content;
             }
 
+            // A slide is only a control when a tap has somewhere to go; announcing it as a button
+            // regardless told a screen reader every photo did something. The Pressable stays in the
+            // tree either way so the Image is not remounted when `hasFullScreen` flips after mount.
+            const inert = !hasItemPress && !hasFullScreen;
             const handlePress = () => handleItemPress(item, index);
 
             return (
                 <Pressable
                     // eslint-disable-next-line react/jsx-no-bind
                     onPress={handlePress}
-                    accessibilityRole="imagebutton"
-                    accessibilityLabel={label}
-                    accessibilityHint={pressableAccessibilityHint}
+                    disabled={inert}
+                    accessible={!inert}
+                    accessibilityRole={inert ? undefined : 'imagebutton'}
+                    accessibilityLabel={inert ? undefined : label}
+                    accessibilityHint={inert ? undefined : pressableAccessibilityHint}
                 >
                     {content}
                 </Pressable>
@@ -152,6 +159,8 @@ function SliderContent({
             totalItems,
             imageAccessibilityLabel,
             pressableAccessibilityHint,
+            hasItemPress,
+            hasFullScreen,
         ]
     );
 

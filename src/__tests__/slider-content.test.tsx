@@ -9,8 +9,26 @@ jest.mock('@shopify/flash-list', () => {
     const ReactLocal = require('react') as typeof React;
     const { View } = require('react-native') as { View: typeof RNView };
     return {
-        FlashList: ({ style }: { style?: object }) =>
-            ReactLocal.createElement(View, { testID: 'flash-list', style }),
+        FlashList: ({
+            data,
+            renderItem,
+            style,
+        }: {
+            data?: { key: string }[];
+            renderItem?: (info: { item: unknown; index: number }) => React.ReactNode;
+            style?: object;
+        }) =>
+            ReactLocal.createElement(
+                View,
+                { testID: 'flash-list', style },
+                data?.map((item, index) =>
+                    ReactLocal.createElement(
+                        ReactLocal.Fragment,
+                        { key: item.key },
+                        renderItem?.({ item, index })
+                    )
+                )
+            ),
     };
 });
 
@@ -89,6 +107,36 @@ describe('SliderContent', () => {
             });
             const { toJSON } = await render(<SliderContent />);
             expect(toJSON()).toBeNull();
+        });
+    });
+
+    describe('the slide as a control', () => {
+        const renderWith = async (context: Partial<ReturnType<typeof useSliderContext>>) => {
+            mockUseIsFullScreenSlider.mockReturnValue(false);
+            mockUseSliderContext.mockReturnValue({
+                ...baseContext,
+                containerWidth: 320,
+                ...context,
+            } as ReturnType<typeof useSliderContext>);
+            return render(<SliderContent />);
+        };
+
+        it('is a button when a consumer wired a tap', async () => {
+            const { queryByRole } = await renderWith({ hasItemPress: true });
+            expect(queryByRole('imagebutton')).toBeTruthy();
+        });
+
+        it('is a button when a tap opens the full screen', async () => {
+            const { queryByRole } = await renderWith({ hasFullScreen: true });
+            expect(queryByRole('imagebutton')).toBeTruthy();
+        });
+
+        it('is not a button when a tap has nowhere to go', async () => {
+            const { queryByRole } = await renderWith({
+                hasItemPress: false,
+                hasFullScreen: false,
+            });
+            expect(queryByRole('imagebutton')).toBeNull();
         });
     });
 });

@@ -13,9 +13,8 @@ import { scheduleOnRN } from 'react-native-worklets';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import * as Haptics from 'expo-haptics';
 import { clamp } from '../utils/clamp';
+import { shouldReportPinchStatus } from '../utils/should-report-pinch-status';
 import type { PinchToZoomStatus } from '../types';
-
-const THROTTLE_MS = 50; // ~3 frames at 60fps
 
 type PinchToZoomProps = PropsWithChildren<{
     /**
@@ -91,6 +90,9 @@ function PinchToZoom({
 
     const isZoomedValue = useSharedValue(false);
     const lastStatusUpdateTime = useSharedValue(0);
+    // Whether the previous reported frame was already at rest, so the frame that lands back on rest
+    // can be told apart from the stream of frames that were there all along.
+    const wasAtRest = useSharedValue(true);
 
     const pinchGesture = useMemo(() => {
         let gesture = Gesture.Pinch()
@@ -314,15 +316,24 @@ function PinchToZoom({
         (current) => {
             'worklet';
             const now = Date.now();
-            if (onStatusChange && now - lastStatusUpdateTime.value >= THROTTLE_MS) {
+            const atRest =
+                current.scale === minimumZoomScale &&
+                current.translationX === 0 &&
+                current.translationY === 0;
+
+            if (
+                onStatusChange &&
+                shouldReportPinchStatus(atRest, wasAtRest.value, now - lastStatusUpdateTime.value)
+            ) {
                 lastStatusUpdateTime.value = now;
+                wasAtRest.value = atRest;
                 scheduleOnRN(onStatusChange, {
                     scale: current.scale,
                     translation: { x: current.translationX, y: current.translationY },
                 });
             }
         },
-        [onStatusChange]
+        [onStatusChange, minimumZoomScale]
     );
 
     const style = useAnimatedStyle(() => {

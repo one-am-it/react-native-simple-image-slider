@@ -37,6 +37,7 @@ function useSliderCallbacks({
 
     return {
         onItemPress,
+        hasItemPress: Boolean(onItemPressProp),
         registerOnItemPress,
         onFullScreenChange,
         registerOnFullScreenChange,
