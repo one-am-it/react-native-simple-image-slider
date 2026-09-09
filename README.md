@@ -42,6 +42,11 @@ yarn add @shopify/flash-list expo-image expo-haptics expo-status-bar react-nativ
  react-native-gesture-handler react-native-safe-area-context react-native-worklets @one-am/react-native-simple-image-slider
 ```
 
+> **FlashList 2.3.1 and later**: an `initialIndex` other than `0` can open on the wrong
+> slide, because the list resolves the opening offset against a layout table it has only
+> partly computed ([Shopify/flash-list#2307](https://github.com/Shopify/flash-list/issues/2307)).
+> The peer range allows those versions; 2.0.x is unaffected.
+
 ## Quick Start
 
 ```tsx
@@ -111,16 +116,22 @@ Root context provider that manages state. **Required wrapper** for all slider fu
 
 #### Props
 
-| Prop                 | Type                          | Default                       | Description                                                             |
-| -------------------- | ----------------------------- | ----------------------------- | ----------------------------------------------------------------------- |
-| `data`               | `SliderItem[]`                | **required**                  | Array of images with `key` and expo-image props                         |
-| `children`           | `ReactNode`                   | **required**                  | Child components (Slider, custom components with useSlider, etc.)       |
-| `imageAspectRatio`   | `number`                      | auto-detect (fallback: `4/3`) | Aspect ratio for images. Auto-detected from first image if not provided |
-| `initialIndex`       | `number`                      | `0`                           | Initial image index to display                                          |
-| `statusBarStyle`     | `'light' \| 'dark' \| 'auto'` | `'auto'`                      | Status bar style to restore when closing full screen                    |
-| `onIndexChange`      | `(index: number) => void`     | -                             | Callback when current index changes                                     |
-| `onItemPress`        | `(item, index) => void`       | -                             | Callback when an image is pressed                                       |
-| `onFullScreenChange` | `(isOpen: boolean) => void`   | -                             | Callback when full-screen state changes                                 |
+| Prop                  | Type                                  | Default                       | Description                                                                      |
+| --------------------- | ------------------------------------- | ----------------------------- | -------------------------------------------------------------------------------- |
+| `data`                | `SliderItem[]`                        | **required**                  | Array of images with `key` and expo-image props                                  |
+| `children`            | `ReactNode`                           | **required**                  | Child components (Slider, custom components with useSlider, etc.)                |
+| `imageAspectRatio`    | `number`                              | auto-detect (fallback: `4/3`) | Aspect ratio for images. Auto-detected from first image if not provided          |
+| `initialIndex`        | `number`                              | `0`                           | Initial image index to display                                                   |
+| `statusBarStyle`      | `'light' \| 'dark' \| 'auto'`         | `'auto'`                      | Status bar style to restore when closing full screen                             |
+| `onIndexChange`       | `(index: number) => void`             | -                             | Callback when current index changes                                              |
+| `onItemPress`         | `(item, index) => void`               | -                             | Callback when an image is pressed                                                |
+| `onFullScreenChange`  | `(isOpen: boolean) => void`           | -                             | Callback when full-screen state changes                                          |
+| `onPinchStatusChange` | `(status: PinchToZoomStatus) => void` | -                             | Callback while a photo is pinched or dragged, throttled to one report every 50ms |
+| `onPinchDismiss`      | `() => void`                          | -                             | Callback when a pinch in or a drag away asks for the photo to be dismissed       |
+
+`onPinchStatusChange` always reports the frame that settles back on rest, throttle or not:
+nothing follows that frame, so a consumer hiding chrome while the photo is in hand would
+otherwise never learn the photo came back.
 
 ---
 
